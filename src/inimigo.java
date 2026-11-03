@@ -1,44 +1,50 @@
-public class inimigo {
-    private int hp;
-    private double mov_speed;
-    private int base_damage;
-    private String enemy_specie;
-    private double pos_x;
-    private double pos_y;
-    private int mov_point;
-    private boolean status;
+public class Inimigo {
+    private int vida;
+    private double velocidadeMovimentacao;
+    private int danoBase;
+    private String tipoInimigo;
+    private double x;
+    private double y;
+    private int indicePonto;
+    private int recompensa;
 
-    public void damage_received(int dano){
-        hp -= dano;
+    public Inimigo (int vida, double velocidadeMovimentacao, int danoBase, String tipoInimigo) {
+        this.vida = vida;
+        this.velocidadeMovimentacao = velocidadeMovimentacao;
+        this.danoBase = danoBase;
+        this.tipoInimigo = tipoInimigo;
+        this.x = 0.0;
+        this.y = 0.0;
+        this.indicePonto = 0;
+    }
+    
+    public int getRecompensa () {
+        return recompensa;
+    }
 
-        if(hp < 0){
-            hp = 0;
+    public void danoRecebido(int dano){
+        vida -= dano;
+
+        if(vida < 0){
+            vida = 0;
         }
     }
 
-    public boolean life_status(int status){
-        if(hp <= 0){
-            return status;
+    public boolean statusVida(){
+        if(vida <= 0){
+            return false;
         }
+        return true;
     }
 
-    public int gold_drop(int gold){
-        return gold;
+    public int ouroDrop(int ouro){
+        return ouro;
     }
 
-    public int atack_damage(boolean colisao){
+    public int danoAtaque(boolean colisao){
         if(colisao){
-            return base_damage;
+            return danoBase;
         }
         return 0;
     }
-
-
-
-
-
-
-
-
-
 }
