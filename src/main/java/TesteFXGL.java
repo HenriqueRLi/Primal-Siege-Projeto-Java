@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.scene.shape.Rectangle;
 
 
 
@@ -30,8 +31,9 @@ public class TesteFXGL extends GameApplication {
 protected void initGame() {
     FXGL.getGameScene().setBackgroundColor(Color.DARKGREEN);
 
-    mapa = new Mapa(1200, 360);
+    mapa = new Mapa(1180, 660);
 
+    desenharCaminho(mapa.getMatriz());  
     criarGrid();
     numerarCelulas();
 }
@@ -118,6 +120,20 @@ protected void initInput() {
 }
 
 
+    private void desenharCaminho(int[][] matriz) {
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 32; j++) {
+                if (matriz[i][j] == 1) {
+                    Rectangle celula = new Rectangle(40, 40, Color.SANDYBROWN);
+
+                    celula.setX(j * 40);
+                    celula.setY(i * 40);
+
+                    FXGL.getGameScene().addUINode(celula);
+                }
+            }
+        } 
+    }
     public static void main(String[] args) {
         launch(args);
     }
