@@ -65,4 +65,9 @@ public class Torre {
 
         this.rotacao = Math.toDegrees(Math.atan2(dy, dx));
     }
+
+    public void definirPosicao(double X, double Y) {
+        this.x = X;
+        this.y = Y;
+    }
 }
