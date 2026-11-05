@@ -25,4 +25,8 @@ public class Mapa {
     public ArrayList<SlotTorre> getSlots() {
         return slots;
     }
+
+    public colocarTorre() {
+
+    }
 }
