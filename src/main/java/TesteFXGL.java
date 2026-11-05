@@ -23,6 +23,9 @@ public class TesteFXGL extends GameApplication {
     protected void initGame() {
         FXGL.getGameScene().setBackgroundColor(Color.DARKGREEN);
         
+        Mapa mapa = new Mapa(1180, 660);
+
+        desenharCaminho(mapa.getMatriz());
         criarGrid();
         numerarCelulas();
     }
@@ -70,6 +73,20 @@ public class TesteFXGL extends GameApplication {
         }
     }
 
+    private void desenharCaminho(int[][] matriz) {
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 32; j++) {
+                if (matriz[i][j] == 1) {
+                    Rectangle celula = new Rectangle(40, 40, Color.SANDYBROWN);
+
+                    celula.setX(j * 40);
+                    celula.setY(i * 40);
+
+                    FXGL.getGameScene().addUINode(celula);
+                }
+            }
+        } 
+    }
     public static void main(String[] args) {
         launch(args);
     }
