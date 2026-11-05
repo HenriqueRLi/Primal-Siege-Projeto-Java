@@ -12,5 +12,5 @@ bin/
 .DS_Store
 Thumbs.db
 
-#logs
+# Logs gerados pela FXGL
 logs/

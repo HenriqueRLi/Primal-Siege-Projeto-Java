@@ -1,5 +1,5 @@
-import java.util.ArrayList;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Mapa {
     private double baseX;
@@ -16,7 +16,7 @@ public class Mapa {
         this.matriz = new int[18][32];
         criarCaminho();
     }
-
+    
     public Point2D.Double getPosicaoBase() {    
         return new Point2D.Double(baseX, baseY);
     }
@@ -29,6 +29,19 @@ public class Mapa {
         return slots;
     }
 
+    public boolean colocarTorre(Torre torre,int x, int y) {
+        if(x >= 0 && x < 18 && y < 32 && y >= 0) {
+            if(matriz[x][y] == 0) {
+                int Xtorre = y*40+20;
+                int Ytorre = x*40+20;
+                torre.definirPosicao(Xtorre,Ytorre);
+                matriz[x][y] = 2;
+                return true;
+            }
+        }
+        return false;
+     }
+      
     private void criarCaminho() {
         for (int i = 0; i < 6; i++) {
             matriz[i][3] = 1;

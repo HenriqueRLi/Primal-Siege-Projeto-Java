@@ -2,15 +2,22 @@
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
-import javafx.scene.text.Text;
+import com.almasb.fxgl.input.UserAction;
+
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.scene.shape.Rectangle;
+
+
 
 public class TesteFXGL extends GameApplication {
     private static final int TAMANHO_CELULA = 40;
     private static final int LARGURA = 1280;
     private static final int ALTURA = 720;
+    private Mapa mapa;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -19,16 +26,18 @@ public class TesteFXGL extends GameApplication {
         settings.setTitle("Primal Siege");
     }
 
-    @Override
-    protected void initGame() {
-        FXGL.getGameScene().setBackgroundColor(Color.DARKGREEN);
-        
-        Mapa mapa = new Mapa(1180, 660);
 
-        desenharCaminho(mapa.getMatriz());
-        criarGrid();
-        numerarCelulas();
-    }
+@Override
+protected void initGame() {
+    FXGL.getGameScene().setBackgroundColor(Color.DARKGREEN);
+
+    mapa = new Mapa(1180, 660);
+
+    desenharCaminho(mapa.getMatriz());  
+    criarGrid();
+    numerarCelulas();
+}
+
 
     private void criarGrid() {
 
@@ -72,6 +81,44 @@ public class TesteFXGL extends GameApplication {
             }
         }
     }
+
+    private void desenharTorre(Torre torre) {
+
+    Circle bola = new Circle(
+        torre.getX(),
+        torre.getY(),
+        15
+    );
+        bola.setFill(Color.RED);
+
+        FXGL.getGameScene().addUINode(bola);
+    }
+
+    
+@Override
+protected void initInput() {
+
+    FXGL.getInput().addAction(new UserAction("Colocar Torre") {
+
+        @Override
+        protected void onActionBegin() {
+
+            double mouseX = FXGL.getInput().getMouseXWorld();
+            double mouseY = FXGL.getInput().getMouseYWorld();
+
+            int coluna = (int) (mouseX / 40);
+            int linha = (int) (mouseY / 40);
+
+            Torre torre = new Torre(10, 100, 0, 0, 1.0, 50);
+
+            if (mapa.colocarTorre(torre, linha, coluna)) {
+                desenharTorre(torre);
+            }
+        }
+
+    }, MouseButton.PRIMARY);
+}
+
 
     private void desenharCaminho(int[][] matriz) {
         for (int i = 0; i < 18; i++) {

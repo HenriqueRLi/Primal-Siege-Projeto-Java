@@ -63,6 +63,11 @@ public class Torre {
         double dx = inimigoX - this.x;
         double dy = inimigoY - this.y;
 
-        this.rotacao = Math.atan2(dy,dx);
+        this.rotacao = Math.toDegrees(Math.atan2(dy, dx));
+    }
+
+    public void definirPosicao(double X, double Y) {
+        this.x = X;
+        this.y = Y;
     }
 }
