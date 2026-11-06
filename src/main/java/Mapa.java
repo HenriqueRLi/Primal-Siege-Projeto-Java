@@ -78,6 +78,19 @@ public class Mapa {
         for (int i = 8; i < 17; i++) {
             matriz[i][29] = 1;
         }
+
+        caminho.add(3);
+        caminho.add(163);
+        caminho.add(177);
+        caminho.add(369);
+        caminho.add(358);
+        caminho.add(486);
+        caminho.add(505);
+        caminho.add(281);
+        caminho.add(285);
+        caminho.add(573);
+
+        matriz[17][29] = 3;
     }
 
     public int[][] getMatriz() {
