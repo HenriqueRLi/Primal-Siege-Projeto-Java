@@ -75,4 +75,12 @@ public class Inimigo {
         }
         return false;
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
 }

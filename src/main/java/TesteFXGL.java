@@ -17,7 +17,10 @@ public class TesteFXGL extends GameApplication {
     private static final int TAMANHO_CELULA = 40;
     private static final int LARGURA = 1280;
     private static final int ALTURA = 720;
+    private Inimigo inimigo;
     private Mapa mapa;
+    private Circle circuloInimigo;
+    private boolean inimigoChegou = false;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -36,9 +39,12 @@ protected void initGame() {
     desenharCaminho(mapa.getMatriz());  
     criarGrid();
     numerarCelulas();
+
+    inimigo = new Inimigo(100, 80, 1, "Rattata", mapa);
+    circuloInimigo = new Circle(inimigo.getX(), inimigo.getY(), 12);
+    circuloInimigo.setFill(Color.PURPLE);
+    FXGL.getGameScene().addUINode(circuloInimigo);
 }
-
-
     private void criarGrid() {
 
         // Linhas verticais
@@ -93,8 +99,7 @@ protected void initGame() {
 
         FXGL.getGameScene().addUINode(bola);
     }
-
-    
+   
 @Override
 protected void initInput() {
 
@@ -134,6 +139,18 @@ protected void initInput() {
             }
         } 
     }
+
+    @Override 
+    protected void onUpdate (double tpf) {
+        if(inimigoChegou == false) {
+            if(inimigoChegou = inimigo.mover(tpf)) {
+                FXGL.getGameScene().removeUINode(circuloInimigo);
+            }
+            circuloInimigo.setCenterX(inimigo.getX());
+            circuloInimigo.setCenterY(inimigo.getY());
+        }      
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
