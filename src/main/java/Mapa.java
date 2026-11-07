@@ -17,6 +17,14 @@ public class Mapa {
         criarCaminho();
     }
     
+    public int getMatriz(int i, int j) {
+        return matriz[i][j];
+    }
+
+    public void setMatriz(int i, int j, int valor) {
+        matriz[i][j] = valor;
+    }
+    
     public Point2D.Double getPosicaoBase() {    
         return new Point2D.Double(baseX, baseY);
     }
@@ -78,6 +86,19 @@ public class Mapa {
         for (int i = 8; i < 17; i++) {
             matriz[i][29] = 1;
         }
+
+        caminho.add(3);
+        caminho.add(163);
+        caminho.add(177);
+        caminho.add(369);
+        caminho.add(358);
+        caminho.add(486);
+        caminho.add(505);
+        caminho.add(281);
+        caminho.add(285);
+        caminho.add(573);
+
+        matriz[17][29] = 3;
     }
 
     public int[][] getMatriz() {
