@@ -17,6 +17,14 @@ public class Mapa {
         criarCaminho();
     }
     
+    public int getMatriz(int i, int j) {
+        return matriz[i][j];
+    }
+
+    public void setMatriz(int i, int j, int valor) {
+        matriz[i][j] = valor;
+    }
+    
     public Point2D.Double getPosicaoBase() {    
         return new Point2D.Double(baseX, baseY);
     }

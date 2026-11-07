@@ -40,11 +40,8 @@ public class Inimigo {
         return true;
     }
 
-    public int danoAtaque(boolean colisao){
-        if(colisao){
-            return danoBase;
-        }
-        return 0;
+    public int danoAtaque() {
+        return danoBase;
     }
 
     public boolean mover(double tpf) {
