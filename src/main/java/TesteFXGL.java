@@ -1,26 +1,24 @@
 import java.util.ArrayList;
-import javafx.scene.Group;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
 
+import javafx.application.Platform;
+import javafx.scene.Group;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-
-//imports para formatação
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.Stop;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.shape.SVGPath;
-
-import javafx.application.Platform;
+import javafx.scene.text.Text;
 
 
 
@@ -35,7 +33,10 @@ public class TesteFXGL extends GameApplication {
     private Base base;
     private Text textoVidaBase;
     private Rectangle barraVerde;
-    ArrayList<Circle> circulosTorres = new ArrayList<>();
+    private ArrayList<Torre> torres = new ArrayList<>();
+    private ArrayList<Polygon> triangulosTorres = new ArrayList<>();
+    private ArrayList<Projetil> projeteis = new ArrayList<>();
+    private ArrayList<Circle> circulosProjeteis = new ArrayList<>();
     private Group hudDerrota;
 
     @Override
@@ -57,7 +58,7 @@ protected void initGame() {
     numerarCelulas();
     criarHUDBase();
 
-    inimigo = new Inimigo(100, 2000, 20, "Rattata", mapa);
+    inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
     circuloInimigo = new Circle(inimigo.getX(), inimigo.getY(), 12);
     circuloInimigo.setFill(Color.PURPLE);
     FXGL.getGameScene().addUINode(circuloInimigo);
@@ -107,15 +108,18 @@ private void criarGrid() {
     }
 
     private void desenharTorre(Torre torre) {
-        Circle bola = new Circle(
-            torre.getX(),
-            torre.getY(),
-            15
-        );
-        circulosTorres.add(bola);
-        bola.setFill(Color.RED);
 
-        FXGL.getGameScene().addUINode(bola);
+        Polygon triangulo = new Polygon(
+            torre.getX(),      torre.getY() - 15,  // Ponta superior
+            torre.getX() - 15, torre.getY() + 15,  // Canto inferior esquerdo
+            torre.getX() + 15, torre.getY() + 15   // Canto inferior direito
+        );
+
+        triangulo.setFill(Color.RED);
+        torres.add(torre);
+        triangulosTorres.add(triangulo);
+
+        FXGL.getGameScene().addUINode(triangulo);
     }
 
     private void criarHUDBase() {
@@ -308,10 +312,11 @@ private void criarGrid() {
     }
     
     private void ReiniciarJogo() {
-        for(Circle bola : circulosTorres) {
-            FXGL.getGameScene().removeUINode(bola);
+        for (Polygon triangulo : triangulosTorres) {
+            FXGL.getGameScene().removeUINode(triangulo);
         }
-        circulosTorres.clear();
+        triangulosTorres.clear();
+        torres.clear();
         for(int i = 0; i<18; i++) {
             for(int j = 0; j < 32; j++) {
                 if(mapa.getMatriz(i, j) == 2) {
@@ -323,7 +328,7 @@ private void criarGrid() {
         textoVidaBase.setText(base.getVida() + " / 20");
         barraVerde.setWidth((base.getVida() / 20) * 210);
 
-        inimigo = new Inimigo(100, 2000, 20, "Rattata", mapa);
+        inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
         inimigoChegou = false;
         circuloInimigo.setCenterX(inimigo.getX());
         circuloInimigo.setCenterY(inimigo.getY());
@@ -368,9 +373,24 @@ private void criarGrid() {
         } 
     }
 
+    private void desenharProjetil(Projetil tiro) {
+    Circle circulo = new Circle(
+        tiro.getX(),
+        tiro.getY(),
+        4
+    );
+
+    circulo.setFill(Color.YELLOW);
+
+    projeteis.add(tiro);
+    circulosProjeteis.add(circulo);
+
+    FXGL.getGameScene().addUINode(circulo);
+}
+
     @Override 
     protected void onUpdate (double tpf) {
-        if(inimigoChegou == false) {
+        if (!inimigoChegou && inimigo.statusVida()) {
             if(inimigoChegou = inimigo.mover(tpf)) {
                 FXGL.getGameScene().removeUINode(circuloInimigo);
 
@@ -384,7 +404,43 @@ private void criarGrid() {
             }
             circuloInimigo.setCenterX(inimigo.getX());
             circuloInimigo.setCenterY(inimigo.getY());
-        }      
+        }
+
+        if (!inimigoChegou && inimigo.statusVida()) {
+            for (int i = 0; i < torres.size(); i++) {
+                Torre torre = torres.get(i);
+                Polygon triangulo = triangulosTorres.get(i);
+
+                if (torre.estaNoAlcance(inimigo)) {
+                    torre.atualizarRotacao(inimigo.getX(), inimigo.getY());
+                    triangulo.setRotate(torre.getRotacao() + 90);
+                }
+
+                Projetil tiro = torre.atirar(inimigo, tpf);
+
+                if (tiro != null) {
+                    desenharProjetil(tiro);
+                }
+            }
+        }
+        
+        for (int i = projeteis.size() - 1; i >= 0; i--) {
+            Projetil tiro = projeteis.get(i);
+            Circle circulo = circulosProjeteis.get(i);
+
+            if (inimigoChegou || tiro.moverTiro(tpf)) {
+                FXGL.getGameScene().removeUINode(circulo);
+                projeteis.remove(i);
+                circulosProjeteis.remove(i);
+            } else {
+                circulo.setCenterX(tiro.getX());
+                circulo.setCenterY(tiro.getY());
+            }
+        }
+
+        if (!inimigo.statusVida()) {
+            FXGL.getGameScene().removeUINode(circuloInimigo);
+        }
     }
 
     public static void main(String[] args) {
