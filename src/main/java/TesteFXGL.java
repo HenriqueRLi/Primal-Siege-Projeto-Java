@@ -6,10 +6,10 @@ import com.almasb.fxgl.input.UserAction;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 
 
@@ -84,14 +84,15 @@ protected void initGame() {
 
     private void desenharTorre(Torre torre) {
 
-    Circle bola = new Circle(
-        torre.getX(),
-        torre.getY(),
-        15
-    );
-        bola.setFill(Color.RED);
+        Polygon triangulo = new Polygon(
+            torre.getX(),      torre.getY() - 15,  // Ponta superior
+            torre.getX() - 15, torre.getY() + 15,  // Canto inferior esquerdo
+            torre.getX() + 15, torre.getY() + 15   // Canto inferior direito
+        );
 
-        FXGL.getGameScene().addUINode(bola);
+        triangulo.setFill(Color.RED);
+
+        FXGL.getGameScene().addUINode(triangulo);
     }
 
     
