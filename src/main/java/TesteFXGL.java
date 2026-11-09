@@ -10,11 +10,6 @@ import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-<<<<<<< HEAD
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-=======
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
@@ -23,7 +18,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
->>>>>>> teste
 import javafx.scene.text.Text;
 
 
@@ -122,11 +116,9 @@ private void criarGrid() {
         );
 
         triangulo.setFill(Color.RED);
-<<<<<<< HEAD
-=======
+
         torres.add(torre);
         triangulosTorres.add(triangulo);
->>>>>>> teste
 
         FXGL.getGameScene().addUINode(triangulo);
     }
@@ -357,7 +349,7 @@ private void criarGrid() {
                 int coluna = (int) (mouseX / 40);
                 int linha = (int) (mouseY / 40);
 
-                Torre torre = new Torre(10, 100, 0, 0, 1.0, 50);
+                Torre torre = new TorreCharmander(0, 0);
 
                 if (mapa.colocarTorre(torre, linha, coluna)) {
                     desenharTorre(torre);
