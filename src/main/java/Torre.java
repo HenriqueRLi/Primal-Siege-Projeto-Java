@@ -7,6 +7,7 @@ public class Torre {
     private int nivel;
     private double velocidadeAtaque;
     private int custoEvolucao;
+    private double cdr;
 
     public Torre (int dano, double alcance, double x, double y, double velocidadeAtaque, int custoEvolucao) {
         this.dano = dano;
@@ -17,6 +18,7 @@ public class Torre {
         this.nivel = 1;
         this.velocidadeAtaque = velocidadeAtaque;
         this.custoEvolucao = custoEvolucao;
+        this.cdr = 0;
     }
 
     public double getX () {
@@ -70,4 +72,43 @@ public class Torre {
         this.x = X;
         this.y = Y;
     }
+
+    public boolean estaNoAlcance(Inimigo inimigo) {
+        double dx = inimigo.getX() - this.x;
+        double dy = inimigo.getY() - this.y;
+
+        double distance = Math.hypot(dx, dy);
+
+        return distance <= this.alcance;
+    }
+
+    public Projetil atirar(Inimigo alvo, double tpf) {
+        cdr -= tpf;
+
+        if (cdr <= 0 && alvo.statusVida() && estaNoAlcance(alvo)) {
+            Projetil tiro = new Projetil(
+                this.dano,
+                300,
+                this.x,
+                this.y,
+                alvo
+            );
+
+            cdr = 1.0 / velocidadeAtaque;
+
+            return tiro;
+        }
+
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
 }
