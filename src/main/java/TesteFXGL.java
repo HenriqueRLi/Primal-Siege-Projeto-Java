@@ -38,6 +38,9 @@ public class TesteFXGL extends GameApplication {
     private ArrayList<Projetil> projeteis = new ArrayList<>();
     private ArrayList<Circle> circulosProjeteis = new ArrayList<>();
     private Group hudDerrota;
+    MenuTorre Mrad = new MenuTorre();
+    private int linhaSelecionada;
+    private int colunaSelecionada;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -107,7 +110,7 @@ private void criarGrid() {
         }
     }
 
-    private void desenharTorre(Torre torre) {
+    private void desenharTorre(Torre torre, int select) {
 
         Polygon triangulo = new Polygon(
             torre.getX(),      torre.getY() - 15,  // Ponta superior
@@ -115,7 +118,22 @@ private void criarGrid() {
             torre.getX() + 15, torre.getY() + 15   // Canto inferior direito
         );
 
-        triangulo.setFill(Color.RED);
+                switch (select) {
+            case 1:
+                triangulo.setFill(Color.RED);
+                break;
+            case 2:
+                triangulo.setFill(Color.BLUE);
+                break;
+            case 3:
+                triangulo.setFill(Color.YELLOW);
+                break;
+            case 4:
+                triangulo.setFill(Color.GREEN);
+                break;
+            default:
+                break;
+        }
 
         torres.add(torre);
         triangulosTorres.add(triangulo);
@@ -342,18 +360,20 @@ private void criarGrid() {
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
         @Override
         protected void onActionBegin() {
-            if(base.getVida()!=0) {
+            if(base.getVida()!=0 && Mrad.getStatus() == false) {
                 double mouseX = FXGL.getInput().getMouseXWorld();
                 double mouseY = FXGL.getInput().getMouseYWorld();
 
                 int coluna = (int) (mouseX / 40);
                 int linha = (int) (mouseY / 40);
 
-                Torre torre = new TorreCharmander(0, 0);
+                // Torre torre = new TorreCharmander(0, 0);
 
-                if (mapa.colocarTorre(torre, linha, coluna)) {
-                    desenharTorre(torre);
-                }
+                Mrad.AbrirMenu(linha, coluna);
+
+            linhaSelecionada = linha;
+            colunaSelecionada = coluna;
+
             }
         }
     }, MouseButton.PRIMARY);
@@ -369,6 +389,7 @@ private void criarGrid() {
                     celula.setY(i * 40);
 
                     FXGL.getGameScene().addUINode(celula);
+
                 }
             }
         } 
@@ -441,6 +462,32 @@ private void criarGrid() {
 
         if (!inimigo.statusVida()) {
             FXGL.getGameScene().removeUINode(circuloInimigo);
+        }
+
+        Torre torre = null;
+        switch (Mrad.getTselect()) {
+            case 1:
+                torre = new TorreCharmander(0, 0);
+                break;
+            case 2:
+                torre = new TorreSquirtle(0, 0);
+                break;
+            case 3:
+                torre = new TorrePikachu(0, 0);
+                break;
+            case 4:
+                torre = new TorreBulbassauro(0, 0);
+                break;
+            default:
+                break;
+        }
+
+        if (torre != null) {
+            if (mapa.colocarTorre(torre, linhaSelecionada, colunaSelecionada)) {
+                desenharTorre(torre, Mrad.getTselect());
+            }
+            Mrad.resetselect();
+            Mrad.fecharMenu();
         }
     }
 

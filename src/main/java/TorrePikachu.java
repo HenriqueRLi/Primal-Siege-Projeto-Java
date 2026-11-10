@@ -1,6 +1,6 @@
 public class TorrePikachu extends Torre{
     
-    public TorrePìkachu(double x, double y) {
+    public TorrePikachu(double x, double y) {
         super(10, 150, x, y, 2.0, 50);
     }
 
