@@ -511,7 +511,7 @@ private void criarGrid() {
         inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
         inimigosAtivos.add(inimigo);
         circuloInimigo = new Circle(inimigo.getX(), inimigo.getY(), 12);
-        circuloInimigos.add(circuloInimigo);
+        circulosInimigos.add(circuloInimigo);
         circuloInimigo.setFill(Color.PURPLE);
         FXGL.getGameScene().addUINode(circuloInimigo);
         statusOndas = true;
@@ -560,25 +560,25 @@ private void criarGrid() {
                 circulosInimigos.remove(i);
             }
         }
+        for (int i = 0; i < torres.size(); i++) {
+            for(int j = 0; j < inimigosAtivos.size(); j++) {
+                for(int j = 0; j < inimigosAtivos.size(); j++)if (inimigosAtivos.get(j).statusVida()) {
+                    Torre torre = torres.get(i);
+                    Polygon triangulo = triangulosTorres.get(i);
 
-        if (inimigo != null && !inimigoChegou && inimigo.statusVida()) {
-            for (int i = 0; i < torres.size(); i++) {
-                Torre torre = torres.get(i);
-                Polygon triangulo = triangulosTorres.get(i);
+                    if (torre.estaNoAlcance(inimigosAtivos.get(j))) {
+                        torre.atualizarRotacao(inimigosAtivos.get(j).getX(), inimigosAtivos.get(j).getY());
+                        triangulo.setRotate(torre.getRotacao() + 90);
+                    }
 
-                if (torre.estaNoAlcance(inimigo)) {
-                    torre.atualizarRotacao(inimigo.getX(), inimigo.getY());
-                    triangulo.setRotate(torre.getRotacao() + 90);
-                }
+                    Projetil tiro = torre.atirar(inimigosAtivos.get(j), tpf);
 
-                Projetil tiro = torre.atirar(inimigo, tpf);
-
-                if (tiro != null) {
-                    desenharProjetil(tiro);
+                    if (tiro != null) {
+                        desenharProjetil(tiro);
+                    }
                 }
             }
         }
-        
         for (int i = projeteis.size() - 1; i >= 0; i--) {
             Projetil tiro = projeteis.get(i);
             Circle circulo = circulosProjeteis.get(i);
@@ -623,7 +623,6 @@ private void criarGrid() {
             Mrad.fecharMenu();
         }
     }
-
     public static void main(String[] args) {
         launch(args);
     }
