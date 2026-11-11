@@ -27,8 +27,10 @@ public class TesteFXGL extends GameApplication {
     private static final int LARGURA = 1280;
     private static final int ALTURA = 720;
     private Inimigo inimigo;
-    private Mapa mapa;
     private Circle circuloInimigo;
+    private ArrayList<Inimigo> inimigosAtivos = new ArrayList<>();
+    private ArrayList<Circle> circulosInimigos = new ArrayList<>();
+    private Mapa mapa;
     private boolean inimigoChegou = false;
     private Base base;
     private Text textoVidaBase;
@@ -352,6 +354,7 @@ private void criarGrid() {
         FXGL.getGameScene().addUINode(circuloInimigo);
         FXGL.getGameScene().removeUINode(hudDerrota);
     }
+    
     @Override
     protected void initInput() {
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
@@ -360,6 +363,10 @@ private void criarGrid() {
             if(base.getVida()!=0 && Mrad.getStatus() == false) {
                 double mouseX = FXGL.getInput().getMouseXWorld();
                 double mouseY = FXGL.getInput().getMouseYWorld();
+
+                if (cliqueEmHUD(mouseX, mouseY)) {
+                    return;
+                }
 
                 int coluna = (int) (mouseX / 40);
                 int linha = (int) (mouseY / 40);
@@ -480,6 +487,11 @@ private void criarGrid() {
         quantOuro.setFill(Color.web("#FACC15"));
         quantOuro.setStyle("-fx-font-family: Arial; -fx-font-size: 25px; -fx-font-weight: bold;");
 
+        textoIniciarOnda.setMouseTransparent(true);
+        simboloPlay.setMouseTransparent(true);
+
+        botaoIniciarOnda.setOnMouseClicked(evento -> iniciarOnda());
+
         FXGL.getGameScene().addUINode(retanguloMaiorOnda);
         FXGL.getGameScene().addUINode(retanguloContOndas);
         FXGL.getGameScene().addUINode(textoOnda);
@@ -493,30 +505,63 @@ private void criarGrid() {
     }    
 
     private void iniciarOnda(){
+        if(statusOndas){
+            return;
+        }
         inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
+        inimigosAtivos.add(inimigo);
         circuloInimigo = new Circle(inimigo.getX(), inimigo.getY(), 12);
+        circuloInimigos.add(circuloInimigo);
         circuloInimigo.setFill(Color.PURPLE);
         FXGL.getGameScene().addUINode(circuloInimigo);
+        statusOndas = true;
     }
+
+    private boolean cliqueEmHUD(double mouseX, double mouseY) {
+        if(mouseX >= 1000 && mouseX <= 1250){
+            if(mouseY >= 15 && mouseY <= 95){
+                return true;
+            }
+        }
+        if(mouseX >= 220 && mouseX <= 1060){
+            if(mouseY >= 615 && mouseY <= 720){
+                return true;
+            }
+        }
+        return false;
+    }
+    
     @Override 
     protected void onUpdate (double tpf) {
-        if (!inimigoChegou && inimigo.statusVida()) {
-            if(inimigoChegou = inimigo.mover(tpf)) {
-                FXGL.getGameScene().removeUINode(circuloInimigo);
+        for(int i = inimigosAtivos.size() - 1; i >= 0; i--){
+            if (inimigosAtivos.get(i).statusVida()) {
+                if(inimigosAtivos.get(i).mover(tpf)) {
+                    FXGL.getGameScene().removeUINode(circulosInimigos.get(i));
 
-                if(base.diminuirVida(inimigo.danoAtaque())) {
+                    if(base.diminuirVida(inimigosAtivos.get(i).danoAtaque())) {
+                        textoVidaBase.setText(base.getVida()+ " / 20");
+                        barraVerde.setWidth(210.0 * base.getVida() / 20);
+                        criarHUDDerrota();
+                    }
+                    inimigosAtivos.remove(i);
+                    circulosInimigos.remove(i);
                     textoVidaBase.setText(base.getVida()+ " / 20");
                     barraVerde.setWidth(210.0 * base.getVida() / 20);
-                    criarHUDDerrota();
                 }
-                textoVidaBase.setText(base.getVida()+ " / 20");
-                barraVerde.setWidth(210.0 * base.getVida() / 20);
+                else{
+                    circulosInimigos.get(i).setCenterX(inimigosAtivos.get(i).getX());
+                    circulosInimigos.get(i).setCenterY(inimigosAtivos.get(i).getY());
+                }
             }
-            circuloInimigo.setCenterX(inimigo.getX());
-            circuloInimigo.setCenterY(inimigo.getY());
+            else
+            {
+                FXGL.getGameScene().removeUINode(circulosInimigos.get(i));
+                inimigosAtivos.remove(i);
+                circulosInimigos.remove(i);
+            }
         }
 
-        if (!inimigoChegou && inimigo.statusVida()) {
+        if (inimigo != null && !inimigoChegou && inimigo.statusVida()) {
             for (int i = 0; i < torres.size(); i++) {
                 Torre torre = torres.get(i);
                 Polygon triangulo = triangulosTorres.get(i);
@@ -548,7 +593,7 @@ private void criarGrid() {
             }
         }
 
-        if (!inimigo.statusVida()) {
+        if (inimigo != null && !inimigo.statusVida()) {
             FXGL.getGameScene().removeUINode(circuloInimigo);
         }
 
