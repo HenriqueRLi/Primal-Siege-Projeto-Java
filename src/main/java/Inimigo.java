@@ -80,4 +80,8 @@ public class Inimigo {
     public double getY() {
         return y;
     }
+
+    public int getIndicePonto(){
+        return indicePonto;
+    }
 }

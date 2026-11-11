@@ -31,7 +31,6 @@ public class TesteFXGL extends GameApplication {
     private ArrayList<Inimigo> inimigosAtivos = new ArrayList<>();
     private ArrayList<Circle> circulosInimigos = new ArrayList<>();
     private Mapa mapa;
-    private boolean inimigoChegou = false;
     private Base base;
     private Text textoVidaBase;
     private Rectangle barraVerde;
@@ -561,12 +560,20 @@ private void criarGrid() {
             }
         }
         for (int i = 0; i < torres.size(); i++) {
-            for(int j = 0; j < inimigosAtivos.size(); j++) {
-                for(int j = 0; j < inimigosAtivos.size(); j++)if (inimigosAtivos.get(j).statusVida()) {
-                    Torre torre = torres.get(i);
-                    Polygon triangulo = triangulosTorres.get(i);
+            Torre torre = torres.get(i);
+            Polygon triangulo = triangulosTorres.get(i);
+            Inimigo alvoSelecionado = null;
 
+            for(int j = 0; j < inimigosAtivos.size(); j++) {
+                if (inimigosAtivos.get(j).statusVida()) {
                     if (torre.estaNoAlcance(inimigosAtivos.get(j))) {
+                        if(alvoSelecionado == null || alvoSelecionado.getIndicePonto() < inimigosAtivos.get(j).getIndicePonto()){
+                            alvoSelecionado = inimigosAtivos.get(i);
+                        }
+                        else if(alvoSelecionado.getIndicePonto() == inimigosAtivos.get(j).getIndicePonto()){
+                            
+                        }
+                        alvoSelecionado = inimigosAtivos.get(j);
                         torre.atualizarRotacao(inimigosAtivos.get(j).getX(), inimigosAtivos.get(j).getY());
                         triangulo.setRotate(torre.getRotacao() + 90);
                     }
@@ -582,8 +589,9 @@ private void criarGrid() {
         for (int i = projeteis.size() - 1; i >= 0; i--) {
             Projetil tiro = projeteis.get(i);
             Circle circulo = circulosProjeteis.get(i);
+            Inimigo alvoSelecionado = null;
 
-            if (inimigoChegou || tiro.moverTiro(tpf)) {
+            if (!inimigosAtivos.contains(tiro.getAlvo()) || tiro.moverTiro(tpf)) {
                 FXGL.getGameScene().removeUINode(circulo);
                 projeteis.remove(i);
                 circulosProjeteis.remove(i);
@@ -591,10 +599,6 @@ private void criarGrid() {
                 circulo.setCenterX(tiro.getX());
                 circulo.setCenterY(tiro.getY());
             }
-        }
-
-        if (inimigo != null && !inimigo.statusVida()) {
-            FXGL.getGameScene().removeUINode(circuloInimigo);
         }
 
         Torre torre = null;
