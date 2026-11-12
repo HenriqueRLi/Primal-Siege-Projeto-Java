@@ -19,6 +19,13 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.QuadCurve;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.Cursor;
 
 
 
@@ -43,6 +50,11 @@ public class TesteFXGL extends GameApplication {
     private int linhaSelecionada;
     private int colunaSelecionada;
     private boolean statusOndas = false;
+    private Group hudOnda;
+    private double tempoSpawn = 0;
+    private int inimigosGerados = 0;
+    private GerenciadorOndas gerenciadorOndas;
+    private Group hudVitoria;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -57,6 +69,7 @@ protected void initGame() {
 
     mapa = new Mapa(1180, 660);
     base = new Base();
+    gerenciadorOndas = new GerenciadorOndas();
 
     desenharCaminho(mapa.getMatriz());  
     criarGrid();
@@ -181,6 +194,8 @@ private void criarGrid() {
     }
 
     private void criarHUDDerrota() {
+        Mrad.fecharMenu();
+        
         Rectangle retanguloFundo = new Rectangle(1280,720);
         retanguloFundo.setX(0);
         retanguloFundo.setY(0);
@@ -302,6 +317,12 @@ private void criarGrid() {
 
         botaoSair.setOnMouseClicked(evento -> sairDoJogo());
         botaoReiniciar.setOnMouseClicked(evento -> ReiniciarJogo());
+        botaoReiniciar.setCursor(Cursor.HAND);
+        botaoReiniciar.setOnMouseEntered(evento -> botaoReiniciar.setStrokeWidth(3));
+        botaoReiniciar.setOnMouseExited(evento -> botaoReiniciar.setStrokeWidth(2));
+        botaoSair.setCursor(Cursor.HAND);
+        botaoSair.setOnMouseEntered(evento -> botaoSair.setStrokeWidth(3));
+        botaoSair.setOnMouseExited(evento -> botaoSair.setStrokeWidth(2));
 
         hudDerrota = new Group(
             retanguloFundo,
@@ -345,13 +366,33 @@ private void criarGrid() {
         textoVidaBase.setText(base.getVida() + " / 20");
         barraVerde.setWidth((base.getVida() / 20) * 210);
 
-        inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
-        inimigoChegou = false;
-        circuloInimigo.setCenterX(inimigo.getX());
-        circuloInimigo.setCenterY(inimigo.getY());
+        for(Circle circulo : circulosInimigos){
+            FXGL.getGameScene().removeUINode(circulo);
+        }
 
-        FXGL.getGameScene().addUINode(circuloInimigo);
-        FXGL.getGameScene().removeUINode(hudDerrota);
+        inimigosAtivos.clear();
+        circulosInimigos.clear();
+
+        for(Circle projetil : circulosProjeteis){
+            FXGL.getGameScene().removeUINode(projetil);
+        }
+
+        projeteis.clear();
+        circulosProjeteis.clear();
+
+        statusOndas = false;
+        gerenciadorOndas = new GerenciadorOndas();
+        inimigosGerados = 0;
+        tempoSpawn = 0;
+
+        if(hudVitoria != null){
+            FXGL.getGameScene().removeUINode(hudVitoria);
+            hudVitoria = null;
+        }
+        if(hudDerrota != null){
+            FXGL.getGameScene().removeUINode(hudDerrota);
+            hudDerrota = null;
+        }
     }
     
     @Override
@@ -491,28 +532,37 @@ private void criarGrid() {
 
         botaoIniciarOnda.setOnMouseClicked(evento -> iniciarOnda());
 
-        FXGL.getGameScene().addUINode(retanguloMaiorOnda);
-        FXGL.getGameScene().addUINode(retanguloContOndas);
-        FXGL.getGameScene().addUINode(textoOnda);
-        FXGL.getGameScene().addUINode(textoNumeroOnda);
-        FXGL.getGameScene().addUINode(botaoIniciarOnda);
-        FXGL.getGameScene().addUINode(simboloPlay);
-        FXGL.getGameScene().addUINode(textoIniciarOnda);
-        FXGL.getGameScene().addUINode(retanguloOuro);
-        FXGL.getGameScene().addUINode(textoOuro);
-        FXGL.getGameScene().addUINode(quantOuro);
+        botaoIniciarOnda.setCursor(Cursor.HAND);
+
+        botaoIniciarOnda.setOnMouseEntered(evento -> botaoIniciarOnda.setStrokeWidth(5));
+
+        botaoIniciarOnda.setOnMouseExited(evento -> botaoIniciarOnda.setStrokeWidth(3));
+
+        hudOnda = new Group(
+            retanguloMaiorOnda,
+            retanguloContOndas,
+            textoOnda,
+            textoNumeroOnda,
+            botaoIniciarOnda,
+            simboloPlay,
+            textoIniciarOnda,
+            retanguloOuro,
+            textoOuro,
+            quantOuro
+        );
+        FXGL.getGameScene().addUINode(hudOnda);
+
     }    
 
     private void iniciarOnda(){
-        if(statusOndas){
+        if (statusOndas || hudVitoria != null || base.getVida() <= 0) {
             return;
         }
-        inimigo = new Inimigo(100, 200, 20, "Rattata", mapa);
-        inimigosAtivos.add(inimigo);
-        circuloInimigo = new Circle(inimigo.getX(), inimigo.getY(), 12);
-        circulosInimigos.add(circuloInimigo);
-        circuloInimigo.setFill(Color.PURPLE);
-        FXGL.getGameScene().addUINode(circuloInimigo);
+        inimigo = instanciarInimigoDaOnda();
+        criarInimigo(inimigo);
+
+        inimigosGerados = 1;
+        tempoSpawn = 0;
         statusOndas = true;
     }
 
@@ -529,9 +579,344 @@ private void criarGrid() {
         }
         return false;
     }
+     
+    private void criarInimigo(Inimigo inimigo){
+        inimigosAtivos.add(inimigo);
+        Circle circulo = new Circle(inimigo.getX(),inimigo.getY(),12);
+        circulosInimigos.add(circulo);
+        circulo.setFill(Color.PURPLE);
+        
+        FXGL.getGameScene().addUINode(circulo);
+        hudOnda.toFront();
+    }
     
+    private Inimigo instanciarInimigoDaOnda() {
+        String especie = gerenciadorOndas.getOndaAtual().getEspecie();
+
+        switch (especie) {
+            case "Rattata":
+                return new Rattata(mapa);
+        
+            case "Pidgey":
+                return new Pidgey(mapa);
+
+            default:
+                return null;
+        }
+    }
+    
+    private void criarHUDVitoria() {
+        Rectangle fundoEscuro = new Rectangle(1280, 720);
+        fundoEscuro.setFill(Color.rgb(0, 0, 0, 0.70));
+
+        Rectangle painel = new Rectangle(315, 180, 650, 370);
+
+        painel.setFill(new LinearGradient(
+            0, 0, 1, 1,
+            true,
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.web("#2B4050")),
+            new Stop(0.45, Color.web("#142632")),
+            new Stop(1, Color.web("#0C1622"))
+        ));
+
+        painel.setStroke(Color.web("#688DA2"));
+        painel.setStrokeWidth(2);
+        painel.setArcWidth(30);
+        painel.setArcHeight(30);
+
+        Polygon reflexo = new Polygon(
+            317.0, 182.0,
+            465.0, 182.0,
+            345.0, 275.0,
+            317.0, 275.0
+        );
+
+        reflexo.setFill(Color.rgb(255, 255, 255, 0.07));
+        reflexo.setMouseTransparent(true);
+
+        Line brilhoSuperior = new Line(455, 181, 825, 181);
+        brilhoSuperior.setStroke(Color.web("#70C8D8"));
+        brilhoSuperior.setStrokeWidth(2);
+        brilhoSuperior.setEffect(
+            new DropShadow(16, Color.web("#47DDF0"))
+        );
+
+        Line linhaEsquerda = new Line(480, 258, 548, 258);
+        Line linhaDireita = new Line(732, 258, 800, 258);
+
+        linhaEsquerda.setStroke(Color.web("#FFD34D"));
+        linhaDireita.setStroke(Color.web("#FFD34D"));
+
+        linhaEsquerda.setStrokeWidth(2);
+        linhaDireita.setStrokeWidth(2);
+
+        Group folhas = new Group();
+
+        double[][] posicoesFolhas = {
+            {601, 281, -48},
+            {592, 270, -42},
+            {586, 258, -30},
+            {585, 245, -15},
+            {589, 232, 10},
+            {598, 222, 30}
+        };
+
+        for (double[] posicao : posicoesFolhas) {
+
+            double x = posicao[0];
+            double y = posicao[1];
+            double rotacao = posicao[2];
+
+            Ellipse folhaEsquerda = new Ellipse(x, y, 4, 10);
+            folhaEsquerda.setRotate(rotacao);
+            folhaEsquerda.setFill(Color.web("#FFD34D"));
+
+            Ellipse folhaDireita = new Ellipse(1280 - x, y, 4, 10);
+            folhaDireita.setRotate(-rotacao);
+            folhaDireita.setFill(Color.web("#FFD34D"));
+
+            folhas.getChildren().addAll(
+                folhaEsquerda,
+                folhaDireita
+            );
+        }
+
+        folhas.setEffect(new DropShadow(7, Color.web("#B98117")));
+
+        Arc metadeVermelha = new Arc(640, 257, 24, 24, 0, 180);
+        metadeVermelha.setType(ArcType.ROUND);
+        metadeVermelha.setFill(Color.web("#FF5662"));
+
+        Arc metadeBranca = new Arc(640, 257, 24, 24, 180, 180);
+        metadeBranca.setType(ArcType.ROUND);
+        metadeBranca.setFill(Color.web("#EAF3F5"));
+
+        Circle bordaBola = new Circle(640, 257, 24);
+        bordaBola.setFill(Color.TRANSPARENT);
+        bordaBola.setStroke(Color.web("#101B27"));
+        bordaBola.setStrokeWidth(3);
+
+        Line divisaoBola = new Line(616, 257, 664, 257);
+        divisaoBola.setStroke(Color.web("#101B27"));
+        divisaoBola.setStrokeWidth(5);
+
+        Circle centroExterno = new Circle(640, 257, 9);
+        centroExterno.setFill(Color.web("#101B27"));
+
+        Circle centroInterno = new Circle(640, 257, 5);
+        centroInterno.setFill(Color.WHITE);
+
+        Group pokebola = new Group(
+            metadeVermelha,
+            metadeBranca,
+            bordaBola,
+            divisaoBola,
+            centroExterno,
+            centroInterno
+        );
+
+        pokebola.setEffect(new DropShadow(12, Color.web("#FFD34D")));
+
+        Group estrelas = new Group();
+
+        double[][] posicoesEstrelas = {
+            {640, 204, 14},
+            {545, 230, 9},
+            {735, 230, 9}
+        };
+
+        for (double[] estrela : posicoesEstrelas) {
+
+            double x = estrela[0];
+            double y = estrela[1];
+            double tamanho = estrela[2];
+
+            Polygon brilho = new Polygon(
+                x, y - tamanho,
+                x + tamanho * 0.22, y - tamanho * 0.22,
+                x + tamanho, y,
+                x + tamanho * 0.22, y + tamanho * 0.22,
+                x, y + tamanho,
+                x - tamanho * 0.22, y + tamanho * 0.22,
+                x - tamanho, y,
+                x - tamanho * 0.22, y - tamanho * 0.22
+            );
+
+            brilho.setFill(Color.web("#FFE16B"));
+            estrelas.getChildren().add(brilho);
+        }
+
+        estrelas.setEffect(new DropShadow(14, Color.web("#FFCB37")));
+
+        QuadCurve curvaEsquerda = new QuadCurve(
+            331, 413,
+            435, 487,
+            555, 444
+        );
+
+        curvaEsquerda.setFill(Color.TRANSPARENT);
+        curvaEsquerda.setStroke(Color.web("#20EFA3"));
+        curvaEsquerda.setStrokeWidth(3);
+
+        curvaEsquerda.setEffect(new DropShadow(18, Color.web("#11E9A3")));
+
+        QuadCurve curvaDireita = new QuadCurve(
+            949, 413,
+            845, 487,
+            725, 444
+        );
+
+        curvaDireita.setFill(Color.TRANSPARENT);
+        curvaDireita.setStroke(Color.web("#B4FF60"));
+        curvaDireita.setStrokeWidth(3);
+
+        curvaDireita.setEffect(new DropShadow(18, Color.web("#24EFA3")));
+
+        Text tituloVitoria = new Text("VITÓRIA!");
+
+        tituloVitoria.setFont(Font.font("Arial", FontWeight.BOLD, 60));
+
+        tituloVitoria.setFill(Color.web("#69FFD0"));
+
+        tituloVitoria.setX(640 - tituloVitoria.getLayoutBounds().getWidth() / 2);
+        tituloVitoria.setY(376);
+
+        tituloVitoria.setEffect(new DropShadow(24, Color.web("#00D59D")));
+
+        Text subtitulo = new Text("Você defendeu a base com sucesso!");
+
+        subtitulo.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
+
+        subtitulo.setFill(Color.web("#DCE8EF"));
+
+        subtitulo.setX(640 - subtitulo.getLayoutBounds().getWidth() / 2);
+        subtitulo.setY(416);
+
+        Rectangle botaoJogar = new Rectangle(340, 467, 290, 62);
+
+        botaoJogar.setArcWidth(24);
+        botaoJogar.setArcHeight(24);
+
+        botaoJogar.setFill(new LinearGradient(
+            0, 0, 0, 1,
+            true,
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.web("#196B52")),
+            new Stop(1, Color.web("#10372F"))
+        ));
+
+        botaoJogar.setStroke(Color.web("#1DFF9A"));
+        botaoJogar.setStrokeWidth(2);
+
+        botaoJogar.setEffect(new DropShadow(14, Color.web("#00C985")));
+
+        Text textoJogar = new Text("JOGAR NOVAMENTE");
+            textoJogar.setX(394);
+            textoJogar.setY(506);
+            textoJogar.setFill(Color.WHITE);
+            textoJogar.setFont(Font.font("Arial", FontWeight.BOLD, 17)
+        );
+
+        SVGPath iconeJogar = new SVGPath();
+
+        iconeJogar.setContent(
+            "M3 12 A9 9 0 0 1 18.36 5.64 L21 8 " +
+            "M21 3 V8 H16 " +
+            "M21 12 A9 9 0 0 1 5.64 18.36 L3 16 " +
+            "M3 21 V16 H8"
+        );
+
+        iconeJogar.setFill(Color.TRANSPARENT);
+        iconeJogar.setStroke(Color.WHITE);
+        iconeJogar.setStrokeWidth(2.5);
+        iconeJogar.setLayoutX(357);
+        iconeJogar.setLayoutY(484);
+
+        Rectangle botaoSairVitoria = new Rectangle(650, 467, 290, 62);
+
+        botaoSairVitoria.setArcWidth(24);
+        botaoSairVitoria.setArcHeight(24);
+        botaoSairVitoria.setFill(Color.web("#101B28"));
+        botaoSairVitoria.setStroke(Color.web("#C7DAE8"));
+        botaoSairVitoria.setStrokeWidth(2);
+
+        Text textoSairVitoria = new Text("SAIR DO JOGO");
+            textoSairVitoria.setX(722);
+            textoSairVitoria.setY(506);
+            textoSairVitoria.setFill(Color.WHITE);
+            textoSairVitoria.setFont(
+            Font.font("Arial", FontWeight.BOLD, 17)
+        );
+
+        SVGPath iconeSairVitoria = new SVGPath();
+
+        iconeSairVitoria.setContent(
+            "M9 21 H5 A2 2 0 0 1 3 19 V5 A2 2 0 0 1 5 3 H9 " +
+            "M16 17 L21 12 L16 7 " +
+            "M21 12 H9"
+        );
+
+        iconeSairVitoria.setFill(Color.TRANSPARENT);
+        iconeSairVitoria.setStroke(Color.WHITE);
+        iconeSairVitoria.setStrokeWidth(2.5);
+        iconeSairVitoria.setLayoutX(672);
+        iconeSairVitoria.setLayoutY(484);
+
+
+        // PERMITIR CLIQUES NOS RETÂNGULOS
+        textoJogar.setMouseTransparent(true);
+        iconeJogar.setMouseTransparent(true);
+
+        textoSairVitoria.setMouseTransparent(true);
+        iconeSairVitoria.setMouseTransparent(true);
+
+        botaoJogar.setOnMouseClicked(evento -> ReiniciarJogo());
+        botaoSairVitoria.setOnMouseClicked(evento -> sairDoJogo());
+        botaoJogar.setOnMouseEntered(evento -> botaoJogar.setStrokeWidth(3));
+        botaoJogar.setOnMouseExited(evento -> botaoJogar.setStrokeWidth(2));
+        botaoSairVitoria.setOnMouseEntered(evento -> botaoSairVitoria.setStrokeWidth(3));
+        botaoSairVitoria.setOnMouseExited(evento -> botaoSairVitoria.setStrokeWidth(2));
+
+        hudVitoria = new Group(
+            fundoEscuro,
+            painel,
+            reflexo,
+            brilhoSuperior,
+            curvaEsquerda,
+            curvaDireita,
+            linhaEsquerda,
+            linhaDireita,
+            folhas,
+            pokebola,
+            estrelas,
+            tituloVitoria,
+            subtitulo,
+            botaoJogar,
+            textoJogar,
+            iconeJogar,
+            botaoSairVitoria,
+            textoSairVitoria,
+            iconeSairVitoria
+        );
+        FXGL.getGameScene().addUINode(hudVitoria);
+        botaoJogar.setCursor(Cursor.HAND);
+        botaoSairVitoria.setCursor(Cursor.HAND);
+    }
+
     @Override 
     protected void onUpdate (double tpf) {
+        if (base.getVida() <= 0 || hudVitoria != null) {
+            return;
+        }
+        if(statusOndas == true && inimigosGerados < gerenciadorOndas.getOndaAtual().getQuantidade()){
+            tempoSpawn += tpf;
+            if(tempoSpawn >= gerenciadorOndas.getOndaAtual().getIntervaloSpawn()){
+                criarInimigo(instanciarInimigoDaOnda());
+                inimigosGerados++;
+                tempoSpawn = 0;
+            }
+        }
         for(int i = inimigosAtivos.size() - 1; i >= 0; i--){
             if (inimigosAtivos.get(i).statusVida()) {
                 if(inimigosAtivos.get(i).mover(tpf)) {
@@ -559,37 +944,74 @@ private void criarGrid() {
                 circulosInimigos.remove(i);
             }
         }
+        
+        if(statusOndas == true && inimigosGerados == gerenciadorOndas.getOndaAtual().getQuantidade() && inimigosAtivos.isEmpty()){
+            statusOndas = false;
+
+            if (gerenciadorOndas.avançarOnda()) {
+                criarHUDVitoria();
+            }
+        }
+
         for (int i = 0; i < torres.size(); i++) {
             Torre torre = torres.get(i);
             Polygon triangulo = triangulosTorres.get(i);
             Inimigo alvoSelecionado = null;
 
+            double distanciaAlvo = Double.POSITIVE_INFINITY;
+            double distanciaCandidato;
+            int proximoPonto;
+            double dx,dy,proximoX,proximoY;
+
             for(int j = 0; j < inimigosAtivos.size(); j++) {
                 if (inimigosAtivos.get(j).statusVida()) {
                     if (torre.estaNoAlcance(inimigosAtivos.get(j))) {
                         if(alvoSelecionado == null || alvoSelecionado.getIndicePonto() < inimigosAtivos.get(j).getIndicePonto()){
-                            alvoSelecionado = inimigosAtivos.get(i);
+                            alvoSelecionado = inimigosAtivos.get(j);
+                            proximoPonto = alvoSelecionado.getIndicePonto();
+                            proximoPonto = mapa.getCaminho().get(proximoPonto);
+                            proximoX = (proximoPonto % 32 * 40) + 20;
+                            proximoY = (proximoPonto / 32 * 40) + 20;
+
+                            dx = proximoX - inimigosAtivos.get(j).getX();
+                            dy = proximoY - inimigosAtivos.get(j).getY();
+
+                            distanciaAlvo = Math.hypot(dx,dy);
+
                         }
                         else if(alvoSelecionado.getIndicePonto() == inimigosAtivos.get(j).getIndicePonto()){
-                            
+                            proximoPonto = inimigosAtivos.get(j).getIndicePonto();
+                            proximoPonto = mapa.getCaminho().get(proximoPonto);
+                            proximoX = (proximoPonto % 32 * 40) + 20;
+                            proximoY = (proximoPonto / 32 * 40) + 20;
+
+                            dx = proximoX - inimigosAtivos.get(j).getX();
+                            dy = proximoY - inimigosAtivos.get(j).getY();
+
+                            distanciaCandidato = Math.hypot(dx,dy);
+                            if(distanciaAlvo > distanciaCandidato){
+                                alvoSelecionado = inimigosAtivos.get(j);
+                                distanciaAlvo = distanciaCandidato;
+                            }
+
                         }
-                        alvoSelecionado = inimigosAtivos.get(j);
-                        torre.atualizarRotacao(inimigosAtivos.get(j).getX(), inimigosAtivos.get(j).getY());
-                        triangulo.setRotate(torre.getRotacao() + 90);
-                    }
-
-                    Projetil tiro = torre.atirar(inimigosAtivos.get(j), tpf);
-
-                    if (tiro != null) {
-                        desenharProjetil(tiro);
                     }
                 }
             }
+            if(alvoSelecionado != null){
+                 torre.atualizarRotacao(alvoSelecionado.getX(), alvoSelecionado.getY());
+                triangulo.setRotate(torre.getRotacao() + 90);
+                Projetil tiro = torre.atirar(alvoSelecionado, tpf);
+
+                if (tiro != null) {
+                    desenharProjetil(tiro);
+                }
+            }
         }
+        
         for (int i = projeteis.size() - 1; i >= 0; i--) {
             Projetil tiro = projeteis.get(i);
             Circle circulo = circulosProjeteis.get(i);
-            Inimigo alvoSelecionado = null;
 
             if (!inimigosAtivos.contains(tiro.getAlvo()) || tiro.moverTiro(tpf)) {
                 FXGL.getGameScene().removeUINode(circulo);

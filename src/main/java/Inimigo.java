@@ -1,4 +1,4 @@
-public class Inimigo {
+public abstract class Inimigo {
     private int vida;
     private double velocidadeMovimentacao;
     private int danoBase;

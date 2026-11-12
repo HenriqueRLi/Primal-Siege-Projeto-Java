@@ -21,6 +21,10 @@ public class Projetil {
         return y;
     }
 
+    public Inimigo getAlvo(){
+        return alvo;
+    }
+
     public boolean moverTiro(double tpf){
         if(!alvo.statusVida()){
             return true;
