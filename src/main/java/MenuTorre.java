@@ -8,6 +8,8 @@ public class MenuTorre {
     private Group MenuR;
     private boolean status;
     private int Tselect;
+    private  int oprad = 15;
+    private int dist = 40;
 
     public MenuTorre() {
         this.MenuR = new Group();
@@ -19,33 +21,35 @@ public class MenuTorre {
         int centroX = coluna * 40 + 20;
         int centroY = linha * 40 + 20;
 
-        Circle opc1 = new Circle(centroX, centroY - 60, 20);
+        Circle opc1 = new Circle(centroX, centroY - dist, oprad);
         opc1.setFill(Color.RED);
         opc1.setOnMouseClicked(event -> {
             Tselect = 1;
         });
 
-        Circle opc2 = new Circle(centroX, centroY + 60, 20);
+        Circle opc2 = new Circle(centroX, centroY + dist, oprad);
         opc2.setFill(Color.BLUE);
         opc2.setOnMouseClicked(event -> {
             Tselect = 2;
         });
 
-        Circle opc3 = new Circle(centroX - 60, centroY, 20);
+        Circle opc3 = new Circle(centroX - dist, centroY, oprad);
         opc3.setFill(Color.YELLOW);
         opc3.setOnMouseClicked(event -> {
             Tselect = 3;
         });
 
-        Circle opc4 = new Circle(centroX + 60, centroY, 20);
+        Circle opc4 = new Circle(centroX + dist, centroY, oprad);
         opc4.setFill(Color.GREEN);
         opc4.setOnMouseClicked(event -> {
             Tselect = 4;
         });
 
-        Circle opc0 = new Circle(centroX, centroY, 18);
+        Circle opc0 = new Circle(centroX, centroY, oprad-2);
         opc0.setFill(Color.GRAY); 
-
+        opc0.setOnMouseClicked(event -> {
+            fecharMenu();;
+        });
 
         if(status == false) {
             MenuR.getChildren().addAll(opc1,opc2,opc3,opc4,opc0);

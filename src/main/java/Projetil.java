@@ -2,15 +2,19 @@ public class Projetil {
     private double x;
     private double y;
     private Inimigo alvo;
-    private int dano;
+    private float dano;
     private double velocidade;
+    private double raio;
+    private double taxaCrescimento;
 
-    public Projetil(int dano, double velocidade, double x, double y, Inimigo alvo) {
+    public Projetil(float dano, double velocidade, double x, double y, Inimigo alvo, double raio, double taxaCrescimento) {
         this.dano = dano;
         this.velocidade = velocidade;
         this.x = x;
         this.y = y;
         this.alvo = alvo;
+        this.raio = raio;
+        this.taxaCrescimento = taxaCrescimento;
     }
 
     public double getX(){
@@ -43,7 +47,13 @@ public class Projetil {
         }
         this.x += (dx/distance) * passo;
         this.y += (dy/distance) * passo;
+        this.raio += taxaCrescimento * tpf;
+        
         return false;
+    }
+
+    public double getRaio() {
+        return raio;
     }
 
 

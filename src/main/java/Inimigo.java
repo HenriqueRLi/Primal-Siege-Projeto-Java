@@ -25,7 +25,7 @@ public abstract class Inimigo {
         return recompensa;
     }
 
-    public void danoRecebido(int dano){
+    public void danoRecebido(float dano){
         vida -= dano;
 
         if(vida < 0){

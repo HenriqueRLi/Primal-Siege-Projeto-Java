@@ -1,15 +1,20 @@
+import javafx.scene.paint.Color;
+
 public class Torre {
-    private int dano;
+    private float dano;
     private double alcance;
     private double x;
     private double y;
     private double rotacao;
     private int nivel;
-    private double velocidadeAtaque;
+    private float velocidadeAtaque;
     private int custoEvolucao;
     private double cdr;
+    private Color corProj;
+    private int velProj;
+    private int Projrad;
 
-    public Torre (int dano, double alcance, double x, double y, double velocidadeAtaque, int custoEvolucao) {
+    public Torre (float dano, double alcance, double x, double y, float velocidadeAtaque, int custoEvolucao, Color corProj, int velProj, int Projrad) {
         this.dano = dano;
         this.alcance = alcance;
         this.x = x;
@@ -19,6 +24,9 @@ public class Torre {
         this.velocidadeAtaque = velocidadeAtaque;
         this.custoEvolucao = custoEvolucao;
         this.cdr = 0;
+        this.corProj = corProj;
+        this.velProj = velProj;
+        this.Projrad = Projrad;
     }
 
     public double getX () {
@@ -29,7 +37,7 @@ public class Torre {
         return y;
     }
     
-    public int getDano() {
+    public float getDano() {
         return dano;
     }
 
@@ -88,10 +96,12 @@ public class Torre {
         if (cdr <= 0 && alvo.statusVida() && estaNoAlcance(alvo)) {
             Projetil tiro = new Projetil(
                 this.dano,
-                300,
+                this.velProj,
                 this.x,
                 this.y,
-                alvo
+                alvo,
+                this.Projrad,
+                getTaxaCrescimento()
             );
 
             cdr = 1.0 / velocidadeAtaque;
@@ -102,10 +112,24 @@ public class Torre {
         return null;
     }
 
+    public Color getcorProj() {
+        return corProj;
+    }
 
+    public int getProjrad(Inimigo inimigo) {
+        return Projrad;
+    }
 
+    public double getDist(Inimigo inimigo) {
+        double dx = inimigo.getX() - this.x;
+        double dy = inimigo.getY() - this.y;
 
+        return Math.hypot(dx, dy);
+    }
 
+    public double getTaxaCrescimento() {
+        return 0;
+    }
 
 
 

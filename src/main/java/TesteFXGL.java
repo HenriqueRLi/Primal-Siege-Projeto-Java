@@ -6,6 +6,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
 
 import javafx.application.Platform;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
@@ -13,19 +14,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.text.Text;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.QuadCurve;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.Cursor;
+import javafx.scene.text.Text;
 
 
 
@@ -439,20 +439,20 @@ private void criarGrid() {
         } 
     }
 
-    private void desenharProjetil(Projetil tiro) {
-    Circle circulo = new Circle(
-        tiro.getX(),
-        tiro.getY(),
-        4
-    );
+    private void desenharProjetil(Projetil tiro, Color cor, int rad) {
+        Circle circulo = new Circle(
+            tiro.getX(),
+            tiro.getY(),
+            rad
+        );
 
-    circulo.setFill(Color.YELLOW);
+        circulo.setFill(cor);
 
-    projeteis.add(tiro);
-    circulosProjeteis.add(circulo);
+        projeteis.add(tiro);
+        circulosProjeteis.add(circulo);
 
-    FXGL.getGameScene().addUINode(circulo);
-}
+        FXGL.getGameScene().addUINode(circulo);
+    }
 
     private void criarHUDOnda(){
         Rectangle retanguloMaiorOnda = new Rectangle(840,105);
@@ -1004,7 +1004,7 @@ private void criarGrid() {
                 Projetil tiro = torre.atirar(alvoSelecionado, tpf);
 
                 if (tiro != null) {
-                    desenharProjetil(tiro);
+                    desenharProjetil(tiro, torre.getcorProj(),torre.getProjrad(inimigo));
                 }
             }
         }
@@ -1020,6 +1020,7 @@ private void criarGrid() {
             } else {
                 circulo.setCenterX(tiro.getX());
                 circulo.setCenterY(tiro.getY());
+                circulo.setRadius(tiro.getRaio());
             }
         }
 
