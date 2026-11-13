@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 public class SlotTorre {
     private double x;
     private double y;

@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 public abstract class Inimigo {
     private int vida;
     private double velocidadeMovimentacao;
@@ -83,5 +84,9 @@ public abstract class Inimigo {
 
     public int getIndicePonto(){
         return indicePonto;
+    }
+
+    public String getTipoInimigo() {
+        return tipoInimigo;
     }
 }

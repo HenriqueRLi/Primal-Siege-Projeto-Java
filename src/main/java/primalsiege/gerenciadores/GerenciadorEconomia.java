@@ -1,3 +1,4 @@
+package primalsiege.gerenciadores;
 public class GerenciadorEconomia {
     private int ouro;
 

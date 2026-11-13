@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 public class Projetil {
     private double x;
     private double y;

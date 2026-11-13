@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 public class Onda {
     private String especie;
     private int quantidade;

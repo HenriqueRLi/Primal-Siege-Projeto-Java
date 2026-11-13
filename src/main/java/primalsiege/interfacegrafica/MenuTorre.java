@@ -1,3 +1,4 @@
+package primalsiege.interfacegrafica;
 import com.almasb.fxgl.dsl.FXGL;
 
 import javafx.scene.Group;
@@ -21,6 +22,9 @@ public class MenuTorre {
         int centroX = coluna * 40 + 20;
         int centroY = linha * 40 + 20;
 
+        if (centroX + dist + oprad > 220 && centroX - dist - oprad < 1060 && centroY + dist + oprad > 615) {
+            centroY = 615 - dist - oprad - 10;
+        }
         Circle opc1 = new Circle(centroX, centroY - dist, oprad);
         opc1.setFill(Color.RED);
         opc1.setOnMouseClicked(event -> {

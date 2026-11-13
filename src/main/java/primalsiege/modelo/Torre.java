@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 import javafx.scene.paint.Color;
 
 public class Torre {
@@ -131,8 +132,15 @@ public class Torre {
         return 0;
     }
 
+    protected void definirAtributosAtaque(float dano, float velocidadeAtaque) {
+        this.dano = dano;
+        this.velocidadeAtaque = velocidadeAtaque;
+    }
 
-
-
+    protected void definirAtributosProjetil(Color cor, int velocidade, int raio) {
+        this.corProj = cor;
+        this.velProj = velocidade;
+        this.Projrad = raio;
+    }
 
 }

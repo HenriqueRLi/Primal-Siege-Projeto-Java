@@ -1,3 +1,4 @@
+package primalsiege.modelo;
 public class Base {
 
     private int vida;
