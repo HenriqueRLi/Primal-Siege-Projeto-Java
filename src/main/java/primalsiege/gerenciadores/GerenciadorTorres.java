@@ -77,4 +77,46 @@ public class GerenciadorTorres {
 
         return -1;
     }
+
+    public int getCustoEvolucao(Torre torre) {
+        int nivel = torre.getNivel();
+
+        if (nivel >= 3) {
+            return -1;
+        }
+
+        if (torre instanceof TorreCharmander) {
+            if (nivel == 1) {
+                return 120;
+            }
+            else {
+                return 160;
+            }
+        }
+        else if (torre instanceof TorreSquirtle) {
+            if (nivel == 1) {
+                return 140;
+            }
+            else {
+                return 210;
+            }
+        }
+        else if (torre instanceof TorrePikachu) {
+            if (nivel == 1) {
+                return 140;
+            }
+            else {
+                return 190;
+            }
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            if (nivel == 1) {
+                return 115;
+            }
+            else {
+                return 165;
+            }
+        }
+        return -1;
+    }
 }

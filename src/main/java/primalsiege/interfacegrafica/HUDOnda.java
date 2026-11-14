@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 public class HUDOnda extends Group {
     private Rectangle botaoIniciarOnda;
     private Text  quantOuro;
+    private Text textoNumeroOnda;
 
     public HUDOnda() {
 
@@ -38,7 +39,7 @@ public class HUDOnda extends Group {
         textoOnda.setStyle("-fx-font-family: Arial; -fx-font-size: 13px; -fx-font-weight: bold;");
         textoOnda.setFill(Color.WHITE);
 
-        Text textoNumeroOnda = new Text("1/10");
+        textoNumeroOnda = new Text("1/10");
         textoNumeroOnda.setX(280);
         textoNumeroOnda.setY(687);
         textoNumeroOnda.setStyle("-fx-font-family: Arial; -fx-font-size: 25px; -fx-font-weight: bold;");
@@ -111,6 +112,10 @@ public class HUDOnda extends Group {
         FXGL.getGameScene().addUINode(this);
     }
 
+    public void atualizarNumeroOnda(int numero) {
+        textoNumeroOnda.setText(numero + "/10");
+    }
+    
     public void atualizarOuro(int quantidade) {
         quantOuro.setText(String.valueOf(quantidade));
     }

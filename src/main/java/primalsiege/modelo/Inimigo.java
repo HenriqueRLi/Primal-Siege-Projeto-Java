@@ -26,6 +26,10 @@ public abstract class Inimigo {
         return recompensa;
     }
 
+    protected void definirRecompensa(int recompensa) {
+        this.recompensa = recompensa;
+    }
+
     public void danoRecebido(float dano){
         vida -= dano;
 

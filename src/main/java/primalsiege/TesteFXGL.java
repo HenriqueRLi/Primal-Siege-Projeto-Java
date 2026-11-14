@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
+import com.almasb.fxgl.texture.Texture;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
@@ -43,7 +44,7 @@ public class TesteFXGL extends GameApplication {
     private static final int ALTURA = 720;
     private Inimigo inimigo;
     private ArrayList<Inimigo> inimigosAtivos = new ArrayList<>();
-    private ArrayList<Circle> circulosInimigos = new ArrayList<>();
+    private ArrayList<Texture> imagensInimigos = new ArrayList<>();
     private Mapa mapa;
     private Base base;
     private HUDBase hudBase;
@@ -91,11 +92,7 @@ public class TesteFXGL extends GameApplication {
 
         hudOnda.getBotaoIniciarOnda().setOnMouseClicked(evento -> iniciarOnda());
 
-        gerenciadorInimigos = new GerenciadorInimigos(
-            inimigosAtivos,
-            circulosInimigos,
-            hudOnda
-        );
+        gerenciadorInimigos = new GerenciadorInimigos(inimigosAtivos, imagensInimigos, hudOnda);
     }
 
     private void sairDoJogo() {
@@ -116,6 +113,10 @@ public class TesteFXGL extends GameApplication {
         gerenciadorCombate.limparProjeteis();
 
         gerenciadorOndas = new GerenciadorOndas();
+        hudOnda.atualizarNumeroOnda(gerenciadorOndas.getNumeroOnda());
+
+        gerenciadorEconomia = new GerenciadorEconomia();
+        hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
 
         if(hudVitoria != null){
             FXGL.getGameScene().removeUINode(hudVitoria);
@@ -178,13 +179,25 @@ public class TesteFXGL extends GameApplication {
                     hudVitoria == null &&
                     base.getVida() > 0) {
 
-                    if (torreSelecionada.evoluir()) {
-                        System.out.println(
-                            "Evoluiu! Nivel: " + torreSelecionada.getNivel() +
-                            " | Dano: " + torreSelecionada.getDano() +
-                            " | Disparos/s: " + torreSelecionada.getVelocidadeAtaque()
-                        );
+                    int custo = gerenciadorTorres.getCustoEvolucao(torreSelecionada);
 
+                    if (custo == -1) {
+                        System.out.println("Torre no nivel maximo ou invalida!");
+                        return;
+                    }
+
+                    if (gerenciadorEconomia.getOuro() < custo) {
+                        System.out.println("Ouro insuficiente para evoluir!");
+                        return;
+                    }
+                    if (torreSelecionada.evoluir()) {
+                        gerenciadorEconomia.descontarOuro(custo);
+                        hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
+                        System.out.println(
+                        "Evoluiu! Nivel: " + torreSelecionada.getNivel() +
+                        " | Dano: " + torreSelecionada.getDano() +
+                        " | Disparos/s: " + torreSelecionada.getVelocidadeAtaque()
+                        );
                         if (torreSelecionada instanceof TorreCharmander) {
 
                             if (torreSelecionada.getNivel() == 2) {
@@ -300,7 +313,7 @@ public class TesteFXGL extends GameApplication {
 
             gerenciadorOndas.registrarInimigoGerado();
         }
-        if (gerenciadorInimigos.atualizarInimigos(tpf, base, hudBase)) {
+        if(gerenciadorInimigos.atualizarInimigos(tpf, base, hudBase, gerenciadorEconomia)){
             criarHUDDerrota();
         }
 
@@ -309,6 +322,9 @@ public class TesteFXGL extends GameApplication {
 
             if (gerenciadorOndas.avançarOnda()) {
                 criarHUDVitoria();
+            }
+            else {
+                hudOnda.atualizarNumeroOnda(gerenciadorOndas.getNumeroOnda());
             }
         }
         
