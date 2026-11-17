@@ -8,6 +8,10 @@ import com.almasb.fxgl.texture.Texture;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.paint.CycleMethod;
 
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
@@ -28,6 +32,7 @@ import primalsiege.interfacegrafica.HUDBase;
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
     private ArrayList<Texture> imagensInimigos;
+    private ArrayList<Circle> circulosSlow = new ArrayList<>();
     private HUDOnda hudOnda;
     private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
@@ -41,6 +46,27 @@ public class GerenciadorInimigos {
         inimigosAtivos.add(inimigo);
 
         Texture sprite = criarSprite(inimigo);
+
+        Circle anelSlow = new Circle(inimigo.getX(), inimigo.getY() + 23, 17);
+
+        anelSlow.setRadius(20);
+        anelSlow.setScaleY(0.40);
+        anelSlow.setStroke(Color.TRANSPARENT);
+
+        anelSlow.setFill(new RadialGradient(
+            0, 0, 0.5, 0.5, 0.5, true,
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.rgb(50, 200, 70, 0.75)),
+            new Stop(0.5, Color.rgb(40, 170, 60, 0.40)),
+            new Stop(1, Color.TRANSPARENT)
+        ));
+
+        anelSlow.setEffect(new GaussianBlur(2));
+        anelSlow.setMouseTransparent(true);
+        anelSlow.setVisible(false);
+
+        circulosSlow.add(anelSlow);
+        FXGL.getGameScene().addUINode(anelSlow);
 
         imagensInimigos.add(sprite);
 
@@ -95,8 +121,12 @@ public class GerenciadorInimigos {
 
             Inimigo inimigo = inimigosAtivos.get(i);
             Texture sprite = imagensInimigos.get(i);
+            Circle anelSlow = circulosSlow.get(i);
 
             inimigo.atualizarQueimadura(tpf);
+            inimigo.atualizarLentidao(tpf);
+            anelSlow.setVisible(inimigo.estaLento());
+
             if (inimigo.estaQueimando()) {
                 sprite.setEffect(efeitoQueimadura);
             }
@@ -124,6 +154,8 @@ public class GerenciadorInimigos {
                 else {
                     sprite.setLayoutX(inimigo.getX() - 35);
                     sprite.setLayoutY(inimigo.getY() - 28);
+                    anelSlow.setCenterX(inimigo.getX());
+                    anelSlow.setCenterY(inimigo.getY() + 23);
                 }
 
             }
@@ -133,8 +165,11 @@ public class GerenciadorInimigos {
                 hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
 
                 FXGL.getGameScene().removeUINode(sprite);
+                FXGL.getGameScene().removeUINode(anelSlow);
+
                 inimigosAtivos.remove(i);
                 imagensInimigos.remove(i);
+                circulosSlow.remove(i);
             }
         }
 
@@ -164,6 +199,11 @@ public class GerenciadorInimigos {
             FXGL.getGameScene().removeUINode(sprite);
         }
 
+        for (Circle anel : circulosSlow) {
+            FXGL.getGameScene().removeUINode(anel);
+        }
+
+        circulosSlow.clear();
         inimigosAtivos.clear();
         imagensInimigos.clear();
     }

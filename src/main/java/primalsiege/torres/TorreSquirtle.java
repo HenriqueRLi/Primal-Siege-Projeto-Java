@@ -68,11 +68,15 @@ public class TorreSquirtle extends Torre {
             int danoExtra = usarHidroBomba();
 
             if (danoExtra > 0) {
-                System.out.println("Hidro Bomba ativada: +" + danoExtra);
-                tiro.definirDanoExtraHidroBomba(danoExtra);
+                tiro.setDanoExtraHidroBomba(danoExtra);
             }
         }
 
         return tiro;
+    }
+
+    @Override
+    public boolean usaVisualAgua() {
+        return true;
     }
 }

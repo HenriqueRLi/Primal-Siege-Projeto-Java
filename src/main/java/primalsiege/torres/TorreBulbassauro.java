@@ -28,4 +28,16 @@ public class TorreBulbassauro extends Torre {
 
         return false;
     }
+
+    @Override
+    public double getPercentualLentidao() {
+        if (getNivel() == 2) {
+            return 0.25;
+        }
+        else if (getNivel() == 3) {
+            return 0.30;
+        }
+
+        return 0;
+    }
 }

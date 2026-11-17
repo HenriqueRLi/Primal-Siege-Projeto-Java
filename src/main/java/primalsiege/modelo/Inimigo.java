@@ -12,6 +12,8 @@ public abstract class Inimigo {
     private int danoQueimadura;
     private double tempoQueimadura;
     private double acumuladorQueimadura;
+    private double percentualLentidao;
+    private double tempoLentidao;
 
     public Inimigo (float vida, double velocidadeMovimentacao, int danoBase, String tipoInimigo, Mapa mapa) {
         this.vida = vida;
@@ -26,6 +28,8 @@ public abstract class Inimigo {
         danoQueimadura = 0;
         tempoQueimadura = 0;
         acumuladorQueimadura = 0;
+        percentualLentidao = 0;
+        tempoLentidao = 0;
     }
     
     public int getRecompensa () {
@@ -61,7 +65,7 @@ public abstract class Inimigo {
         int destinoY = (destino / 32) * 40 + 20;
         double dx = destinoX - this.x;
         double dy = destinoY - this.y;
-        double passo = velocidadeMovimentacao * tpf;
+        double passo = velocidadeMovimentacao * (1.0 - percentualLentidao) * tpf;
         
         if(dx != 0) {
             if(dx < 0) {
@@ -130,5 +134,29 @@ public abstract class Inimigo {
 
     public boolean estaQueimando() {
         return tempoQueimadura > 0 && statusVida();
+    }
+
+    public void aplicarLentidao(double percentual) {
+        if (percentual <= 0 || !statusVida()) {
+            return;
+        }
+
+        percentualLentidao = Math.max(percentualLentidao, percentual);
+        tempoLentidao = 2.0;
+    }
+
+    public void atualizarLentidao(double tpf) {
+        if (tempoLentidao > 0) {
+            tempoLentidao -= tpf;
+
+            if (tempoLentidao <= 0) {
+                tempoLentidao = 0;
+                percentualLentidao = 0;
+            }
+        }
+    }
+
+    public boolean estaLento() {
+        return tempoLentidao > 0 && statusVida();
     }
 }

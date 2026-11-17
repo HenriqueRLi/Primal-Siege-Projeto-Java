@@ -58,6 +58,10 @@ public class Torre {
         return custoEvolucao;
     }
 
+    public double getRaioDescarga() {
+        return 90;
+    }
+
     public double getRotacao () {
         return rotacao;
     }
@@ -111,7 +115,17 @@ public class Torre {
                 this.Projrad,
                 getTaxaCrescimento()
             );
-            tiro.definirDanoQueimadura(getDanoQueimadura());
+            tiro.setDanoQueimadura(getDanoQueimadura());
+
+            tiro.setPercentualLentidao(getPercentualLentidao());
+
+            tiro.setRaioDescarga(getRaioDescarga());
+
+            tiro.setVisualFogo(usaVisualFogo());
+            tiro.setNivelVisualFogo(getNivel());
+
+            tiro.setVisualAgua(usaVisualAgua());
+            tiro.setNivelVisualAgua(getNivel());
 
             cdr += 1.0 / velocidadeAtaque;
 
@@ -144,6 +158,14 @@ public class Torre {
         return 0;
     }
 
+    public boolean usaRaioInstantaneo() {
+        return false;
+    }
+
+    public double getPercentualLentidao() {
+        return 0;
+    }
+
     protected void definirAtributosAtaque(float dano, float velocidadeAtaque) {
         this.dano = dano;
         this.velocidadeAtaque = velocidadeAtaque;
@@ -155,4 +177,11 @@ public class Torre {
         this.Projrad = raio;
     }
 
+    public boolean usaVisualFogo() {
+        return false;
+    }
+
+    public boolean usaVisualAgua() {
+        return false;
+    }
 }

@@ -44,4 +44,9 @@ public class TorreCharmander extends Torre{
 
         return 0;
     }
+
+    @Override
+    public boolean usaVisualFogo() {
+        return true;
+    }
 }
