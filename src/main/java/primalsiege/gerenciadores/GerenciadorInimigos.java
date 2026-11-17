@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.texture.Texture;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.ImageView;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -26,10 +30,10 @@ import primalsiege.interfacegrafica.HUDBase;
 
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
-    private ArrayList<Texture> imagensInimigos;
+    private ArrayList<ImageView> imagensInimigos = new ArrayList<>();
     private HUDOnda hudOnda;
 
-    public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<Texture> imagensInimigos, HUDOnda hudOnda) {
+    public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<ImageView> imagensInimigos, HUDOnda hudOnda) {
         this.inimigosAtivos = inimigosAtivos;
         this.imagensInimigos = imagensInimigos;
         this.hudOnda = hudOnda;
@@ -38,7 +42,7 @@ public class GerenciadorInimigos {
     public void criarInimigo(Inimigo inimigo) {
         inimigosAtivos.add(inimigo);
 
-        Texture sprite = criarSprite(inimigo);
+        ImageView sprite = criarSprite(inimigo);
 
         imagensInimigos.add(sprite);
 
@@ -92,7 +96,7 @@ public class GerenciadorInimigos {
         for (int i = inimigosAtivos.size() - 1; i >= 0; i--) {
 
             Inimigo inimigo = inimigosAtivos.get(i);
-            Texture sprite = imagensInimigos.get(i);
+            ImageView sprite = imagensInimigos.get(i);
 
             if (inimigo.statusVida()) {
 
@@ -112,8 +116,8 @@ public class GerenciadorInimigos {
 
                 }
                 else {
-                    sprite.setLayoutX(inimigo.getX() - 35);
-                    sprite.setLayoutY(inimigo.getY() - 28);
+                    sprite.setLayoutX(inimigo.getX() - 32);
+                    sprite.setLayoutY(inimigo.getY() - 32);
                 }
 
             }
@@ -131,18 +135,24 @@ public class GerenciadorInimigos {
         return derrota;
     }
 
-    private Texture criarSprite(Inimigo inimigo) {
+    private ImageView criarSprite(Inimigo inimigo) {
 
-        String arquivo = inimigo.getTipoInimigo().toLowerCase() + ".png";
+        String arquivo = inimigo.getTipoInimigo().toLowerCase() + ".gif";
 
-        Texture sprite = FXGL.getAssetLoader().loadTexture(arquivo);
+        Image imagem = new Image(
+            getClass().getResource(
+                "/assets/textures/" + arquivo
+            ).toExternalForm()
+        );
+
+        ImageView sprite = new ImageView(imagem);
 
         sprite.setFitWidth(64);
         sprite.setFitHeight(64);
         sprite.setSmooth(false);
 
-        sprite.setLayoutX(inimigo.getX() - 35);
-        sprite.setLayoutY(inimigo.getY() - 28);
+        sprite.setLayoutX(inimigo.getX() - 32);
+        sprite.setLayoutY(inimigo.getY() - 32);
 
         sprite.setMouseTransparent(true);
 
@@ -150,7 +160,7 @@ public class GerenciadorInimigos {
     }
 
     public void limparInimigos() {
-        for (Texture sprite : imagensInimigos) {
+        for (ImageView sprite : imagensInimigos) {
             FXGL.getGameScene().removeUINode(sprite);
         }
 

@@ -7,6 +7,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.texture.Texture;
 
+import javafx.scene.image.ImageView;
+
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
@@ -44,7 +46,7 @@ public class TesteFXGL extends GameApplication {
     private static final int ALTURA = 720;
     private Inimigo inimigo;
     private ArrayList<Inimigo> inimigosAtivos = new ArrayList<>();
-    private ArrayList<Texture> imagensInimigos = new ArrayList<>();
+    private ArrayList<ImageView> imagensInimigos = new ArrayList<>();
     private Mapa mapa;
     private Base base;
     private HUDBase hudBase;
