@@ -91,8 +91,15 @@ public class Torre {
         return distance <= this.alcance;
     }
 
-    public Projetil atirar(Inimigo alvo, double tpf) {
+    public void atualizarRecarga(double tpf) {
         cdr -= tpf;
+
+        if (cdr < -tpf) {
+            cdr = -tpf;
+        }
+    }
+
+    public Projetil atirar(Inimigo alvo) {
 
         if (cdr <= 0 && alvo.statusVida() && estaNoAlcance(alvo)) {
             Projetil tiro = new Projetil(
@@ -104,8 +111,9 @@ public class Torre {
                 this.Projrad,
                 getTaxaCrescimento()
             );
+            tiro.definirDanoQueimadura(getDanoQueimadura());
 
-            cdr = 1.0 / velocidadeAtaque;
+            cdr += 1.0 / velocidadeAtaque;
 
             return tiro;
         }
@@ -129,6 +137,10 @@ public class Torre {
     }
 
     public double getTaxaCrescimento() {
+        return 0;
+    }
+
+    public int getDanoQueimadura() {
         return 0;
     }
 

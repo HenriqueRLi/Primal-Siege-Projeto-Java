@@ -10,6 +10,8 @@ import javafx.scene.shape.Polygon;
 import primalsiege.modelo.Mapa;
 import primalsiege.modelo.Torre;
 
+import javafx.scene.effect.DropShadow;
+
 public class GerenciadorCombate {
 
     private ArrayList<Projetil> projeteis = new ArrayList<>();
@@ -23,6 +25,13 @@ public class GerenciadorCombate {
         );
 
         circulo.setFill(cor);
+        if (tiro.ehHidroBomba()) {
+            circulo.setRadius(tiro.getRaio() * 2);
+            circulo.setFill(Color.DEEPSKYBLUE);
+            circulo.setStroke(Color.LIGHTCYAN);
+            circulo.setStrokeWidth(2);
+            circulo.setEffect(new DropShadow(18, Color.AQUA));
+        }
 
         projeteis.add(tiro);
         circulosProjeteis.add(circulo);
@@ -42,7 +51,12 @@ public class GerenciadorCombate {
             } else {
                 circulo.setCenterX(tiro.getX());
                 circulo.setCenterY(tiro.getY());
-                circulo.setRadius(tiro.getRaio());
+                if (tiro.ehHidroBomba()) {
+                    circulo.setRadius(tiro.getRaio() * 2);
+                }
+                else {
+                    circulo.setRadius(tiro.getRaio());
+                }
             }
         }
     }
@@ -60,6 +74,7 @@ public class GerenciadorCombate {
 
         for (int i = 0; i < torres.size(); i++) {
             Torre torre = torres.get(i);
+            torre.atualizarRecarga(tpf);
             Polygon triangulo = triangulosTorres.get(i);
             Inimigo alvoSelecionado = null;
 
@@ -105,7 +120,7 @@ public class GerenciadorCombate {
             if(alvoSelecionado != null){
                 torre.atualizarRotacao(alvoSelecionado.getX(), alvoSelecionado.getY());
                 triangulo.setRotate(torre.getRotacao() + 90);
-                Projetil tiro = torre.atirar(alvoSelecionado, tpf);
+                Projetil tiro = torre.atirar(alvoSelecionado);
 
                 if (tiro != null) {
                     desenharProjetil(tiro, torre.getcorProj(),torre.getProjrad(inimigo));

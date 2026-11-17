@@ -7,6 +7,8 @@ public class Projetil {
     private double velocidade;
     private double raio;
     private double taxaCrescimento;
+    private int danoQueimadura;
+    private int danoExtraHidroBomba;
 
     public Projetil(float dano, double velocidade, double x, double y, Inimigo alvo, double raio, double taxaCrescimento) {
         this.dano = dano;
@@ -16,6 +18,16 @@ public class Projetil {
         this.alvo = alvo;
         this.raio = raio;
         this.taxaCrescimento = taxaCrescimento;
+        danoQueimadura = 0;
+        danoExtraHidroBomba = 0;
+    }
+
+    public void definirDanoExtraHidroBomba(int dano) {
+        this.danoExtraHidroBomba = dano;
+    }
+    
+    public void definirDanoQueimadura(int dano) {
+        this.danoQueimadura = dano;
     }
 
     public double getX(){
@@ -43,7 +55,10 @@ public class Projetil {
         if(distance <= passo){
             this.x = alvo.getX();
             this.y = alvo.getY();
-            alvo.danoRecebido(this.dano);
+            alvo.danoRecebido(this.dano + danoExtraHidroBomba);
+            if (danoQueimadura > 0 && alvo.statusVida()) {
+                alvo.aplicarQueimadura(danoQueimadura);
+            }
             return true;
         }
         this.x += (dx/distance) * passo;
@@ -55,6 +70,10 @@ public class Projetil {
 
     public double getRaio() {
         return raio;
+    }
+
+    public boolean ehHidroBomba() {
+        return danoExtraHidroBomba > 0;
     }
 
 

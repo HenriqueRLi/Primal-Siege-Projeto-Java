@@ -15,11 +15,11 @@ public class TorreBulbassauro extends Torre {
         if (super.evoluir()) {
 
             if (getNivel() == 2) {
-                definirAtributosAtaque(18, 1.5f);
+                definirAtributosAtaque(15, 1.5f);
                 definirAtributosProjetil(Color.LIMEGREEN, 1050, 4);
             }
             else if (getNivel() == 3) {
-                definirAtributosAtaque(26, 1.6f);
+                definirAtributosAtaque(23, 1.6f);
                 definirAtributosProjetil(Color.LAWNGREEN, 1100, 7);
             }
 

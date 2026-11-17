@@ -7,6 +7,7 @@ import com.almasb.fxgl.texture.Texture;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.effect.DropShadow;
 
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
@@ -28,6 +29,7 @@ public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
     private ArrayList<Texture> imagensInimigos;
     private HUDOnda hudOnda;
+    private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
     public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<Texture> imagensInimigos, HUDOnda hudOnda) {
         this.inimigosAtivos = inimigosAtivos;
@@ -93,6 +95,14 @@ public class GerenciadorInimigos {
 
             Inimigo inimigo = inimigosAtivos.get(i);
             Texture sprite = imagensInimigos.get(i);
+
+            inimigo.atualizarQueimadura(tpf);
+            if (inimigo.estaQueimando()) {
+                sprite.setEffect(efeitoQueimadura);
+            }
+            else {
+                sprite.setEffect(null);
+            }
 
             if (inimigo.statusVida()) {
 
