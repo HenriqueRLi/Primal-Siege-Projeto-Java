@@ -1,32 +1,31 @@
 package primalsiege.gerenciadores;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.texture.Texture;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.ImageView;
-
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-
-import primalsiege.modelo.Inimigo;
-import primalsiege.modelo.Mapa;
-import primalsiege.inimigos.Rattata;
-import primalsiege.inimigos.Pidgey;
-import primalsiege.inimigos.Wishiwashi;
-import primalsiege.inimigos.Machop;
-import primalsiege.inimigos.Kadabra;
+import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Eternatus;
 import primalsiege.inimigos.Gengar;
 import primalsiege.inimigos.Gyarados;
-import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Kadabra;
+import primalsiege.inimigos.Machop;
 import primalsiege.inimigos.Mewtwo;
-import primalsiege.inimigos.Eternatus;
+import primalsiege.inimigos.Pidgey;
+import primalsiege.inimigos.Rattata;
+import primalsiege.inimigos.Wishiwashi;
+import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
 import primalsiege.modelo.Base;
-import primalsiege.interfacegrafica.HUDBase;
+import primalsiege.modelo.Inimigo;
+import primalsiege.modelo.Mapa;
 
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
@@ -100,6 +99,9 @@ public class GerenciadorInimigos {
 
             if (inimigo.statusVida()) {
 
+                double xAnterior = inimigo.getX();
+                double yAnterior = inimigo.getY();
+
                 if (inimigo.mover(tpf)) {
 
                     FXGL.getGameScene().removeUINode(sprite);
@@ -116,8 +118,13 @@ public class GerenciadorInimigos {
 
                 }
                 else {
-                    sprite.setLayoutX(inimigo.getX() - 32);
-                    sprite.setLayoutY(inimigo.getY() - 32);
+                    double dx = inimigo.getX() - xAnterior;
+                    double dy = inimigo.getY() - yAnterior;
+
+                    atualizarSprite(sprite, inimigo.getTipoInimigo(), dx, dy);
+
+                    sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
+                    sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
                 }
 
             }
@@ -137,22 +144,15 @@ public class GerenciadorInimigos {
 
     private ImageView criarSprite(Inimigo inimigo) {
 
-        String arquivo = inimigo.getTipoInimigo().toLowerCase() + ".gif";
+        ImageView sprite = new ImageView();
+        atualizarSprite(sprite, inimigo.getTipoInimigo(), 1, 0);
 
-        Image imagem = new Image(
-            getClass().getResource(
-                "/assets/textures/" + arquivo
-            ).toExternalForm()
-        );
-
-        ImageView sprite = new ImageView(imagem);
-
-        sprite.setFitWidth(64);
-        sprite.setFitHeight(64);
+        sprite.setFitWidth(40);
+        sprite.setFitHeight(40);
         sprite.setSmooth(false);
 
-        sprite.setLayoutX(inimigo.getX() - 32);
-        sprite.setLayoutY(inimigo.getY() - 32);
+        sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
+        sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
 
         sprite.setMouseTransparent(true);
 
@@ -166,5 +166,32 @@ public class GerenciadorInimigos {
 
         inimigosAtivos.clear();
         imagensInimigos.clear();
+    }
+
+    private static final String PASTA_GIFS = "/assets/textures/";
+    private final Map<String, Optional<Image>> cacheGifs = new HashMap<>();
+
+    private void atualizarSprite(ImageView sprite, String nome, double dx, double dy) {
+        if (dx == 0 && dy == 0) {
+            return;
+        }
+
+        String direcao;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            direcao = dx > 0 ? "direita" : "esquerda";
+        } else {
+            direcao = dy > 0 ? "baixo" : "cima";
+        }
+
+        String arquivo = nome.toLowerCase(Locale.ROOT) + "_" + direcao + ".gif";
+
+        Optional<Image> gif = cacheGifs.computeIfAbsent(arquivo, chave -> {
+            URL url = GerenciadorInimigos.class.getResource(PASTA_GIFS + chave);
+            return url == null ? Optional.empty() : Optional.of(new Image(url.toExternalForm()));
+        });
+
+        if (gif.isPresent() && sprite.getImage() != gif.get()) {
+            sprite.setImage(gif.get());
+        }
     }
 }
