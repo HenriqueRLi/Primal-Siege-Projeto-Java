@@ -1,10 +1,14 @@
 package primalsiege.gerenciadores;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
-import com.almasb.fxgl.dsl.FXGL;
-import com.almasb.fxgl.texture.Texture;
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.effect.DropShadow;
@@ -15,6 +19,8 @@ import javafx.scene.paint.CycleMethod;
 
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Base;
+
 import primalsiege.inimigos.Rattata;
 import primalsiege.inimigos.Pidgey;
 import primalsiege.inimigos.Wishiwashi;
@@ -25,18 +31,19 @@ import primalsiege.inimigos.Gyarados;
 import primalsiege.inimigos.Dragonite;
 import primalsiege.inimigos.Mewtwo;
 import primalsiege.inimigos.Eternatus;
-import primalsiege.interfacegrafica.HUDOnda;
-import primalsiege.modelo.Base;
+
 import primalsiege.interfacegrafica.HUDBase;
+import primalsiege.interfacegrafica.HUDOnda;
 
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
-    private ArrayList<Texture> imagensInimigos;
+    private ArrayList<ImageView> imagensInimigos;
     private ArrayList<Circle> circulosSlow = new ArrayList<>();
+
     private HUDOnda hudOnda;
     private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
-    public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<Texture> imagensInimigos, HUDOnda hudOnda) {
+    public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<ImageView> imagensInimigos, HUDOnda hudOnda) {
         this.inimigosAtivos = inimigosAtivos;
         this.imagensInimigos = imagensInimigos;
         this.hudOnda = hudOnda;
@@ -45,7 +52,7 @@ public class GerenciadorInimigos {
     public void criarInimigo(Inimigo inimigo) {
         inimigosAtivos.add(inimigo);
 
-        Texture sprite = criarSprite(inimigo);
+        ImageView sprite = criarSprite(inimigo);
 
         Circle anelSlow = new Circle(inimigo.getX(), inimigo.getY() + 23, 17);
 
@@ -120,23 +127,29 @@ public class GerenciadorInimigos {
         for (int i = inimigosAtivos.size() - 1; i >= 0; i--) {
 
             Inimigo inimigo = inimigosAtivos.get(i);
-            Texture sprite = imagensInimigos.get(i);
-            Circle anelSlow = circulosSlow.get(i);
 
-            inimigo.atualizarQueimadura(tpf);
-            inimigo.atualizarLentidao(tpf);
-            anelSlow.setVisible(inimigo.estaLento());
+        ImageView sprite = imagensInimigos.get(i);
+        Circle anelSlow = circulosSlow.get(i);
 
-            if (inimigo.estaQueimando()) {
-                sprite.setEffect(efeitoQueimadura);
-            }
-            else {
-                sprite.setEffect(null);
-            }
+        inimigo.atualizarQueimadura(tpf);
+        inimigo.atualizarLentidao(tpf);
 
-            if (inimigo.statusVida()) {
+        anelSlow.setVisible(inimigo.estaLento());
+
+        if (inimigo.estaQueimando()) {
+            sprite.setEffect(efeitoQueimadura);
+        }
+        else {
+            sprite.setEffect(null);
+        }
+
+        if (inimigo.statusVida()) {
+
+            double xAnterior = inimigo.getX();
+            double yAnterior = inimigo.getY();
 
             if (inimigo.mover(tpf)) {
+
 
                 FXGL.getGameScene().removeUINode(sprite);
                 FXGL.getGameScene().removeUINode(anelSlow);
@@ -154,10 +167,16 @@ public class GerenciadorInimigos {
 
             }
                 else {
-                    sprite.setLayoutX(inimigo.getX() - 35);
-                    sprite.setLayoutY(inimigo.getY() - 28);
-                    anelSlow.setCenterX(inimigo.getX());
-                    anelSlow.setCenterY(inimigo.getY() + 23);
+                  double dx = inimigo.getX() - xAnterior;
+                  double dy = inimigo.getY() - yAnterior;
+
+                  atualizarSprite(sprite, inimigo.getTipoInimigo(), dx, dy);
+
+                  sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
+                  sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
+
+                  anelSlow.setCenterX(inimigo.getX());
+                  anelSlow.setCenterY(inimigo.getY() + 23);
                 }
 
             }
@@ -178,18 +197,17 @@ public class GerenciadorInimigos {
         return derrota;
     }
 
-    private Texture criarSprite(Inimigo inimigo) {
+    private ImageView criarSprite(Inimigo inimigo) {
 
-        String arquivo = inimigo.getTipoInimigo().toLowerCase() + ".png";
+        ImageView sprite = new ImageView();
+        atualizarSprite(sprite, inimigo.getTipoInimigo(), 1, 0);
 
-        Texture sprite = FXGL.getAssetLoader().loadTexture(arquivo);
-
-        sprite.setFitWidth(64);
-        sprite.setFitHeight(64);
+        sprite.setFitWidth(40);
+        sprite.setFitHeight(40);
         sprite.setSmooth(false);
 
-        sprite.setLayoutX(inimigo.getX() - 35);
-        sprite.setLayoutY(inimigo.getY() - 28);
+        sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
+        sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
 
         sprite.setMouseTransparent(true);
 
@@ -197,7 +215,7 @@ public class GerenciadorInimigos {
     }
 
     public void limparInimigos() {
-        for (Texture sprite : imagensInimigos) {
+        for (ImageView sprite : imagensInimigos) {
             FXGL.getGameScene().removeUINode(sprite);
         }
 
@@ -208,5 +226,32 @@ public class GerenciadorInimigos {
         circulosSlow.clear();
         inimigosAtivos.clear();
         imagensInimigos.clear();
+    }
+
+    private static final String PASTA_GIFS = "/assets/textures/";
+    private final Map<String, Optional<Image>> cacheGifs = new HashMap<>();
+
+    private void atualizarSprite(ImageView sprite, String nome, double dx, double dy) {
+        if (dx == 0 && dy == 0) {
+            return;
+        }
+
+        String direcao;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            direcao = dx > 0 ? "direita" : "esquerda";
+        } else {
+            direcao = dy > 0 ? "baixo" : "cima";
+        }
+
+        String arquivo = nome.toLowerCase(Locale.ROOT) + "_" + direcao + ".gif";
+
+        Optional<Image> gif = cacheGifs.computeIfAbsent(arquivo, chave -> {
+            URL url = GerenciadorInimigos.class.getResource(PASTA_GIFS + chave);
+            return url == null ? Optional.empty() : Optional.of(new Image(url.toExternalForm()));
+        });
+
+        if (gif.isPresent() && sprite.getImage() != gif.get()) {
+            sprite.setImage(gif.get());
+        }
     }
 }

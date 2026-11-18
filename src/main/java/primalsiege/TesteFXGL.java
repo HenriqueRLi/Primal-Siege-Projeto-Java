@@ -5,37 +5,34 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
-import com.almasb.fxgl.texture.Texture;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
-import javafx.scene.input.KeyCode;
-
-import primalsiege.modelo.Base;
-import primalsiege.modelo.Inimigo;
-import primalsiege.modelo.Mapa;
-import primalsiege.modelo.Torre;
-import primalsiege.torres.TorreCharmander;
-import primalsiege.torres.TorreSquirtle;
-import primalsiege.torres.TorrePikachu;
-import primalsiege.torres.TorreBulbassauro;
-import primalsiege.gerenciadores.GerenciadorOndas;
 import primalsiege.gerenciadores.GerenciadorCombate;
+import primalsiege.gerenciadores.GerenciadorEconomia;
 import primalsiege.gerenciadores.GerenciadorInimigos;
+import primalsiege.gerenciadores.GerenciadorOndas;
 import primalsiege.gerenciadores.GerenciadorTorres;
-
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
 import primalsiege.interfacegrafica.MenuTorre;
 import primalsiege.interfacegrafica.RenderizadorMapa;
 import primalsiege.interfacegrafica.RenderizadorTorres;
-import primalsiege.interfacegrafica.TelaVitoria;
 import primalsiege.interfacegrafica.TelaDerrota;
-import primalsiege.gerenciadores.GerenciadorEconomia;
+import primalsiege.interfacegrafica.TelaVitoria;
+import primalsiege.modelo.Base;
+import primalsiege.modelo.Inimigo;
+import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Torre;
+import primalsiege.torres.TorreBulbassauro;
+import primalsiege.torres.TorreCharmander;
+import primalsiege.torres.TorrePikachu;
+import primalsiege.torres.TorreSquirtle;
 
 
 public class TesteFXGL extends GameApplication {
@@ -44,7 +41,7 @@ public class TesteFXGL extends GameApplication {
     private static final int ALTURA = 720;
     private Inimigo inimigo;
     private ArrayList<Inimigo> inimigosAtivos = new ArrayList<>();
-    private ArrayList<Texture> imagensInimigos = new ArrayList<>();
+    private ArrayList<ImageView> imagensInimigos = new ArrayList<>();
     private Mapa mapa;
     private Base base;
     private HUDBase hudBase;
