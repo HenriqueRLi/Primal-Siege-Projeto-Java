@@ -1,6 +1,6 @@
 package primalsiege.modelo;
 public abstract class Inimigo {
-    private int vida;
+    private float vida;
     private double velocidadeMovimentacao;
     private int danoBase;
     private String tipoInimigo;
@@ -9,8 +9,13 @@ public abstract class Inimigo {
     private int indicePonto;
     private int recompensa;
     private Mapa mapa;
+    private int danoQueimadura;
+    private double tempoQueimadura;
+    private double acumuladorQueimadura;
+    private double percentualLentidao;
+    private double tempoLentidao;
 
-    public Inimigo (int vida, double velocidadeMovimentacao, int danoBase, String tipoInimigo, Mapa mapa) {
+    public Inimigo (float vida, double velocidadeMovimentacao, int danoBase, String tipoInimigo, Mapa mapa) {
         this.vida = vida;
         this.velocidadeMovimentacao = velocidadeMovimentacao;
         this.danoBase = danoBase;
@@ -20,6 +25,11 @@ public abstract class Inimigo {
         int celulaInicial = mapa.getCaminho().get(0);
         this.x = (celulaInicial % 32) * 40 + 20;
         this.y = (celulaInicial / 32) * 40 + 20;
+        danoQueimadura = 0;
+        tempoQueimadura = 0;
+        acumuladorQueimadura = 0;
+        percentualLentidao = 0;
+        tempoLentidao = 0;
     }
     
     public int getRecompensa () {
@@ -39,7 +49,7 @@ public abstract class Inimigo {
     }
 
     public boolean statusVida(){
-        if(vida <= 0){
+        if(vida <= 0.0){
             return false;
         }
         return true;
@@ -55,7 +65,7 @@ public abstract class Inimigo {
         int destinoY = (destino / 32) * 40 + 20;
         double dx = destinoX - this.x;
         double dy = destinoY - this.y;
-        double passo = velocidadeMovimentacao * tpf;
+        double passo = velocidadeMovimentacao * (1.0 - percentualLentidao) * tpf;
         
         if(dx != 0) {
             if(dx < 0) {
@@ -92,5 +102,61 @@ public abstract class Inimigo {
 
     public String getTipoInimigo() {
         return tipoInimigo;
+    }
+
+    public void aplicarQueimadura(int dano) {
+        if (tempoQueimadura <= 0) {
+            acumuladorQueimadura = 0;
+            danoQueimadura = dano;
+        }
+        else {
+            danoQueimadura = Math.max(danoQueimadura, dano);
+        }
+
+        tempoQueimadura = 2.0;
+    }
+
+    public void atualizarQueimadura(double tpf) {
+        if (tempoQueimadura <= 0 || !statusVida()) {
+            return;
+        }
+
+        double tempoPassado = Math.min(tpf, tempoQueimadura);
+
+        tempoQueimadura -= tempoPassado;
+        acumuladorQueimadura += tempoPassado;
+
+        while (acumuladorQueimadura >= 1.0 && statusVida()) {
+            danoRecebido(danoQueimadura);
+            acumuladorQueimadura -= 1.0;
+        }
+    }
+
+    public boolean estaQueimando() {
+        return tempoQueimadura > 0 && statusVida();
+    }
+
+    public void aplicarLentidao(double percentual) {
+        if (percentual <= 0 || !statusVida()) {
+            return;
+        }
+
+        percentualLentidao = Math.max(percentualLentidao, percentual);
+        tempoLentidao = 2.0;
+    }
+
+    public void atualizarLentidao(double tpf) {
+        if (tempoLentidao > 0) {
+            tempoLentidao -= tpf;
+
+            if (tempoLentidao <= 0) {
+                tempoLentidao = 0;
+                percentualLentidao = 0;
+            }
+        }
+    }
+
+    public boolean estaLento() {
+        return tempoLentidao > 0 && statusVida();
     }
 }

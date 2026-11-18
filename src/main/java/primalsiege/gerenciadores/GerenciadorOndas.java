@@ -1,4 +1,6 @@
 package primalsiege.gerenciadores;
+
+import java.util.Collections;
 import java.util.ArrayList;
 
 import primalsiege.modelo.Onda;
@@ -11,19 +13,33 @@ public class GerenciadorOndas {
     private int inimigosGerados;
 
     public GerenciadorOndas() {
+
         statusOndas = false;
         tempoSpawn = 0;
         inimigosGerados = 0;
 
-        ondas.add(new Onda("Wishiwashi", 25, 0.65));
-        ondas.add(new Onda("Pidgey", 32, 0.55));
-        ondas.add(new Onda("Rattata", 40, 0.45));
-        ondas.add(new Onda("Machop", 35, 0.50));
-        ondas.add(new Onda("Kadabra", 45, 0.40));
-        ondas.add(new Onda("Gengar", 50, 0.35));
-        ondas.add(new Onda("Gyarados", 32, 0.45));
-        ondas.add(new Onda("Dragonite", 28, 0.50));
-        ondas.add(new Onda("Mewtwo", 18, 0.65));
+        String[] muitoFracos = {"Wishiwashi", "Pidgey", "Rattata"};
+
+        String[] fracos = {"Machop", "Kadabra"};
+
+        String[] medios = {"Gengar"};
+
+        String[] fortes = {"Gyarados", "Dragonite"};
+
+        String[] chefes = {"Mewtwo", "Eternatus"};
+
+        ondas.add(criarOndaMista(25, 0.65, 2, muitoFracos));
+        ondas.add(criarOndaMista(32, 0.55, 2, muitoFracos));
+        ondas.add(criarOndaMista(40, 0.45, 2, muitoFracos));
+
+        ondas.add(criarOndaMista(35, 0.50, 2, muitoFracos, fracos));
+        ondas.add(criarOndaMista(45, 0.40, 2, fracos));
+        ondas.add(criarOndaMista(50, 0.35, 2, fracos, medios));
+
+        ondas.add(criarOndaMista(32, 0.45, 2, medios, fortes));
+        ondas.add(criarOndaMista(28, 0.50, 2, fortes));
+        ondas.add(criarOndaMista(18, 0.65, 2, fortes, new String[]{"Mewtwo"}));
+
         ondas.add(new Onda("Eternatus", 1, 1.0));
     }
 
@@ -80,6 +96,67 @@ public class GerenciadorOndas {
 
     public void registrarFimOnda() {
         statusOndas = false;
+    }
+
+    private Onda criarOndaMista(int quantidade, double intervaloSpawn, int qtdEspecies, String[]... grupos) {
+
+        ArrayList<String> disponiveis = new ArrayList<>();
+        ArrayList<String> escolhidas = new ArrayList<>();
+
+        for (String[] grupo : grupos) {
+
+            ArrayList<String> lista = new ArrayList<>();
+            Collections.addAll(lista, grupo);
+            Collections.shuffle(lista);
+
+            for (String especie : lista) {
+                if (!disponiveis.contains(especie)) {
+                    disponiveis.add(especie);
+                }
+            }
+
+            for (String especie : lista) {
+                if (!escolhidas.contains(especie)) {
+                    escolhidas.add(especie);
+                    break;
+                }
+            }
+        }
+
+        if (qtdEspecies < 1 || qtdEspecies < grupos.length ||
+            qtdEspecies > quantidade ||
+            qtdEspecies > disponiveis.size() ||
+            escolhidas.size() < grupos.length) {
+
+            throw new IllegalArgumentException("Quantidade de espécies inválida");
+        }
+
+        Collections.shuffle(disponiveis);
+
+        for (String especie : disponiveis) {
+
+            if (escolhidas.size() >= qtdEspecies) {
+                break;
+            }
+
+            if (!escolhidas.contains(especie)) {
+                escolhidas.add(especie);
+            }
+        }
+
+        ArrayList<String> composicao = new ArrayList<>();
+
+        for (int i = 0; i < quantidade; i++) {
+            composicao.add(escolhidas.get(i % qtdEspecies));
+        }
+
+        Collections.shuffle(composicao);
+
+        return new Onda(composicao, intervaloSpawn);
+    }
+
+    public int getInimigosGerados() {
+        return inimigosGerados;
     }
 
 }

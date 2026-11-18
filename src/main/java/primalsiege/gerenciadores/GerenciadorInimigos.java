@@ -7,30 +7,41 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import com.almasb.fxgl.dsl.FXGL;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import primalsiege.inimigos.Dragonite;
-import primalsiege.inimigos.Eternatus;
-import primalsiege.inimigos.Gengar;
-import primalsiege.inimigos.Gyarados;
-import primalsiege.inimigos.Kadabra;
-import primalsiege.inimigos.Machop;
-import primalsiege.inimigos.Mewtwo;
-import primalsiege.inimigos.Pidgey;
-import primalsiege.inimigos.Rattata;
-import primalsiege.inimigos.Wishiwashi;
-import primalsiege.interfacegrafica.HUDBase;
-import primalsiege.interfacegrafica.HUDOnda;
-import primalsiege.modelo.Base;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.paint.CycleMethod;
+
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Base;
+
+import primalsiege.inimigos.Rattata;
+import primalsiege.inimigos.Pidgey;
+import primalsiege.inimigos.Wishiwashi;
+import primalsiege.inimigos.Machop;
+import primalsiege.inimigos.Kadabra;
+import primalsiege.inimigos.Gengar;
+import primalsiege.inimigos.Gyarados;
+import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Mewtwo;
+import primalsiege.inimigos.Eternatus;
+
+import primalsiege.interfacegrafica.HUDBase;
+import primalsiege.interfacegrafica.HUDOnda;
 
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
-    private ArrayList<ImageView> imagensInimigos = new ArrayList<>();
+    private ArrayList<ImageView> imagensInimigos;
+    private ArrayList<Circle> circulosSlow = new ArrayList<>();
+
     private HUDOnda hudOnda;
+    private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
     public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<ImageView> imagensInimigos, HUDOnda hudOnda) {
         this.inimigosAtivos = inimigosAtivos;
@@ -43,14 +54,35 @@ public class GerenciadorInimigos {
 
         ImageView sprite = criarSprite(inimigo);
 
+        Circle anelSlow = new Circle(inimigo.getX(), inimigo.getY() + 23, 17);
+
+        anelSlow.setRadius(20);
+        anelSlow.setScaleY(0.40);
+        anelSlow.setStroke(Color.TRANSPARENT);
+
+        anelSlow.setFill(new RadialGradient(
+            0, 0, 0.5, 0.5, 0.5, true,
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.rgb(50, 200, 70, 0.75)),
+            new Stop(0.5, Color.rgb(40, 170, 60, 0.40)),
+            new Stop(1, Color.TRANSPARENT)
+        ));
+
+        anelSlow.setEffect(new GaussianBlur(2));
+        anelSlow.setMouseTransparent(true);
+        anelSlow.setVisible(false);
+
+        circulosSlow.add(anelSlow);
+        FXGL.getGameScene().addUINode(anelSlow);
+
         imagensInimigos.add(sprite);
 
         FXGL.getGameScene().addUINode(sprite);
         hudOnda.toFront();
     }
 
-    public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa) {
-        String especie = gerenciadorOndas.getOndaAtual().getEspecie();
+    public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa, int indice) {
+        String especie = gerenciadorOndas.getOndaAtual().getEspecie(indice);
 
         switch (especie) {
             case "Wishiwashi":
@@ -95,36 +127,56 @@ public class GerenciadorInimigos {
         for (int i = inimigosAtivos.size() - 1; i >= 0; i--) {
 
             Inimigo inimigo = inimigosAtivos.get(i);
-            ImageView sprite = imagensInimigos.get(i);
 
-            if (inimigo.statusVida()) {
+        ImageView sprite = imagensInimigos.get(i);
+        Circle anelSlow = circulosSlow.get(i);
 
-                double xAnterior = inimigo.getX();
-                double yAnterior = inimigo.getY();
+        inimigo.atualizarQueimadura(tpf);
+        inimigo.atualizarLentidao(tpf);
 
-                if (inimigo.mover(tpf)) {
+        anelSlow.setVisible(inimigo.estaLento());
 
-                    FXGL.getGameScene().removeUINode(sprite);
+        if (inimigo.estaQueimando()) {
+            sprite.setEffect(efeitoQueimadura);
+        }
+        else {
+            sprite.setEffect(null);
+        }
 
-                    if (base.diminuirVida(inimigo.danoAtaque())) {
-                        derrota = true;
-                    }
+        if (inimigo.statusVida()) {
 
-                    inimigosAtivos.remove(i);
-                    imagensInimigos.remove(i);
+            double xAnterior = inimigo.getX();
+            double yAnterior = inimigo.getY();
 
-                    hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
-                    hudBase.getBarraVerde().setWidth(210.0 * base.getVida() / 20);
+            if (inimigo.mover(tpf)) {
 
+
+                FXGL.getGameScene().removeUINode(sprite);
+                FXGL.getGameScene().removeUINode(anelSlow);
+
+                if (base.diminuirVida(inimigo.danoAtaque())) {
+                    derrota = true;
                 }
+
+                inimigosAtivos.remove(i);
+                imagensInimigos.remove(i);
+                circulosSlow.remove(i);
+
+                hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
+                hudBase.getBarraVerde().setWidth(210.0 * base.getVida() / 20);
+
+            }
                 else {
-                    double dx = inimigo.getX() - xAnterior;
-                    double dy = inimigo.getY() - yAnterior;
+                  double dx = inimigo.getX() - xAnterior;
+                  double dy = inimigo.getY() - yAnterior;
 
-                    atualizarSprite(sprite, inimigo.getTipoInimigo(), dx, dy);
+                  atualizarSprite(sprite, inimigo.getTipoInimigo(), dx, dy);
 
-                    sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
-                    sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
+                  sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
+                  sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
+
+                  anelSlow.setCenterX(inimigo.getX());
+                  anelSlow.setCenterY(inimigo.getY() + 23);
                 }
 
             }
@@ -134,8 +186,11 @@ public class GerenciadorInimigos {
                 hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
 
                 FXGL.getGameScene().removeUINode(sprite);
+                FXGL.getGameScene().removeUINode(anelSlow);
+
                 inimigosAtivos.remove(i);
                 imagensInimigos.remove(i);
+                circulosSlow.remove(i);
             }
         }
 
@@ -164,6 +219,11 @@ public class GerenciadorInimigos {
             FXGL.getGameScene().removeUINode(sprite);
         }
 
+        for (Circle anel : circulosSlow) {
+            FXGL.getGameScene().removeUINode(anel);
+        }
+
+        circulosSlow.clear();
         inimigosAtivos.clear();
         imagensInimigos.clear();
     }

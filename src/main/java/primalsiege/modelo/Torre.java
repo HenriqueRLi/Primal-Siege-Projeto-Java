@@ -58,6 +58,10 @@ public class Torre {
         return custoEvolucao;
     }
 
+    public double getRaioDescarga() {
+        return 90;
+    }
+
     public double getRotacao () {
         return rotacao;
     }
@@ -91,8 +95,15 @@ public class Torre {
         return distance <= this.alcance;
     }
 
-    public Projetil atirar(Inimigo alvo, double tpf) {
+    public void atualizarRecarga(double tpf) {
         cdr -= tpf;
+
+        if (cdr < -tpf) {
+            cdr = -tpf;
+        }
+    }
+
+    public Projetil atirar(Inimigo alvo) {
 
         if (cdr <= 0 && alvo.statusVida() && estaNoAlcance(alvo)) {
             Projetil tiro = new Projetil(
@@ -104,8 +115,22 @@ public class Torre {
                 this.Projrad,
                 getTaxaCrescimento()
             );
+            tiro.setDanoQueimadura(getDanoQueimadura());
 
-            cdr = 1.0 / velocidadeAtaque;
+            tiro.setPercentualLentidao(getPercentualLentidao());
+
+            tiro.setRaioDescarga(getRaioDescarga());
+
+            tiro.setVisualFogo(usaVisualFogo());
+            tiro.setNivelVisualFogo(getNivel());
+
+            tiro.setVisualAgua(usaVisualAgua());
+            tiro.setNivelVisualAgua(getNivel());
+
+            tiro.setVisualPlanta(usaVisualPlanta());
+            tiro.setNivelVisualPlanta(getNivel());
+
+            cdr += 1.0 / velocidadeAtaque;
 
             return tiro;
         }
@@ -132,6 +157,18 @@ public class Torre {
         return 0;
     }
 
+    public int getDanoQueimadura() {
+        return 0;
+    }
+
+    public boolean usaRaioInstantaneo() {
+        return false;
+    }
+
+    public double getPercentualLentidao() {
+        return 0;
+    }
+
     protected void definirAtributosAtaque(float dano, float velocidadeAtaque) {
         this.dano = dano;
         this.velocidadeAtaque = velocidadeAtaque;
@@ -141,6 +178,18 @@ public class Torre {
         this.corProj = cor;
         this.velProj = velocidade;
         this.Projrad = raio;
+    }
+
+    public boolean usaVisualFogo() {
+        return false;
+    }
+
+    public boolean usaVisualAgua() {
+        return false;
+    }
+
+    public boolean usaVisualPlanta() {
+        return false;
     }
 
 }
