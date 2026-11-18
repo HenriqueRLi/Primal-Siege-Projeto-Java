@@ -100,6 +100,21 @@ public class Mapa {
         caminho.add(573);
 
         matriz[17][29] = 3;
+
+        matriz[2][8] = 4;
+        matriz[3][8] = 4;
+
+        matriz[8][10] = 4;
+        matriz[9][10] = 4;
+
+        matriz[4][23] = 4;
+        matriz[5][23] = 4;
+
+        matriz[12][20] = 4;
+        matriz[13][20] = 4;
+
+        matriz[10][27] = 4;
+        matriz[11][27] = 4;
     }
 
     public int[][] getMatriz() {

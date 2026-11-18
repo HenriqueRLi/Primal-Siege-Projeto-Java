@@ -79,8 +79,6 @@ public class TesteFXGL extends GameApplication {
         RenderizadorMapa renderizador = new RenderizadorMapa(LARGURA, ALTURA, TAMANHO_CELULA);
 
         renderizador.desenharCaminho(mapa.getMatriz());
-        renderizador.criarGrid();
-        renderizador.numerarCelulas();
 
         hudBase = new HUDBase(base);
 
@@ -247,6 +245,8 @@ public class TesteFXGL extends GameApplication {
             return;
         }
 
+        gerenciadorInimigos.organizarOndaPorVelocidade(gerenciadorOndas, mapa);
+        
         inimigo = gerenciadorInimigos.instanciarInimigoDaOnda(gerenciadorOndas, mapa, 0);
 
         gerenciadorInimigos.criarInimigo(inimigo);

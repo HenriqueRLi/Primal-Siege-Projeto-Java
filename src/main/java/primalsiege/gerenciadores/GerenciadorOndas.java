@@ -98,6 +98,7 @@ public class GerenciadorOndas {
         statusOndas = false;
     }
 
+
     private Onda criarOndaMista(int quantidade, double intervaloSpawn, int qtdEspecies, String[]... grupos) {
 
         ArrayList<String> disponiveis = new ArrayList<>();
@@ -123,10 +124,7 @@ public class GerenciadorOndas {
             }
         }
 
-        if (qtdEspecies < 1 || qtdEspecies < grupos.length ||
-            qtdEspecies > quantidade ||
-            qtdEspecies > disponiveis.size() ||
-            escolhidas.size() < grupos.length) {
+        if (qtdEspecies < 1 || qtdEspecies < grupos.length || qtdEspecies > quantidade || qtdEspecies > disponiveis.size() || escolhidas.size() < grupos.length) {
 
             throw new IllegalArgumentException("Quantidade de espécies inválida");
         }
@@ -144,16 +142,29 @@ public class GerenciadorOndas {
             }
         }
 
+        Collections.shuffle(escolhidas);
+
         ArrayList<String> composicao = new ArrayList<>();
 
-        for (int i = 0; i < quantidade; i++) {
-            composicao.add(escolhidas.get(i % qtdEspecies));
-        }
+        int quantidadePorGrupo = quantidade / qtdEspecies;
+        int restante = quantidade % qtdEspecies;
 
-        Collections.shuffle(composicao);
+        for (int i = 0; i < escolhidas.size(); i++) {
+
+            int total = quantidadePorGrupo;
+
+            if (i < restante) {
+                total++;
+            }
+
+            for (int j = 0; j < total; j++) {
+                composicao.add(escolhidas.get(i));
+            }
+        }
 
         return new Onda(composicao, intervaloSpawn);
     }
+
 
     public int getInimigosGerados() {
         return inimigosGerados;

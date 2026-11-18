@@ -1,5 +1,7 @@
 package primalsiege.gerenciadores;
 
+import com.almasb.fxgl.dsl.FXGL;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import javafx.scene.paint.CycleMethod;
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
 import primalsiege.modelo.Base;
+import primalsiege.modelo.Onda;
 
 import primalsiege.inimigos.Rattata;
 import primalsiege.inimigos.Pidgey;
@@ -39,7 +42,9 @@ public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
     private ArrayList<ImageView> imagensInimigos;
     private ArrayList<Circle> circulosSlow = new ArrayList<>();
-
+    
+    private static final String PASTA_GIFS = "/assets/textures/";
+    private final Map<String, Optional<Image>> cacheGifs = new HashMap<>();
     private HUDOnda hudOnda;
     private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
@@ -228,8 +233,31 @@ public class GerenciadorInimigos {
         imagensInimigos.clear();
     }
 
-    private static final String PASTA_GIFS = "/assets/textures/";
-    private final Map<String, Optional<Image>> cacheGifs = new HashMap<>();
+    public void organizarOndaPorVelocidade(GerenciadorOndas gerenciadorOndas, Mapa mapa) {
+
+        Onda onda = gerenciadorOndas.getOndaAtual();
+
+        Map<String, Double> velocidades = new HashMap<>();
+
+        for (int i = 0; i < onda.getQuantidade(); i++) {
+
+            String especie = onda.getEspecie(i);
+
+            if (!velocidades.containsKey(especie)) {
+
+                Inimigo inimigo = instanciarInimigoDaOnda(
+                    gerenciadorOndas, mapa, i
+                );
+
+                velocidades.put(
+                    especie,
+                    inimigo.getVelocidadeMovimentacao()
+                );
+            }
+        }
+
+        onda.ordenarPorVelocidade(velocidades);
+    }
 
     private void atualizarSprite(ImageView sprite, String nome, double dx, double dy) {
         if (dx == 0 && dy == 0) {

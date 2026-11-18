@@ -32,6 +32,10 @@ public abstract class Inimigo {
         tempoLentidao = 0;
     }
     
+    public double getVelocidadeMovimentacao() {
+        return velocidadeMovimentacao;
+    }
+    
     public int getRecompensa () {
         return recompensa;
     }
