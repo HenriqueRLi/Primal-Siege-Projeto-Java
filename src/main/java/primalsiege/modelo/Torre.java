@@ -182,7 +182,6 @@ public class Torre {
         this.Projrad = raio;
     }
 
-<<<<<<< HEAD
     public boolean usaVisualFogo() {
         return false;
     }
@@ -193,7 +192,7 @@ public class Torre {
 
     public boolean usaVisualPlanta() {
         return false;
-=======
+    }
     public int somaValor(int valor) {
         valort += valor;
         return valort;
@@ -201,7 +200,6 @@ public class Torre {
 
     public int getvalor() {
         return valort;
->>>>>>> c9004da (interface upgrade e venda)
     }
 
 }

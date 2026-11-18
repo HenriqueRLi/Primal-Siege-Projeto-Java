@@ -303,11 +303,6 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().addUINode(hudVitoria);
     }
     
-<<<<<<< HEAD
-
-    @Override
-    protected void onUpdate(double tpf) {
-=======
     @Override 
     protected void onUpdate (double tpf) {
         if(telaupar.getevento() == 1){
@@ -327,7 +322,6 @@ public class TesteFXGL extends GameApplication {
 
             telaupar.fecharMenu();
         }
->>>>>>> c9004da (interface upgrade e venda)
 
         if (base.getVida() <= 0 || hudVitoria != null) {
             return;
