@@ -74,8 +74,8 @@ public class GerenciadorInimigos {
         hudOnda.toFront();
     }
 
-    public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa) {
-        String especie = gerenciadorOndas.getOndaAtual().getEspecie();
+    public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa, int indice) {
+        String especie = gerenciadorOndas.getOndaAtual().getEspecie(indice);
 
         switch (especie) {
             case "Wishiwashi":
@@ -136,21 +136,23 @@ public class GerenciadorInimigos {
 
             if (inimigo.statusVida()) {
 
-                if (inimigo.mover(tpf)) {
+            if (inimigo.mover(tpf)) {
 
-                    FXGL.getGameScene().removeUINode(sprite);
+                FXGL.getGameScene().removeUINode(sprite);
+                FXGL.getGameScene().removeUINode(anelSlow);
 
-                    if (base.diminuirVida(inimigo.danoAtaque())) {
-                        derrota = true;
-                    }
-
-                    inimigosAtivos.remove(i);
-                    imagensInimigos.remove(i);
-
-                    hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
-                    hudBase.getBarraVerde().setWidth(210.0 * base.getVida() / 20);
-
+                if (base.diminuirVida(inimigo.danoAtaque())) {
+                    derrota = true;
                 }
+
+                inimigosAtivos.remove(i);
+                imagensInimigos.remove(i);
+                circulosSlow.remove(i);
+
+                hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
+                hudBase.getBarraVerde().setWidth(210.0 * base.getVida() / 20);
+
+            }
                 else {
                     sprite.setLayoutX(inimigo.getX() - 35);
                     sprite.setLayoutY(inimigo.getY() - 28);

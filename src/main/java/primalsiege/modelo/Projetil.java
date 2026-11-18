@@ -23,6 +23,8 @@ public class Projetil {
     private boolean visualAgua;
     private int nivelVisualFogo;
     private int nivelVisualAgua;
+    private boolean visualPlanta;
+    private int nivelVisualPlanta;
 
     public Projetil(float dano, double velocidade, double x, double y, Inimigo alvo, double raio, double taxaCrescimento) {
         this.dano = dano;
@@ -39,10 +41,28 @@ public class Projetil {
         raioDescarga = 90; 
         visualFogo = false;
         visualAgua = false;
+        visualPlanta = false;
         nivelVisualFogo = 0;
         nivelVisualAgua = 0;
+        nivelVisualPlanta = 0;
     }
 
+    public void setVisualPlanta(boolean visualPlanta) {
+        this.visualPlanta = visualPlanta;
+    }
+
+    public boolean ehVisualPlanta() {
+        return visualPlanta;
+    }
+
+    public void setNivelVisualPlanta(int nivel) {
+        this.nivelVisualPlanta = nivel;
+    }
+
+    public int getNivelVisualPlanta() {
+        return nivelVisualPlanta;
+    }
+    
     public void setVisualAgua(boolean visualAgua) {
         this.visualAgua = visualAgua;
     }
@@ -173,49 +193,49 @@ public class Projetil {
         return danoDescarga > 0;
     }
 
-private void aplicarDescarga(ArrayList<Inimigo> inimigosAtivos) {
-    System.out.println("DESCARGA ATIVADA! Dano: " + danoDescarga);
-    pontosDescarga.clear();
-    alvosDescarga.clear();
+    private void aplicarDescarga(ArrayList<Inimigo> inimigosAtivos) {
+        System.out.println("DESCARGA ATIVADA! Dano: " + danoDescarga);
+        pontosDescarga.clear();
+        alvosDescarga.clear();
 
-    alvosDescarga.add(alvo);
-    pontosDescarga.add(new Point2D(this.x, this.y));
+        alvosDescarga.add(alvo);
+        pontosDescarga.add(new Point2D(this.x, this.y));
 
-    int atingidos = 0;
+        int atingidos = 0;
 
-    if (alvo.statusVida()) {
-        alvo.danoRecebido(danoDescarga);
-        atingidos++;
-    }
-
-    for (Inimigo inimigo : inimigosAtivos) {
-
-        if (atingidos >= 3) {
-            break;
+        if (alvo.statusVida()) {
+            alvo.danoRecebido(danoDescarga);
+            atingidos++;
         }
 
-        if (inimigo != alvo && inimigo.statusVida()) {
+        for (Inimigo inimigo : inimigosAtivos) {
 
-            double distancia = Math.hypot(
-                inimigo.getX() - this.x,
-                inimigo.getY() - this.y
-            );
+            if (atingidos >= 3) {
+                break;
+            }
 
-            if (distancia <= raioDescarga) {
+            if (inimigo != alvo && inimigo.statusVida()) {
 
-                System.out.println("Inimigo secundario atingido! Distancia: " + distancia);
-                inimigo.danoRecebido(danoDescarga);
-
-                pontosDescarga.add(
-                    new Point2D(inimigo.getX(), inimigo.getY())
+                double distancia = Math.hypot(
+                    inimigo.getX() - this.x,
+                    inimigo.getY() - this.y
                 );
 
-                alvosDescarga.add(inimigo);
+                if (distancia <= raioDescarga) {
 
-                atingidos++;
+                    System.out.println("Inimigo secundario atingido! Distancia: " + distancia);
+                    inimigo.danoRecebido(danoDescarga);
+
+                    pontosDescarga.add(
+                        new Point2D(inimigo.getX(), inimigo.getY())
+                    );
+
+                    alvosDescarga.add(inimigo);
+
+                    atingidos++;
+                }
             }
         }
     }
-}
 
 }

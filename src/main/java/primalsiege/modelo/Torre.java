@@ -127,6 +127,9 @@ public class Torre {
             tiro.setVisualAgua(usaVisualAgua());
             tiro.setNivelVisualAgua(getNivel());
 
+            tiro.setVisualPlanta(usaVisualPlanta());
+            tiro.setNivelVisualPlanta(getNivel());
+
             cdr += 1.0 / velocidadeAtaque;
 
             return tiro;
@@ -184,4 +187,9 @@ public class Torre {
     public boolean usaVisualAgua() {
         return false;
     }
+
+    public boolean usaVisualPlanta() {
+        return false;
+    }
+
 }

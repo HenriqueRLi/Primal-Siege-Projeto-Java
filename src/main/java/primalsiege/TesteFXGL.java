@@ -250,9 +250,7 @@ public class TesteFXGL extends GameApplication {
             return;
         }
 
-        inimigo = gerenciadorInimigos.instanciarInimigoDaOnda(
-            gerenciadorOndas, mapa
-        );
+        inimigo = gerenciadorInimigos.instanciarInimigoDaOnda(gerenciadorOndas, mapa, 0);
 
         gerenciadorInimigos.criarInimigo(inimigo);
 
@@ -299,35 +297,46 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().addUINode(hudVitoria);
     }
     
-    @Override 
-    protected void onUpdate (double tpf) {
+
+    @Override
+    protected void onUpdate(double tpf) {
+
         if (base.getVida() <= 0 || hudVitoria != null) {
             return;
         }
+
         if (gerenciadorOndas.verificarSpawn(tpf)) {
+
             gerenciadorInimigos.criarInimigo(
                 gerenciadorInimigos.instanciarInimigoDaOnda(
-                    gerenciadorOndas, mapa
+                    gerenciadorOndas,
+                    mapa,
+                    gerenciadorOndas.getInimigosGerados()
                 )
             );
 
             gerenciadorOndas.registrarInimigoGerado();
         }
-        if(gerenciadorInimigos.atualizarInimigos(tpf, base, hudBase, gerenciadorEconomia)){
+
+        if (gerenciadorInimigos.atualizarInimigos(
+                tpf, base, hudBase, gerenciadorEconomia)) {
             criarHUDDerrota();
         }
 
         if (gerenciadorOndas.verificarFimOnda(inimigosAtivos.isEmpty())) {
+
             gerenciadorOndas.registrarFimOnda();
 
             if (gerenciadorOndas.avançarOnda()) {
                 criarHUDVitoria();
             }
             else {
-                hudOnda.atualizarNumeroOnda(gerenciadorOndas.getNumeroOnda());
+                hudOnda.atualizarNumeroOnda(
+                    gerenciadorOndas.getNumeroOnda()
+                );
             }
         }
-        
+
         gerenciadorCombate.atualizarTorres(
             torres,
             triangulosTorres,
@@ -336,27 +345,46 @@ public class TesteFXGL extends GameApplication {
             inimigo,
             tpf
         );
+
         gerenciadorCombate.atualizarProjeteis(inimigosAtivos, tpf);
-        
+
         Torre torre = gerenciadorTorres.criarTorre(Mrad.getTselect());
 
         if (torre != null) {
+
             int custo = gerenciadorTorres.getCustoConstrucao(torre);
+
             if (custo >= 0 && gerenciadorEconomia.getOuro() >= custo) {
-                if (gerenciadorTorres.construirTorre(torre, mapa, linhaSelecionada, colunaSelecionada)) {
+
+                if (gerenciadorTorres.construirTorre(
+                        torre, mapa, linhaSelecionada, colunaSelecionada)) {
+
                     gerenciadorEconomia.descontarOuro(custo);
-                    renderizadorTorres.desenharTorre(torre, Mrad.getTselect(), torres, triangulosTorres, hudOnda);
-                    hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
+
+                    renderizadorTorres.desenharTorre(
+                        torre,
+                        Mrad.getTselect(),
+                        torres,
+                        triangulosTorres,
+                        hudOnda
+                    );
+
+                    hudOnda.atualizarOuro(
+                        gerenciadorEconomia.getOuro()
+                    );
                 }
             }
             else {
-                System.out.println("Ouro insuficiente para construir a torre!");
+                System.out.println(
+                    "Ouro insuficiente para construir a torre!"
+                );
             }
 
             Mrad.resetselect();
             Mrad.fecharMenu();
         }
     }
+
     public static void main(String[] args) {
         launch(args);
     }

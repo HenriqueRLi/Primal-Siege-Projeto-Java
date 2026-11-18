@@ -22,6 +22,9 @@ import javafx.scene.shape.Shape;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.paint.CycleMethod;
+import javafx.animation.ScaleTransition;
+import javafx.animation.ParallelTransition;
+import javafx.scene.paint.RadialGradient;
 
 public class GerenciadorCombate {
 
@@ -164,7 +167,6 @@ public class GerenciadorCombate {
 
             if (nivel == 1) {
 
-                // Squirtle
                 escala = 0.65;
                 brilho = 8;
 
@@ -194,8 +196,18 @@ public class GerenciadorCombate {
             }
 
             if (tiro.ehHidroBomba()) {
-                escala *= 1.3;
-                brilho += 10;
+
+                if (nivel == 3) {
+                    escala *= 1.8;
+                    brilho += 16;
+                }
+                else {
+                    escala *= 1.6;
+                    brilho += 12;
+                }
+
+                corBase = Color.DODGERBLUE;
+                corCentro = Color.AQUA;
                 corPonta = Color.WHITE;
             }
 
@@ -208,13 +220,117 @@ public class GerenciadorCombate {
             ));
 
             agua.setStroke(Color.LIGHTCYAN);
-            agua.setStrokeWidth(1.2);
+            agua.setStrokeWidth(tiro.ehHidroBomba() ? 2 : 1.2);
             agua.setEffect(new DropShadow(brilho, Color.AQUA));
 
             agua.setScaleX(escala);
-            agua.setScaleY(escala * 0.75);
+
+            if (tiro.ehHidroBomba()) {
+                agua.setScaleY(escala);
+            }
+            else {
+                agua.setScaleY(escala * 0.75);
+            }
 
             visual = agua;
+        }
+        else if (tiro.ehVisualPlanta()) {
+
+            int nivel = tiro.getNivelVisualPlanta();
+
+            Polygon planta;
+
+            if (nivel == 1) {
+
+                planta = new Polygon(
+                    -11.0, -5.0,
+                    -5.0, -8.0,
+                    6.0, -6.0,
+                    12.0, 0.0,
+                    6.0, 6.0,
+                    -5.0, 8.0,
+                    -11.0, 5.0
+                );
+
+            }
+            else if (nivel == 2) {
+
+                planta = new Polygon(
+                    -17.0, 0.0,
+                    -8.0, -8.0,
+                    4.0, -10.0,
+                    17.0, 0.0,
+                    4.0, 10.0,
+                    -8.0, 8.0
+                );
+
+            }
+            else {
+
+                planta = new Polygon(
+                    -23.0, 0.0,
+                    -15.0, -7.0,
+                    -18.0, -13.0,
+                    -5.0, -10.0,
+                    2.0, -17.0,
+                    12.0, -9.0,
+                    24.0, 0.0,
+                    12.0, 9.0,
+                    2.0, 17.0,
+                    -5.0, 10.0,
+                    -18.0, 13.0,
+                    -15.0, 7.0
+                );
+            }
+
+            double escala;
+            double brilho;
+            Color corBase;
+            Color corPonta;
+
+            if (nivel == 1) {
+
+                escala = 0.65;
+                brilho = 7;
+
+                corBase = Color.FORESTGREEN;
+                corPonta = Color.YELLOWGREEN;
+
+            }
+            else if (nivel == 2) {
+
+                escala = 0.85;
+                brilho = 12;
+
+                corBase = Color.DARKGREEN;
+                corPonta = Color.LIMEGREEN;
+
+            }
+            else {
+
+                escala = 1.0;
+                brilho = 18;
+
+                corBase = Color.FORESTGREEN;
+                corPonta = Color.LAWNGREEN;
+            }
+
+            planta.setFill(new LinearGradient(
+                0, 0, 1, 0, true,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, corBase),
+                new Stop(0.55, Color.LIMEGREEN),
+                new Stop(1, corPonta)
+            ));
+
+            planta.setStroke(Color.LIGHTGREEN);
+            planta.setStrokeWidth(nivel == 3 ? 1.5 : 1);
+            planta.setEffect(new DropShadow(brilho, Color.LIMEGREEN));
+
+            planta.setScaleX(escala);
+            planta.setScaleY(escala);
+
+            visual = planta;
         }
         else {
 
@@ -244,7 +360,7 @@ public class GerenciadorCombate {
         visual.setTranslateY(tiro.getY());
         visual.setMouseTransparent(true);
 
-        if (tiro.ehVisualFogo() || tiro.ehVisualAgua()) {
+        if (tiro.ehVisualFogo() || tiro.ehVisualAgua() || tiro.ehVisualPlanta()) {
             ajustarDirecaoChama(tiro, visual);
         }
 
@@ -254,6 +370,50 @@ public class GerenciadorCombate {
         FXGL.getGameScene().addUINode(visual);
     }
     
+    private void mostrarImpactoHidroBomba(double x, double y) {
+
+        Circle impacto = new Circle(x, y, 17);
+
+        impacto.setFill(new RadialGradient(
+            0, 0, 0.5, 0.5, 0.5, true,
+            CycleMethod.NO_CYCLE,
+            new Stop(0, Color.rgb(255, 255, 255, 0.9)),
+            new Stop(0.4, Color.rgb(100, 220, 255, 0.75)),
+            new Stop(1, Color.TRANSPARENT)
+        ));
+
+        impacto.setEffect(new DropShadow(15, Color.AQUA));
+        impacto.setMouseTransparent(true);
+
+        FXGL.getGameScene().addUINode(impacto);
+
+        ScaleTransition expandir = new ScaleTransition(
+            Duration.seconds(0.60), impacto
+        );
+
+        expandir.setFromX(0.6);
+        expandir.setFromY(0.6);
+        expandir.setToX(2.2);
+        expandir.setToY(2.2);
+
+        FadeTransition desaparecer = new FadeTransition(
+            Duration.seconds(0.60), impacto
+        );
+
+        desaparecer.setFromValue(1.0);
+        desaparecer.setToValue(0.0);
+
+        ParallelTransition animacao = new ParallelTransition(
+            expandir, desaparecer
+        );
+
+        animacao.setOnFinished(evento -> {
+            FXGL.getGameScene().removeUINode(impacto);
+        });
+
+        animacao.play();
+    }
+
     public void atualizarProjeteis(ArrayList<Inimigo> inimigosAtivos, double tpf) {
 
         for (int i = projeteis.size() - 1; i >= 0; i--) {
@@ -270,6 +430,10 @@ public class GerenciadorCombate {
 
                 if (acertou && tiro.ehDescarga()) {
                     mostrarRaioDescarga(tiro.getAlvosDescarga());
+                }
+
+                if (acertou && tiro.ehHidroBomba()) {
+                    mostrarImpactoHidroBomba(tiro.getX(), tiro.getY());
                 }
 
                 FXGL.getGameScene().removeUINode(visual);
@@ -294,7 +458,7 @@ public class GerenciadorCombate {
                     }
                 }
 
-                if (tiro.ehVisualFogo()) {
+                if (tiro.ehVisualFogo() || tiro.ehVisualAgua() || tiro.ehVisualPlanta()) {
                     ajustarDirecaoChama(tiro, visual);
                 }
             }

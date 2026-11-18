@@ -40,4 +40,9 @@ public class TorreBulbassauro extends Torre {
 
         return 0;
     }
+
+    @Override
+    public boolean usaVisualPlanta() {
+        return true;
+    }
 }

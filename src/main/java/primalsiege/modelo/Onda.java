@@ -1,24 +1,41 @@
 package primalsiege.modelo;
+
+import java.util.ArrayList;
+
 public class Onda {
-    private String especie;
-    private int quantidade;
-    private double intervaloSpawn;
+     private ArrayList<String> especies;
+     private double intervaloSpawn;
 
-    public Onda (String especie, int quantidade, double intervaloSpawn) {
-        this.especie = especie;
-        this.quantidade = quantidade;
-        this.intervaloSpawn = intervaloSpawn;
-    }
+     public Onda(String especie, int quantidade, double intervaloSpawn) {
 
-    public String getEspecie(){
-        return especie;
-   }
+     this.especies = new ArrayList<>();
 
-   public int getQuantidade(){
-        return quantidade;
-   }
+     for (int i = 0; i < quantidade; i++) {
+          especies.add(especie);
+     }
 
-   public double getIntervaloSpawn(){
-        return intervaloSpawn;
-   }
+     this.intervaloSpawn = intervaloSpawn;
+     }
+
+     public Onda(ArrayList<String> especies, double intervaloSpawn) {
+
+     this.especies = new ArrayList<>(especies);
+     this.intervaloSpawn = intervaloSpawn;
+     }
+
+     public String getEspecie() {
+     return especies.get(0);
+     }
+
+     public String getEspecie(int indice) {
+     return especies.get(indice);
+     }
+
+     public int getQuantidade() {
+     return especies.size();
+     }
+
+     public double getIntervaloSpawn(){
+          return intervaloSpawn;
+     }
 }
