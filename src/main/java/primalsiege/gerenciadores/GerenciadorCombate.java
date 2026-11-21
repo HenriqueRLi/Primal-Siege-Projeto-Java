@@ -1,13 +1,15 @@
 package primalsiege.gerenciadores;
 
 import java.util.ArrayList;
+
 import com.almasb.fxgl.dsl.FXGL;
+
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import primalsiege.modelo.Inimigo;
-import primalsiege.modelo.Projetil;
 import javafx.scene.shape.Polygon;
+import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Projetil;
 import primalsiege.modelo.Torre;
 
 import javafx.scene.effect.DropShadow;
@@ -524,6 +526,7 @@ public class GerenciadorCombate {
 
             if (alvoSelecionado != null) {
 
+<<<<<<< HEAD
             torre.atualizarRotacao(alvoSelecionado.getX(), alvoSelecionado.getY());
             triangulo.setRotate(torre.getRotacao() + 90);
 
@@ -551,6 +554,10 @@ public class GerenciadorCombate {
                 }
                 else {
                     desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(inimigo));
+=======
+                if (tiro != null) {
+                    desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(alvoSelecionado));
+>>>>>>> c9004da (interface upgrade e venda)
                 }
             }
         }

@@ -2,15 +2,17 @@
 package primalsiege.gerenciadores;
 
 import java.util.ArrayList;
-import javafx.scene.shape.Polygon;
+
 import com.almasb.fxgl.dsl.FXGL;
 
-import primalsiege.modelo.Torre;
-import primalsiege.torres.TorreCharmander;
-import primalsiege.torres.TorreSquirtle;
-import primalsiege.torres.TorrePikachu;
-import primalsiege.torres.TorreBulbassauro;
+import javafx.scene.shape.Polygon;
+import primalsiege.interfacegrafica.RenderizadorTorres;
 import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Torre;
+import primalsiege.torres.TorreBulbassauro;
+import primalsiege.torres.TorreCharmander;
+import primalsiege.torres.TorrePikachu;
+import primalsiege.torres.TorreSquirtle;
 
 public class GerenciadorTorres {
     public Torre criarTorre(int selecionada) {
@@ -119,4 +121,21 @@ public class GerenciadorTorres {
         }
         return -1;
     }
+
+    public boolean venderTorre(Torre torre, ArrayList<Torre> torres,Mapa mapa, RenderizadorTorres renderizadorTorres) {
+    int indice = torres.indexOf(torre);
+    if (indice == -1) {
+        return false;
+    }
+
+    int linha = (int) (torre.getY() / 40);
+    int coluna = (int) (torre.getX() / 40);
+
+    renderizadorTorres.removerSprite(indice);
+    torres.remove(indice);
+    mapa.setMatriz(linha, coluna, 0);
+    return true;
+}
+
+
 }

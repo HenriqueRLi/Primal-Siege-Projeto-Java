@@ -10,8 +10,12 @@ public class TorrePikachu extends Torre {
     private double recargaDescarga;
 
     public TorrePikachu(double x, double y) {
+<<<<<<< HEAD
         super(8, 150, x, y, 2, 50, Color.YELLOW, 800, 20);
         recargaDescarga = 0;
+=======
+        super(8, 150, x, y, 2, 50, Color.YELLOW, 800, 20,115);
+>>>>>>> c9004da (interface upgrade e venda)
     }
 
     @Override

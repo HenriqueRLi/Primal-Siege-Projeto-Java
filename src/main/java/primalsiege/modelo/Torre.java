@@ -14,8 +14,9 @@ public class Torre {
     private Color corProj;
     private int velProj;
     private int Projrad;
+    private int valort;
 
-    public Torre (float dano, double alcance, double x, double y, float velocidadeAtaque, int custoEvolucao, Color corProj, int velProj, int Projrad) {
+    public Torre (float dano, double alcance, double x, double y, float velocidadeAtaque, int custoEvolucao, Color corProj, int velProj, int Projrad, int valor) {
         this.dano = dano;
         this.alcance = alcance;
         this.x = x;
@@ -28,6 +29,7 @@ public class Torre {
         this.corProj = corProj;
         this.velProj = velProj;
         this.Projrad = Projrad;
+        this.valort = valor;
     }
 
     public double getX () {
@@ -180,6 +182,7 @@ public class Torre {
         this.Projrad = raio;
     }
 
+<<<<<<< HEAD
     public boolean usaVisualFogo() {
         return false;
     }
@@ -190,6 +193,15 @@ public class Torre {
 
     public boolean usaVisualPlanta() {
         return false;
+=======
+    public int somaValor(int valor) {
+        valort += valor;
+        return valort;
+    }
+
+    public int getvalor() {
+        return valort;
+>>>>>>> c9004da (interface upgrade e venda)
     }
 
 }

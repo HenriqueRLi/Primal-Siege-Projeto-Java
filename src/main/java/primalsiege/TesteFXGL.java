@@ -9,7 +9,6 @@ import com.almasb.fxgl.input.UserAction;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -21,6 +20,7 @@ import primalsiege.gerenciadores.GerenciadorTorres;
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
 import primalsiege.interfacegrafica.MenuTorre;
+import primalsiege.interfacegrafica.MenuUpgrade;
 import primalsiege.interfacegrafica.RenderizadorMapa;
 import primalsiege.interfacegrafica.RenderizadorTorres;
 import primalsiege.interfacegrafica.TelaDerrota;
@@ -60,6 +60,7 @@ public class TesteFXGL extends GameApplication {
     private RenderizadorTorres renderizadorTorres = new RenderizadorTorres();
     private Torre torreSelecionada;
     private GerenciadorEconomia gerenciadorEconomia = new GerenciadorEconomia();
+    private MenuUpgrade telaupar = new MenuUpgrade();
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -130,7 +131,7 @@ public class TesteFXGL extends GameApplication {
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
         @Override
         protected void onActionBegin() {
-            if(hudVitoria == null && base.getVida()!=0 && Mrad.getStatus() == false) {
+            if(hudVitoria == null && base.getVida()!=0 && Mrad.getStatus() == false && telaupar.getStatus() == false) {
                 double mouseX = FXGL.getInput().getMouseXWorld();
                 double mouseY = FXGL.getInput().getMouseYWorld();
 
@@ -148,7 +149,7 @@ public class TesteFXGL extends GameApplication {
                     for (Torre torre : torres) {
                         if (torre.getX() == coluna * 40 + 20 && torre.getY() == linha * 40 + 20) {
                             torreSelecionada = torre;
-
+                            telaupar.abrirtorre(torreSelecionada, coluna, linha);       
                             System.out.println("Torre selecionada! Nivel: " + torreSelecionada.getNivel());
                             return;
                         }
@@ -168,11 +169,10 @@ public class TesteFXGL extends GameApplication {
             }
         }
     }, MouseButton.PRIMARY);
-    FXGL.getInput().addAction(new UserAction("Evoluir Torre") {
-            @Override
-            protected void onActionBegin() {
+    }
 
-                if (torreSelecionada != null &&
+    private void evoluirTorre(Torre torre) {
+             if (torreSelecionada != null &&
                     hudVitoria == null &&
                     base.getVida() > 0) {
 
@@ -189,6 +189,7 @@ public class TesteFXGL extends GameApplication {
                     }
                     if (torreSelecionada.evoluir()) {
                         gerenciadorEconomia.descontarOuro(custo);
+                        torreSelecionada.somaValor(custo);
                         hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
                         System.out.println(
                         "Evoluiu! Nivel: " + torreSelecionada.getNivel() +
@@ -198,28 +199,28 @@ public class TesteFXGL extends GameApplication {
                         if (torreSelecionada instanceof TorreCharmander) {
 
                             if (torreSelecionada.getNivel() == 2) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "charmeleon.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "charmeleon_parado.gif");
                             }
                             else if (torreSelecionada.getNivel() == 3) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "charizard.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "charizard_parado.gif");
                             }
                         }
 
                         if (torreSelecionada instanceof TorreSquirtle) {
                             if (torreSelecionada.getNivel() == 2) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "wartortle.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "wartortle_parado.gif");
                             }
                             else if (torreSelecionada.getNivel() == 3) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "blastoise.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "blastoise_parado.gif");
                             }
                         }
 
                         if (torreSelecionada instanceof TorreBulbassauro) {
                             if (torreSelecionada.getNivel() == 2) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "ivysaur.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "ivysaur_parado.gif");
                             }
                             else if (torreSelecionada.getNivel() == 3) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "venusaur.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "venusaur_parado.gif");
                             }
                         }
 
@@ -235,10 +236,18 @@ public class TesteFXGL extends GameApplication {
                     else {
                         System.out.println("Nivel maximo atingido!");
                     }
-                }
-            }
-        }, KeyCode.E);
-}
+             }
+    }
+
+
+
+
+
+
+
+
+
+
 
     private void iniciarOnda() {
         if (gerenciadorOndas.ondaEmAndamento() ||
@@ -294,9 +303,31 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().addUINode(hudVitoria);
     }
     
+<<<<<<< HEAD
 
     @Override
     protected void onUpdate(double tpf) {
+=======
+    @Override 
+    protected void onUpdate (double tpf) {
+        if(telaupar.getevento() == 1){
+            telaupar.resetEvento();
+            evoluirTorre(torreSelecionada);
+            telaupar.fecharMenu();
+        }
+        else if (telaupar.getevento() == 2) {
+            telaupar.resetEvento();
+
+            if (gerenciadorTorres.venderTorre(torreSelecionada, torres, mapa, renderizadorTorres)) {
+                // Credite aqui o valor da venda e atualize o ouro no HUD.
+                int val = torreSelecionada.getvalor();
+                gerenciadorEconomia.adicionarOuro(val);
+                hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
+            }
+
+            telaupar.fecharMenu();
+        }
+>>>>>>> c9004da (interface upgrade e venda)
 
         if (base.getVida() <= 0 || hudVitoria != null) {
             return;

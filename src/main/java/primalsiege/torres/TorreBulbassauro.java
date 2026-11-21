@@ -7,7 +7,7 @@ import primalsiege.modelo.Torre;
 public class TorreBulbassauro extends Torre {
 
     public TorreBulbassauro(double x, double y) {
-        super(12, 150, x, y, 1.25f, 50, Color.GREEN, 1000, 2);
+        super(12, 150, x, y, 1.25f, 50, Color.GREEN, 1000, 2,100);
     }
 
     @Override

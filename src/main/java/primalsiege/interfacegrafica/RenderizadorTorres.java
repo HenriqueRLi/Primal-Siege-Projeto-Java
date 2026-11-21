@@ -8,7 +8,6 @@ import com.almasb.fxgl.texture.Texture;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
-
 import primalsiege.modelo.Torre;
 
 public class RenderizadorTorres {
@@ -49,14 +48,13 @@ public class RenderizadorTorres {
 
     if (select == 1) {
         triangulo.setVisible(false);
-
-        Texture imagem = FXGL.getAssetLoader().loadTexture("charmander.png");
+        Texture imagem = FXGL.getAssetLoader().loadTexture("charmander_parado.gif");
 
         imagem.setFitWidth(56);
         imagem.setFitHeight(56);
 
-        imagem.setLayoutX(torre.getX() - 26);
-        imagem.setLayoutY(torre.getY() - 36);       
+        imagem.setLayoutX(torre.getX() - imagem.getFitWidth() / 2);
+        imagem.setLayoutY(torre.getY() - imagem.getFitHeight() / 2);     
         imagem.setMouseTransparent(true);
 
         FXGL.getGameScene().addUINode(imagem);
@@ -65,14 +63,14 @@ public class RenderizadorTorres {
     else if (select == 2) {
         triangulo.setVisible(false);
 
-        Texture imagem = FXGL.getAssetLoader().loadTexture("squirtle.png");
+        Texture imagem = FXGL.getAssetLoader().loadTexture("squirtle_parado.gif");
 
         imagem.setFitWidth(56);
         imagem.setFitHeight(56);
         imagem.setSmooth(false);
 
-        imagem.setLayoutX(torre.getX() - 26);
-        imagem.setLayoutY(torre.getY() - 36);
+        imagem.setLayoutX(torre.getX() - imagem.getFitWidth() / 2);
+        imagem.setLayoutY(torre.getY() - imagem.getFitHeight() / 2);
 
         imagem.setMouseTransparent(true);
 
@@ -82,14 +80,14 @@ public class RenderizadorTorres {
     else if (select == 3) {
         triangulo.setVisible(false);
 
-        Texture imagem = FXGL.getAssetLoader().loadTexture("pichu.png");
+        Texture imagem = FXGL.getAssetLoader().loadTexture("pichu_parado.gif");
 
         imagem.setFitWidth(56);
         imagem.setFitHeight(56);
         imagem.setSmooth(false);
 
-        imagem.setLayoutX(torre.getX() - 26);
-        imagem.setLayoutY(torre.getY() - 36);
+        imagem.setLayoutX(torre.getX() - imagem.getFitWidth() / 2);
+        imagem.setLayoutY(torre.getY() - imagem.getFitHeight() / 2);
 
         imagem.setMouseTransparent(true);
 
@@ -99,14 +97,14 @@ public class RenderizadorTorres {
     else if (select == 4) {
         triangulo.setVisible(false);
 
-        Texture imagem = FXGL.getAssetLoader().loadTexture("bulbasaur.png");
+        Texture imagem = FXGL.getAssetLoader().loadTexture("bulbasaur_parado.gif");
 
         imagem.setFitWidth(56);
         imagem.setFitHeight(56);
         imagem.setSmooth(false);
 
-        imagem.setLayoutX(torre.getX() - 26);
-        imagem.setLayoutY(torre.getY() - 36);
+        imagem.setLayoutX(torre.getX() - imagem.getFitWidth() / 2);
+        imagem.setLayoutY(torre.getY() - imagem.getFitHeight() / 2); 
 
         imagem.setMouseTransparent(true);
 
@@ -126,15 +124,22 @@ public class RenderizadorTorres {
 
     public void trocarSprite(Torre torre, ArrayList<Torre> torres, String arquivo) {
         int indice = torres.indexOf(torre);
-
         if (indice == -1) {
             return;
         }
 
-        Texture imagem = imagensTorres.get(indice);
+        var url = RenderizadorTorres.class.getResource("/assets/textures/" + arquivo);
+        if (url == null) {
+            System.out.println("GIF não encontrado: " + arquivo);
+            return;
+        }
 
-        imagem.setImage(
-            FXGL.getAssetLoader().loadTexture(arquivo).getImage()
-        );
+        Texture imagem = imagensTorres.get(indice);
+        imagem.setImage(new javafx.scene.image.Image(url.toExternalForm()));
+    }
+
+    public void removerSprite(int indice) {
+        Texture imagem = imagensTorres.remove(indice);
+        FXGL.getGameScene().removeUINode(imagem);
     }
 }
