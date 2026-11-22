@@ -359,6 +359,7 @@ public class GerenciadorCombate {
         visual.setTranslateX(tiro.getX());
         visual.setTranslateY(tiro.getY());
         visual.setMouseTransparent(true);
+        visual.setViewOrder(1);
 
         if (tiro.ehVisualFogo() || tiro.ehVisualAgua() || tiro.ehVisualPlanta()) {
             ajustarDirecaoChama(tiro, visual);
@@ -384,6 +385,7 @@ public class GerenciadorCombate {
 
         impacto.setEffect(new DropShadow(15, Color.AQUA));
         impacto.setMouseTransparent(true);
+        impacto.setViewOrder(1);
 
         FXGL.getGameScene().addUINode(impacto);
 
@@ -591,6 +593,7 @@ public class GerenciadorCombate {
             raio.setFill(null);
             raio.setEffect(new DropShadow(15, Color.YELLOW));
             raio.setMouseTransparent(true);
+            raio.setViewOrder(1);
 
             AnimationTimer acompanharAlvos = new AnimationTimer() {
 
@@ -720,6 +723,7 @@ public class GerenciadorCombate {
 
         raio.setFill(null);
         raio.setMouseTransparent(true);
+        raio.setViewOrder(1);
 
         FXGL.getGameScene().addUINode(raio);
 
