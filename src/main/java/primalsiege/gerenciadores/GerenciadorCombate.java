@@ -1,30 +1,30 @@
 package primalsiege.gerenciadores;
 
 import java.util.ArrayList;
-import com.almasb.fxgl.dsl.FXGL;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import primalsiege.modelo.Inimigo;
-import primalsiege.modelo.Projetil;
-import javafx.scene.shape.Polygon;
-import primalsiege.modelo.Mapa;
-import primalsiege.modelo.Torre;
 
-import javafx.scene.effect.DropShadow;
-import javafx.util.Duration;
-import javafx.geometry.Point2D;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.LineTo;
-import javafx.animation.FadeTransition;
+import com.almasb.fxgl.dsl.FXGL;
+
 import javafx.animation.AnimationTimer;
-import javafx.scene.shape.Shape;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.paint.CycleMethod;
-import javafx.animation.ScaleTransition;
+import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Shape;
+import javafx.util.Duration;
+import primalsiege.modelo.Inimigo;
+import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Projetil;
+import primalsiege.modelo.Torre;
 
 public class GerenciadorCombate {
 
@@ -553,6 +553,9 @@ public class GerenciadorCombate {
                 }
                 else {
                     desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(inimigo));
+                if (tiro != null) {
+                    desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(alvoSelecionado));
+                }
                 }
             }
         }

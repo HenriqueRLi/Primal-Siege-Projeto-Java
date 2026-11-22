@@ -2,15 +2,15 @@
 package primalsiege.torres;
 
 import javafx.scene.paint.Color;
-import primalsiege.modelo.Torre;
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Projetil;
+import primalsiege.modelo.Torre;
 
 public class TorreSquirtle extends Torre {
     private double recargaHidroBomba;
 
     public TorreSquirtle(double x, double y) {
-        super(15, 150, x, y, 1.3f, 50, Color.BLUE, 500, 4);
+        super(15, 150, x, y, 1.3f, 50, Color.BLUE, 500, 4,125);
         recargaHidroBomba = 0;
     }
 

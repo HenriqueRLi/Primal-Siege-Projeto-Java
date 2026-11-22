@@ -9,7 +9,7 @@ public class MenuTorre {
     private Group MenuR;
     private boolean status;
     private int Tselect;
-    private  int oprad = 15;
+    private int oprad = 15;
     private int dist = 40;
 
     public MenuTorre() {

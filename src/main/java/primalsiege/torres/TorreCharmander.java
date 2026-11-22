@@ -5,7 +5,8 @@ import primalsiege.modelo.Torre;
 public class TorreCharmander extends Torre{
 
     public TorreCharmander(double x, double y) {
-        super(8, 150, x, y, 2, 50, Color.ORANGE, 650, 3);    }
+        super(10, 150, x, y, 2, 50, Color.ORANGE, 650, 3,100);
+    }
     
     @Override
     public double getTaxaCrescimento() {

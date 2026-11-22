@@ -9,14 +9,19 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import com.almasb.fxgl.dsl.FXGL;
+
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.GaussianBlur;
+import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import javafx.scene.shape.Circle;
+import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Eternatus;
 import javafx.scene.paint.CycleMethod;
 
 import primalsiege.modelo.Inimigo;
@@ -31,8 +36,12 @@ import primalsiege.inimigos.Machop;
 import primalsiege.inimigos.Kadabra;
 import primalsiege.inimigos.Gengar;
 import primalsiege.inimigos.Gyarados;
-import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Kadabra;
+import primalsiege.inimigos.Machop;
 import primalsiege.inimigos.Mewtwo;
+import primalsiege.inimigos.Pidgey;
+import primalsiege.inimigos.Rattata;
+import primalsiege.inimigos.Wishiwashi;
 import primalsiege.inimigos.Eternatus;
 import primalsiege.inimigos.Arceus;
 import primalsiege.inimigos.Caterpie;
@@ -53,6 +62,9 @@ import primalsiege.inimigos.Salamence;
 
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
+import primalsiege.modelo.Base;
+import primalsiege.modelo.Inimigo;
+import primalsiege.modelo.Mapa;
 
 public class GerenciadorInimigos {
     private ArrayList<Inimigo> inimigosAtivos;
