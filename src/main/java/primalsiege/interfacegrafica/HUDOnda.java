@@ -9,11 +9,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 
 public class HUDOnda extends Group {
     private Rectangle botaoIniciarOnda;
     private Text  quantOuro;
     private Text textoNumeroOnda;
+    private boolean recolhida = false;
+    private SVGPath setaAba;
 
     public HUDOnda() {
 
@@ -109,7 +113,54 @@ public class HUDOnda extends Group {
             quantOuro
         );
 
+        Rectangle aba = new Rectangle(595, 585, 90, 30);
+
+        aba.setFill(Color.web("#17212B"));
+        aba.setStroke(Color.web("#FF4053"));
+        aba.setStrokeWidth(2);
+        aba.setArcWidth(14);
+        aba.setArcHeight(14);
+        aba.setCursor(Cursor.HAND);
+
+        setaAba = new SVGPath();
+        setaAba.setContent("M2 4 L12 13 L22 4");
+        setaAba.setFill(Color.TRANSPARENT);
+        setaAba.setStroke(Color.WHITE);
+        setaAba.setStrokeWidth(3);
+        setaAba.setLayoutX(628);
+        setaAba.setLayoutY(589);
+        setaAba.setMouseTransparent(true);
+
+        aba.setOnMouseClicked(evento -> alternarRecolhimento());
+
+        getChildren().addAll(aba, setaAba);
+
         FXGL.getGameScene().addUINode(this);
+    }
+
+    public boolean estaExpandida() {
+        return !recolhida;
+    }
+
+    public void alternarRecolhimento() {
+
+        recolhida = !recolhida;
+
+        TranslateTransition animacao = new TranslateTransition(
+            Duration.millis(300),
+            this
+        );
+
+        if (recolhida) {
+            animacao.setToY(105);
+            setaAba.setRotate(180);
+        }
+        else {
+            animacao.setToY(0);
+            setaAba.setRotate(0);
+        }
+
+        animacao.play();
     }
 
     public void atualizarNumeroOnda(int numero) {

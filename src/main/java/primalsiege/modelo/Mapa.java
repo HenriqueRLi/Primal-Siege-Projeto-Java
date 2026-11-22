@@ -1,6 +1,9 @@
 package primalsiege.modelo;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.net.URL;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
 
 public class Mapa {
     private double baseX;
@@ -100,24 +103,68 @@ public class Mapa {
         caminho.add(573);
 
         matriz[17][29] = 3;
-
-        matriz[2][8] = 4;
-        matriz[3][8] = 4;
-
-        matriz[8][10] = 4;
-        matriz[9][10] = 4;
-
-        matriz[4][23] = 4;
-        matriz[5][23] = 4;
-
-        matriz[12][20] = 4;
-        matriz[13][20] = 4;
-
-        matriz[10][27] = 4;
-        matriz[11][27] = 4;
     }
 
     public int[][] getMatriz() {
         return matriz;
     }
+
+    public void bloquearBordasFloresta() {
+
+        URL arquivo = Mapa.class.getResource(
+            "/assets/textures/moldura_florestal_em_pixel_art.png"
+        );
+
+        if (arquivo == null) {
+            throw new IllegalStateException("Imagem da floresta não encontrada");
+        }
+
+        Image floresta = new Image(arquivo.toExternalForm());
+        PixelReader pixels = floresta.getPixelReader();
+
+        int linhas = matriz.length;
+        int colunas = matriz[0].length;
+
+        // Limpa os bloqueios antigos
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                if (matriz[i][j] == 4) {
+                    matriz[i][j] = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+
+                if (matriz[i][j] != 0) {
+                    continue;
+                }
+
+                int pixelsOcupados = 0;
+
+                for (int y = 0; y < 5; y++) {
+                    for (int x = 0; x < 5; x++) {
+
+                        double proporcaoX = (j + (x + 0.5) / 5.0) / colunas;
+                        double proporcaoY = (i + (y + 0.5) / 5.0) / linhas;
+
+                        int pixelX = (int) (proporcaoX * floresta.getWidth());
+                        int pixelY = (int) (proporcaoY * floresta.getHeight());
+
+                        if (pixels.getColor(pixelX, pixelY).getOpacity() > 0.5) {
+                            pixelsOcupados++;
+                        }
+                    }
+                }
+
+                int limite = i >= 12 ? 7 : 10;
+
+                if (pixelsOcupados >= limite) {
+                    matriz[i][j] = 4;
+                }
+            }
+        }
+    }
+
 }

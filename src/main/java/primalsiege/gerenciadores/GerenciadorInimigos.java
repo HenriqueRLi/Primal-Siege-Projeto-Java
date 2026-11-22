@@ -34,6 +34,22 @@ import primalsiege.inimigos.Gyarados;
 import primalsiege.inimigos.Dragonite;
 import primalsiege.inimigos.Mewtwo;
 import primalsiege.inimigos.Eternatus;
+import primalsiege.inimigos.Arceus;
+import primalsiege.inimigos.Caterpie;
+import primalsiege.inimigos.Zubat;
+import primalsiege.inimigos.Shinx;
+import primalsiege.inimigos.Sandshrew;
+import primalsiege.inimigos.Metagross;
+import primalsiege.inimigos.Tyranitar;
+import primalsiege.inimigos.Ninjask;
+import primalsiege.inimigos.Snorlax;
+import primalsiege.inimigos.Lucario;
+import primalsiege.inimigos.Scyther;
+import primalsiege.inimigos.Steelix;
+import primalsiege.inimigos.Sneasel;
+import primalsiege.inimigos.Growlithe;
+import primalsiege.inimigos.Salamence;
+
 
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
@@ -76,6 +92,7 @@ public class GerenciadorInimigos {
         anelSlow.setEffect(new GaussianBlur(2));
         anelSlow.setMouseTransparent(true);
         anelSlow.setVisible(false);
+        anelSlow.setViewOrder(1);
 
         circulosSlow.add(anelSlow);
         FXGL.getGameScene().addUINode(anelSlow);
@@ -119,6 +136,51 @@ public class GerenciadorInimigos {
 
             case "Eternatus":
                 return new Eternatus(mapa);
+
+            case "Arceus":
+                return new Arceus(mapa);
+
+            case "Caterpie":
+                return new Caterpie(mapa);
+
+            case "Zubat":
+                return new Zubat(mapa);
+
+            case "Shinx":
+                return new Shinx(mapa);
+
+            case "Sandshrew":
+                return new Sandshrew(mapa);
+
+            case "Metagross":
+                return new Metagross(mapa);
+
+            case "Tyranitar":
+                return new Tyranitar(mapa);
+
+            case "Ninjask":
+                return new Ninjask(mapa);
+
+            case "Snorlax":
+                return new Snorlax(mapa);
+
+            case "Lucario":
+                return new Lucario(mapa);
+
+            case "Scyther":
+                return new Scyther(mapa);
+
+            case "Steelix":
+                return new Steelix(mapa);
+
+            case "Sneasel":
+                return new Sneasel(mapa);
+
+            case "Growlithe":
+                return new Growlithe(mapa);
+
+            case "Salamence":
+                return new Salamence(mapa);
 
             default:
                 return null;
@@ -167,8 +229,7 @@ public class GerenciadorInimigos {
                 imagensInimigos.remove(i);
                 circulosSlow.remove(i);
 
-                hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
-                hudBase.getBarraVerde().setWidth(210.0 * base.getVida() / 20);
+                hudBase.atualizarVida(base.getVida(), true);
 
             }
                 else {
@@ -215,6 +276,7 @@ public class GerenciadorInimigos {
         sprite.setLayoutY(inimigo.getY() - sprite.getFitHeight() / 2.0);
 
         sprite.setMouseTransparent(true);
+        sprite.setViewOrder(1);
 
         return sprite;
     }

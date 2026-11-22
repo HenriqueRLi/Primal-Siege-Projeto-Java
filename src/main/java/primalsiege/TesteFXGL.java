@@ -25,6 +25,7 @@ import primalsiege.interfacegrafica.RenderizadorMapa;
 import primalsiege.interfacegrafica.RenderizadorTorres;
 import primalsiege.interfacegrafica.TelaDerrota;
 import primalsiege.interfacegrafica.TelaVitoria;
+import primalsiege.interfacegrafica.TelaInicial;
 import primalsiege.modelo.Base;
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
@@ -33,6 +34,12 @@ import primalsiege.torres.TorreBulbassauro;
 import primalsiege.torres.TorreCharmander;
 import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
+import primalsiege.interfacegrafica.TelaSecundaria;
+import primalsiege.interfacegrafica.FabricaMenus;
+
+import primalsiege.inimigos.Caterpie;
+import primalsiege.inimigos.Growlithe;
+import primalsiege.inimigos.Arceus;
 
 
 public class TesteFXGL extends GameApplication {
@@ -60,12 +67,16 @@ public class TesteFXGL extends GameApplication {
     private RenderizadorTorres renderizadorTorres = new RenderizadorTorres();
     private Torre torreSelecionada;
     private GerenciadorEconomia gerenciadorEconomia = new GerenciadorEconomia();
+    private TelaInicial telaInicial;
+    private boolean jogoIniciado = false;
 
     @Override
     protected void initSettings(GameSettings settings) {
         settings.setWidth(LARGURA);
         settings.setHeight(ALTURA);
         settings.setTitle("Primal Siege");
+        settings.setGameMenuEnabled(true);
+        settings.setSceneFactory(new FabricaMenus(this));
     }
 
     @Override
@@ -73,6 +84,7 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().setBackgroundColor(Color.DARKGREEN);
 
         mapa = new Mapa(1180, 660);
+        mapa.bloquearBordasFloresta();
         base = new Base();
         gerenciadorOndas = new GerenciadorOndas();
 
@@ -83,11 +95,101 @@ public class TesteFXGL extends GameApplication {
         hudBase = new HUDBase(base);
 
         hudOnda = new HUDOnda();
+
         hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
 
         hudOnda.getBotaoIniciarOnda().setOnMouseClicked(evento -> iniciarOnda());
 
         gerenciadorInimigos = new GerenciadorInimigos(inimigosAtivos, imagensInimigos, hudOnda);
+
+        mostrarTelaInicial();
+    }
+
+    private void abrirOpcoes() {
+
+        TelaSecundaria opcoes = new TelaSecundaria(
+            true, hudOndasVisivel()
+        );
+
+        opcoes.getBotaoHUD().setOnMouseClicked(evento -> {
+
+            boolean visivel = alternarVisibilidadeHUD();
+
+            hudOnda.setVisible(visivel);
+            opcoes.atualizarHUD(visivel);
+        });
+
+        opcoes.getBotaoVoltar().setOnMouseClicked(evento -> FXGL.getGameScene().removeUINode(opcoes));
+
+        FXGL.getGameScene().addUINode(opcoes);
+    }
+
+    private void abrirComoJogar() {
+
+        TelaSecundaria comoJogar = new TelaSecundaria(
+            false, hudOnda.isVisible()
+        );
+
+        comoJogar.getBotaoVoltar().setOnMouseClicked(evento ->
+            FXGL.getGameScene().removeUINode(comoJogar)
+        );
+
+        FXGL.getGameScene().addUINode(comoJogar);
+    }
+
+    public void reiniciarPelaPausa() {
+        ReiniciarJogo();
+        jogoIniciado = true;
+    }
+    
+    public boolean hudOndasVisivel() {
+        return hudOnda.estaExpandida();
+    }
+
+    public boolean alternarVisibilidadeHUD() {
+
+        hudOnda.setVisible(!hudOnda.isVisible());
+
+        return hudOnda.isVisible();
+    }
+
+    public void voltarAoMenuPrincipal() {
+
+        ReiniciarJogo();
+
+        Mrad.fecharMenu();
+        Mrad.resetselect();
+
+        jogoIniciado = false;
+
+        mostrarTelaInicial();
+    }
+
+    private void mostrarTelaInicial() {
+
+        telaInicial = new TelaInicial();
+
+        telaInicial.getBotaoJogar().setOnMouseClicked(evento -> {
+
+            jogoIniciado = true;
+
+            FXGL.getGameScene().removeUINode(telaInicial);
+            telaInicial = null;
+        });
+
+        telaInicial.getBotaoSair().setOnMouseClicked(
+            evento -> sairDoJogo()
+        );
+
+        telaInicial.getBotaoOpcoes().setOnMouseClicked(
+            evento -> abrirOpcoes()
+        );
+
+        telaInicial.getBotaoComoJogar().setOnMouseClicked(
+            evento -> abrirComoJogar()
+        );
+
+        FXGL.getGameScene().addUINode(telaInicial);
     }
 
     private void sairDoJogo() {
@@ -100,8 +202,7 @@ public class TesteFXGL extends GameApplication {
         renderizadorTorres.limparImagens();
         
         base = new Base();
-        hudBase.getTextoVidaBase().setText(base.getVida() + " / 20");
-        hudBase.getBarraVerde().setWidth((base.getVida() / 20) * 210);
+        hudBase.atualizarVida(base.getVida(), false);
 
         gerenciadorInimigos.limparInimigos();
 
@@ -122,13 +223,13 @@ public class TesteFXGL extends GameApplication {
             hudDerrota = null;
         }
     }
-    
+
     @Override
     protected void initInput() {
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
         @Override
         protected void onActionBegin() {
-            if(hudVitoria == null && base.getVida()!=0 && Mrad.getStatus() == false) {
+            if(jogoIniciado && hudVitoria == null && base.getVida()!=0 && Mrad.getStatus() == false) {
                 double mouseX = FXGL.getInput().getMouseXWorld();
                 double mouseY = FXGL.getInput().getMouseYWorld();
 
@@ -170,9 +271,7 @@ public class TesteFXGL extends GameApplication {
             @Override
             protected void onActionBegin() {
 
-                if (torreSelecionada != null &&
-                    hudVitoria == null &&
-                    base.getVida() > 0) {
+                if (jogoIniciado && torreSelecionada != null && hudVitoria == null && base.getVida() > 0) {
 
                     int custo = gerenciadorTorres.getCustoEvolucao(torreSelecionada);
 
@@ -236,12 +335,43 @@ public class TesteFXGL extends GameApplication {
                 }
             }
         }, KeyCode.E);
+    FXGL.getInput().addAction(new UserAction("Alternar HUD") {
+
+        @Override
+        protected void onActionBegin() {
+
+            if (jogoIniciado &&
+                base.getVida() > 0 &&
+                hudVitoria == null &&
+                hudDerrota == null) {
+
+                hudOnda.alternarRecolhimento();
+            }
+        }
+
+    }, KeyCode.H);
+    FXGL.getInput().addAction(new UserAction("Testar Arceus") {
+
+        @Override
+        protected void onActionBegin() {
+
+            if (jogoIniciado &&
+                base.getVida() > 0 &&
+                hudVitoria == null &&
+                hudDerrota == null) {
+
+                Growlithe caterpie = new Growlithe(mapa);
+
+                gerenciadorInimigos.criarInimigo(caterpie);
+            }
+        }
+
+    }, KeyCode.F9);
+    
 }
 
     private void iniciarOnda() {
-        if (gerenciadorOndas.ondaEmAndamento() ||
-            hudVitoria != null ||
-            base.getVida() <= 0) {
+        if (!jogoIniciado || gerenciadorOndas.ondaEmAndamento() || hudVitoria != null || base.getVida() <= 0) {
             return;
         }
 
@@ -255,19 +385,37 @@ public class TesteFXGL extends GameApplication {
     }
 
     private boolean cliqueEmHUD(double mouseX, double mouseY) {
-        if(mouseX >= 1000 && mouseX <= 1250){
-            if(mouseY >= 15 && mouseY <= 95){
-                return true;
+        if (mouseX >= 1000 && mouseX <= 1250 &&
+            mouseY >= 15 && mouseY <= 95) {
+            return true;
+        }
+
+        if (hudOnda != null) {
+
+            if (hudOnda.estaExpandida()) {
+
+                if (mouseX >= 220 && mouseX <= 1060 &&
+                    mouseY >= 615 && mouseY <= 720) {
+                    return true;
+                }
+
+                if (mouseX >= 595 && mouseX <= 685 &&
+                    mouseY >= 585 && mouseY <= 615) {
+                    return true;
+                }
+            }
+            else {
+
+                if (mouseX >= 595 && mouseX <= 685 &&
+                    mouseY >= 690 && mouseY <= 720) {
+                    return true;
+                }
             }
         }
-        if(mouseX >= 220 && mouseX <= 1060){
-            if(mouseY >= 615 && mouseY <= 720){
-                return true;
-            }
-        }
+
         return false;
     }
- 
+
     private void criarHUDDerrota() {
     Mrad.fecharMenu();
 
@@ -294,9 +442,12 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().addUINode(hudVitoria);
     }
     
-
     @Override
     protected void onUpdate(double tpf) {
+
+        if (!jogoIniciado) {
+            return;
+        }
 
         if (base.getVida() <= 0 || hudVitoria != null) {
             return;
@@ -315,9 +466,9 @@ public class TesteFXGL extends GameApplication {
             gerenciadorOndas.registrarInimigoGerado();
         }
 
-        if (gerenciadorInimigos.atualizarInimigos(
-                tpf, base, hudBase, gerenciadorEconomia)) {
+        if (gerenciadorInimigos.atualizarInimigos(tpf, base, hudBase, gerenciadorEconomia)) {
             criarHUDDerrota();
+            return;
         }
 
         if (gerenciadorOndas.verificarFimOnda(inimigosAtivos.isEmpty())) {
@@ -328,9 +479,7 @@ public class TesteFXGL extends GameApplication {
                 criarHUDVitoria();
             }
             else {
-                hudOnda.atualizarNumeroOnda(
-                    gerenciadorOndas.getNumeroOnda()
-                );
+                hudOnda.atualizarNumeroOnda(gerenciadorOndas.getNumeroOnda());
             }
         }
 

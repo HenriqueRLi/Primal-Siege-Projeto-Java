@@ -5,21 +5,34 @@ import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.animation.Animation;
+import javafx.animation.FillTransition;
+import javafx.animation.FadeTransition;
+import javafx.scene.effect.DropShadow;
+import javafx.util.Duration;
+
 import primalsiege.modelo.Base;
 
 public class HUDBase {
-
-    private Text textoVidaBase;
-    private Rectangle barraVerde;
+private Text textoVidaBase;
+private Rectangle barraVerde;
+private Rectangle fundoHUD;
+private FillTransition animacaoDano;
+private FadeTransition alertaVida;
 
     public HUDBase(Base base) {
 
-        Rectangle fundoHUD = new Rectangle(250, 80);
+        fundoHUD = new Rectangle(250, 80);
         fundoHUD.setX(1000);
         fundoHUD.setY(15);
         fundoHUD.setFill(Color.web("#17212B"));
         fundoHUD.setArcWidth(20);
         fundoHUD.setArcHeight(20);
+        fundoHUD.setStroke(Color.web("#688DA2"));
+        fundoHUD.setStrokeWidth(1.5);
+        fundoHUD.setEffect(
+            new DropShadow(12, Color.rgb(0, 0, 0, 0.55))
+        );
 
         Text tituloHUD = new Text("BASE");
         tituloHUD.setX(1020);
@@ -52,6 +65,26 @@ public class HUDBase {
         FXGL.getGameScene().addUINode(textoVidaBase);
         FXGL.getGameScene().addUINode(barraCinza);
         FXGL.getGameScene().addUINode(barraVerde);
+
+        animacaoDano = new FillTransition(
+            Duration.millis(130),
+            fundoHUD
+        );
+
+        animacaoDano.setFromValue(Color.web("#17212B"));
+        animacaoDano.setToValue(Color.web("#A12E3C"));
+        animacaoDano.setCycleCount(2);
+        animacaoDano.setAutoReverse(true);
+
+        alertaVida = new FadeTransition(
+            Duration.millis(550),
+            barraVerde
+        );
+
+        alertaVida.setFromValue(1.0);
+        alertaVida.setToValue(0.35);
+        alertaVida.setCycleCount(Animation.INDEFINITE);
+        alertaVida.setAutoReverse(true);
     }
 
     public Text getTextoVidaBase() {
@@ -61,4 +94,48 @@ public class HUDBase {
     public Rectangle getBarraVerde() {
         return barraVerde;
     }
+
+    public void atualizarVida(int vida, boolean recebeuDano) {
+
+        int vidaAtual = Math.max(0, Math.min(20, vida));
+
+        textoVidaBase.setText(vidaAtual + " / 20");
+        barraVerde.setWidth(210.0 * vidaAtual / 20.0);
+
+        if (vidaAtual <= 5) {
+
+            barraVerde.setFill(Color.web("#EF4444"));
+            textoVidaBase.setFill(Color.web("#FF7B7B"));
+
+            if (vidaAtual > 0 &&
+                alertaVida.getStatus() != Animation.Status.RUNNING) {
+
+                alertaVida.play();
+            }
+        }
+        else if (vidaAtual <= 10) {
+
+            barraVerde.setFill(Color.web("#FACC15"));
+            textoVidaBase.setFill(Color.web("#FACC15"));
+        }
+        else {
+
+            barraVerde.setFill(Color.web("#22C55E"));
+            textoVidaBase.setFill(Color.WHITE);
+        }
+
+        if (vidaAtual > 5 || vidaAtual == 0) {
+            alertaVida.stop();
+            barraVerde.setOpacity(1.0);
+        }
+
+        if (recebeuDano) {
+            animacaoDano.playFromStart();
+        }
+        else {
+            animacaoDano.stop();
+            fundoHUD.setFill(Color.web("#17212B"));
+        }
+    }
+
 }

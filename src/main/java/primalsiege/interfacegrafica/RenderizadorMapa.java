@@ -2,9 +2,7 @@ package primalsiege.interfacegrafica;
 import com.almasb.fxgl.dsl.FXGL;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -62,6 +60,22 @@ public class RenderizadorMapa {
     public void desenharCaminho(int[][] matriz) {
         desenharGramadoPixel();
         desenharCaminhoPixel(matriz);
+        desenharMolduraFlorestal();
+    }
+
+    private void desenharMolduraFlorestal() {
+        Image imagem = new Image(
+            getClass().getResource("/assets/textures/moldura_florestal_em_pixel_art.png").toExternalForm()
+        );
+
+        ImageView moldura = new ImageView(imagem);
+        moldura.setFitWidth(largura);
+        moldura.setFitHeight(altura);
+        moldura.setPreserveRatio(false);
+        moldura.setMouseTransparent(true);
+
+        moldura.setViewOrder(0);
+        FXGL.getGameScene().addUINode(moldura);
     }
 
     private void desenharCaminhoPixel(int[][] matriz) {
@@ -119,6 +133,7 @@ public class RenderizadorMapa {
         }
 
         caminho.setMouseTransparent(true);
+        caminho.setViewOrder(2);
         FXGL.getGameScene().addUINode(caminho);
     }
 
@@ -153,32 +168,8 @@ public class RenderizadorMapa {
         }
 
         gramado.setMouseTransparent(true);
+        gramado.setViewOrder(3);
         FXGL.getGameScene().addUINode(gramado);
-    }
-
-    private void desenharArvores(int[][] matriz) {
-
-        Image arvore = new Image(
-            getClass().getResource("/assets/textures/arvore.png").toExternalForm()
-        );
-
-        for (int i = 0; i < matriz.length; i++) {
-            for (int j = 0; j < matriz[i].length; j++) {
-
-                if (matriz[i][j] == 4) {
-
-                    ImageView sprite = new ImageView(arvore);
-
-                    sprite.setFitWidth(tamanhoCelula);
-                    sprite.setFitHeight(tamanhoCelula);
-                    sprite.setLayoutX(j * tamanhoCelula);
-                    sprite.setLayoutY(i * tamanhoCelula);
-                    sprite.setMouseTransparent(true);
-
-                    FXGL.getGameScene().addUINode(sprite);
-                }
-            }
-        }
     }
 
 }
