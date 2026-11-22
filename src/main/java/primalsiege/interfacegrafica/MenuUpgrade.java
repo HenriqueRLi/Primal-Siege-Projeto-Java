@@ -19,6 +19,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import primalsiege.modelo.Torre;
+import primalsiege.torres.TorreBulbassauro;
+import primalsiege.torres.TorreCharmander;
+import primalsiege.torres.TorrePikachu;
+import primalsiege.torres.TorreSquirtle;
 
 
 public class MenuUpgrade {
@@ -151,12 +155,19 @@ public class MenuUpgrade {
         );
 
         // BOTÕES
+        // BOTÕES
+        int custo = getCustoEvolucao(torreS);
+
         Button botaoEvoluir = criarBotao(
             "EVOLUIR TORRE",
-            "Custo: " + torreS.getCustoEvolucao(),
+            custo == -1 ? "NÍVEL MÁXIMO" : "Custo: " + custo,
             "#AE233B",
             1
         );
+
+        if (custo == -1) {
+            botaoEvoluir.setDisable(true);
+        }
 
         if (torreS.getNivel() >= 3) {
             botaoEvoluir.setDisable(true);
@@ -307,4 +318,42 @@ public class MenuUpgrade {
     public Torre getTselect() {
         return this.Tselect;
     }
+
+    private int getCustoEvolucao(Torre torre) {
+        int nivel = torre.getNivel();
+
+        if (nivel >= 3) {
+            return -1;
+        }
+
+        if (torre instanceof TorreCharmander) {
+            return nivel == 1 ? 120 : 160;
+        }
+        else if (torre instanceof TorreSquirtle) {
+            return nivel == 1 ? 140 : 210;
+        }
+        else if (torre instanceof TorrePikachu) {
+            return nivel == 1 ? 140 : 190;
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            return nivel == 1 ? 115 : 165;
+        }
+
+        return -1;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
