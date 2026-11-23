@@ -138,7 +138,7 @@ public class MenuUpgrade {
         HBox atributos2 = new HBox(8,
             criarAtributo("ALCANCE",
                 String.format("%.0f", (double) torreS.getAlcance()) + " px"),
-            criarAtributo("HABILIDADE", "Burn")
+            criarAtributo("HABILIDADE", NomePoder(torreS))
         );
 
         // PRÓXIMA EVOLUÇÃO
@@ -395,6 +395,24 @@ public class MenuUpgrade {
         return null;
     }
 
+        private String NomePoder(Torre torre) {
+
+            if (torre instanceof TorreCharmander) {
+
+                return "Burn";
+            }
+            if (torre instanceof TorreSquirtle) {
+                return "HydroBomb";
+            }
+            if (torre instanceof TorreBulbassauro) {
+                return "Poison";
+            }
+            if (torre instanceof TorrePikachu) {
+                return "Thunder";
+            }
+
+            return "Desconhecida";
+        }
 
 
 
