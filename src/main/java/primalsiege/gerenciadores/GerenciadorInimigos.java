@@ -1,7 +1,5 @@
 package primalsiege.gerenciadores;
 
-import com.almasb.fxgl.dsl.FXGL;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,60 +18,46 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
-import primalsiege.inimigos.Dragonite;
-import primalsiege.inimigos.Eternatus;
-import javafx.scene.paint.CycleMethod;
-
-import primalsiege.modelo.Inimigo;
-import primalsiege.modelo.Mapa;
-import primalsiege.modelo.Base;
-import primalsiege.modelo.Onda;
-
-import primalsiege.inimigos.Rattata;
-import primalsiege.inimigos.Pidgey;
-import primalsiege.inimigos.Wishiwashi;
-import primalsiege.inimigos.Machop;
-import primalsiege.inimigos.Kadabra;
-import primalsiege.inimigos.Gengar;
-import primalsiege.inimigos.Gyarados;
-import primalsiege.inimigos.Kadabra;
-import primalsiege.inimigos.Machop;
-import primalsiege.inimigos.Mewtwo;
-import primalsiege.inimigos.Pidgey;
-import primalsiege.inimigos.Rattata;
-import primalsiege.inimigos.Wishiwashi;
-import primalsiege.inimigos.Eternatus;
 import primalsiege.inimigos.Arceus;
 import primalsiege.inimigos.Caterpie;
-import primalsiege.inimigos.Zubat;
-import primalsiege.inimigos.Shinx;
-import primalsiege.inimigos.Sandshrew;
-import primalsiege.inimigos.Metagross;
-import primalsiege.inimigos.Tyranitar;
-import primalsiege.inimigos.Ninjask;
-import primalsiege.inimigos.Snorlax;
-import primalsiege.inimigos.Lucario;
-import primalsiege.inimigos.Scyther;
-import primalsiege.inimigos.Steelix;
-import primalsiege.inimigos.Sneasel;
+import primalsiege.inimigos.Dragonite;
+import primalsiege.inimigos.Eternatus;
+import primalsiege.inimigos.Gengar;
 import primalsiege.inimigos.Growlithe;
+import primalsiege.inimigos.Gyarados;
+import primalsiege.inimigos.Kadabra;
+import primalsiege.inimigos.Lucario;
+import primalsiege.inimigos.Machop;
+import primalsiege.inimigos.Metagross;
+import primalsiege.inimigos.Mewtwo;
+import primalsiege.inimigos.Ninjask;
+import primalsiege.inimigos.Pidgey;
+import primalsiege.inimigos.Rattata;
 import primalsiege.inimigos.Salamence;
-
-
+import primalsiege.inimigos.Sandshrew;
+import primalsiege.inimigos.Scyther;
+import primalsiege.inimigos.Shinx;
+import primalsiege.inimigos.Sneasel;
+import primalsiege.inimigos.Snorlax;
+import primalsiege.inimigos.Steelix;
+import primalsiege.inimigos.Tyranitar;
+import primalsiege.inimigos.Wishiwashi;
+import primalsiege.inimigos.Zubat;
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
 import primalsiege.modelo.Base;
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
+import primalsiege.modelo.Onda;
 
 public class GerenciadorInimigos {
-    private ArrayList<Inimigo> inimigosAtivos;
-    private ArrayList<ImageView> imagensInimigos;
-    private ArrayList<Circle> circulosSlow = new ArrayList<>();
+    private final ArrayList<Inimigo> inimigosAtivos;
+    private final ArrayList<ImageView> imagensInimigos;
+    private final ArrayList<Circle> circulosSlow = new ArrayList<>();
     
     private static final String PASTA_GIFS = "/assets/textures/";
     private final Map<String, Optional<Image>> cacheGifs = new HashMap<>();
-    private HUDOnda hudOnda;
+    private final HUDOnda hudOnda;
     private final DropShadow efeitoQueimadura = new DropShadow(16, Color.ORANGERED);
 
     public GerenciadorInimigos(ArrayList<Inimigo> inimigosAtivos, ArrayList<ImageView> imagensInimigos, HUDOnda hudOnda) {

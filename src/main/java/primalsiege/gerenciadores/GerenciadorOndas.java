@@ -1,12 +1,12 @@
 package primalsiege.gerenciadores;
 
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import primalsiege.modelo.Onda;
 
 public class GerenciadorOndas {
-    private ArrayList<Onda> ondas = new ArrayList<>();
+    private final ArrayList<Onda> ondas = new ArrayList<>();
     private int ondaAtual;
     private boolean statusOndas;
     private double tempoSpawn;

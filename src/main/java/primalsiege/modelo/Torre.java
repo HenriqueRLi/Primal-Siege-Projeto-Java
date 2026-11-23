@@ -202,4 +202,11 @@ public class Torre {
         return valort;
     }
 
+    public double getEscala() {
+        if (nivel == 3) {
+            return 2; // 30% maior
+        }
+        return 1.0; // Tamanho normal
+    }
+
 }

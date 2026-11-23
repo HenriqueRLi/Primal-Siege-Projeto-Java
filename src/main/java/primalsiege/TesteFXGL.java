@@ -5,11 +5,11 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
-import javafx.scene.input.KeyCode;
 
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -18,6 +18,7 @@ import primalsiege.gerenciadores.GerenciadorEconomia;
 import primalsiege.gerenciadores.GerenciadorInimigos;
 import primalsiege.gerenciadores.GerenciadorOndas;
 import primalsiege.gerenciadores.GerenciadorTorres;
+import primalsiege.interfacegrafica.FabricaMenus;
 import primalsiege.interfacegrafica.HUDBase;
 import primalsiege.interfacegrafica.HUDOnda;
 import primalsiege.interfacegrafica.MenuTorre;
@@ -25,8 +26,9 @@ import primalsiege.interfacegrafica.MenuUpgrade;
 import primalsiege.interfacegrafica.RenderizadorMapa;
 import primalsiege.interfacegrafica.RenderizadorTorres;
 import primalsiege.interfacegrafica.TelaDerrota;
-import primalsiege.interfacegrafica.TelaVitoria;
 import primalsiege.interfacegrafica.TelaInicial;
+import primalsiege.interfacegrafica.TelaSecundaria;
+import primalsiege.interfacegrafica.TelaVitoria;
 import primalsiege.modelo.Base;
 import primalsiege.modelo.Inimigo;
 import primalsiege.modelo.Mapa;
@@ -35,12 +37,6 @@ import primalsiege.torres.TorreBulbassauro;
 import primalsiege.torres.TorreCharmander;
 import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
-import primalsiege.interfacegrafica.TelaSecundaria;
-import primalsiege.interfacegrafica.FabricaMenus;
-
-import primalsiege.inimigos.Caterpie;
-import primalsiege.inimigos.Growlithe;
-import primalsiege.inimigos.Arceus;
 
 
 public class TesteFXGL extends GameApplication {
@@ -228,49 +224,85 @@ public class TesteFXGL extends GameApplication {
 
     @Override
     protected void initInput() {
+    
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
-        @Override
-        protected void onActionBegin() {
-            
-          if (jogoIniciado && hudVitoria == null && base.getVida() != 0 && Mrad.getStatus() == false && telaupar.getStatus() == false) {
+    @Override
+    protected void onActionBegin() {
 
-                          double mouseX = FXGL.getInput().getMouseXWorld();
-                          double mouseY = FXGL.getInput().getMouseYWorld();
+        double mouseX = FXGL.getInput().getMouseXWorld();
+        double mouseY = FXGL.getInput().getMouseYWorld();
 
-                          if (cliqueEmHUD(mouseX, mouseY)) {
-                              return;
-                          }
+        // Se o menu de Pokémon estiver aberto
+        if (Mrad.getStatus()) {
 
-                          int coluna = (int) (mouseX / 40);
-                          int linha = (int) (mouseY / 40);
+            // Clicou fora do painel: fecha o menu
+            if (!Mrad.cliqueDentroPainel(mouseX, mouseY)) {
+                Mrad.fecharMenu();
+                Mrad.resetselect();
+            }
 
-                          if(linha >= 18 || linha < 0 || coluna >= 32 || coluna < 0){
-                              return;
-                          }
-                          if(mapa.getMatriz(linha, coluna) == 2){
-                              for (Torre torre : torres) {
-                                  if (torre.getX() == coluna * 40 + 20 && torre.getY() == linha * 40 + 20) {
-                                      torreSelecionada = torre;
-                                      telaupar.abrirtorre(torreSelecionada, coluna, linha);       
-                                      System.out.println("Torre selecionada! Nivel: " + torreSelecionada.getNivel());
-                                      return;
-                                  }
-                              }
-                              return;
-                          }
-                          if (mapa.getMatriz(linha, coluna) != 0) {
-                              return;
-                          }
+            return;
+        }
 
-                          torreSelecionada = null;
-                          Mrad.AbrirMenu(linha, coluna);
+        if (jogoIniciado &&
+            hudVitoria == null &&
+            base.getVida() != 0 &&
+            telaupar.getStatus() == false) {
 
-                      linhaSelecionada = linha;
-                      colunaSelecionada = coluna;
+            if (cliqueEmHUD(mouseX, mouseY)) {
+                return;
+            }
 
-                      }
-                  }
-              }, MouseButton.PRIMARY);
+            int coluna = (int) (mouseX / 40);
+            int linha = (int) (mouseY / 40);
+
+            if (linha >= 18 || linha < 0 ||
+                coluna >= 32 || coluna < 0) {
+                return;
+            }
+
+            // Se clicar em uma torre existente
+            if (mapa.getMatriz(linha, coluna) == 2) {
+
+                for (Torre torre : torres) {
+
+                    if (torre.getX() == coluna * 40 + 20 &&
+                        torre.getY() == linha * 40 + 20) {
+
+                        torreSelecionada = torre;
+
+                        telaupar.abrirtorre(
+                            torreSelecionada, coluna, linha
+                        );
+
+                        System.out.println(
+                            "Torre selecionada! Nivel: " +
+                            torreSelecionada.getNivel()
+                        );
+
+                        return;
+                    }
+                }
+
+                return;
+            }
+
+            // Verifica se o slot está livre
+            if (mapa.getMatriz(linha, coluna) != 0) {
+                return;
+            }
+
+            torreSelecionada = null;
+
+            // Abre o menu lateral
+            Mrad.AbrirMenu(linha, coluna);
+
+            linhaSelecionada = linha;
+            colunaSelecionada = coluna;
+        }
+    }
+    }, MouseButton.PRIMARY);
+
       
     FXGL.getInput().addAction(new UserAction("Evoluir Torre") {
       @Override
@@ -350,10 +382,10 @@ public class TesteFXGL extends GameApplication {
 
                         if (torreSelecionada instanceof TorrePikachu) {
                             if (torreSelecionada.getNivel() == 2) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "pikachu.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "pikachu_parado.gif");
                             }
                             else if (torreSelecionada.getNivel() == 3) {
-                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "raichu.png");
+                                renderizadorTorres.trocarSprite(torreSelecionada, torres, "raichu_parado.gif");
                             }
                         }
                     }
@@ -502,6 +534,21 @@ public class TesteFXGL extends GameApplication {
             tpf
         );
 
+        for (Torre torre : torres) {
+            for (Inimigo alvo : inimigosAtivos) {
+
+                if (torre.estaNoAlcance(alvo)) {
+
+                    torre.atualizarRotacao(alvo.getX(), alvo.getY());
+
+                    renderizadorTorres.atualizarRotacao(torre, torres);
+
+                    break;
+                }
+            }
+        }
+
+
         gerenciadorCombate.atualizarProjeteis(inimigosAtivos, tpf);
 
         Torre torre = gerenciadorTorres.criarTorre(Mrad.getTselect());
@@ -539,6 +586,8 @@ public class TesteFXGL extends GameApplication {
             Mrad.resetselect();
             Mrad.fecharMenu();
         }
+
+        
     }
 
     public static void main(String[] args) {

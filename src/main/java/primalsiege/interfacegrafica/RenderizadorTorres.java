@@ -124,7 +124,7 @@ public class RenderizadorTorres {
 
     public void trocarSprite(Torre torre, ArrayList<Torre> torres, String arquivo) {
         int indice = torres.indexOf(torre);
-        if (indice == -1) {
+        if (indice == -1 || indice >= imagensTorres.size()) {
             return;
         }
 
@@ -136,10 +136,27 @@ public class RenderizadorTorres {
 
         Texture imagem = imagensTorres.get(indice);
         imagem.setImage(new javafx.scene.image.Image(url.toExternalForm()));
+
+        // Aumenta a imagem na última evolução
+        imagem.setScaleX(torre.getEscala());
+        imagem.setScaleY(torre.getEscala());
     }
 
     public void removerSprite(int indice) {
         Texture imagem = imagensTorres.remove(indice);
         FXGL.getGameScene().removeUINode(imagem);
     }
+
+    public void atualizarRotacao(Torre torre, ArrayList<Torre> torres) {
+        int indice = torres.indexOf(torre);
+
+        if (indice == -1 || indice >= imagensTorres.size()) {
+            return;
+        }
+
+        Texture imagem = imagensTorres.get(indice);
+
+        imagem.setRotate(torre.getRotacao() + 90);
+    }
+
 }

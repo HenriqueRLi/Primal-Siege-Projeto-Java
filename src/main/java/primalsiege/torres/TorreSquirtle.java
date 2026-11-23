@@ -23,7 +23,7 @@ public class TorreSquirtle extends Torre {
                 definirAtributosProjetil(Color.DODGERBLUE, 650, 6);
             }
             else if (getNivel() == 3) {
-                definirAtributosAtaque(11, 6);
+                definirAtributosAtaque(1, 66);
                 definirAtributosProjetil(Color.DEEPSKYBLUE, 850, 5);
             }
 
