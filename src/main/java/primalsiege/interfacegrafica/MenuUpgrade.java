@@ -12,9 +12,12 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -88,13 +91,30 @@ public class MenuUpgrade {
 
         VBox info = new VBox(5, titulo, nivel);
 
-        Label icone = texto("🔥", 27, "#FF644D");
-        icone.setAlignment(Pos.CENTER);
+        String caminhoImagem = getImagemPokemon(torreS);
+
+        ImageView imagemPokemon = new ImageView();
+
+        if (caminhoImagem != null) {
+            Image img = new Image(getClass().getResourceAsStream(caminhoImagem));
+            imagemPokemon.setImage(img);
+        }
+
+        imagemPokemon.setFitWidth(38);
+        imagemPokemon.setFitHeight(38);
+        imagemPokemon.setPreserveRatio(true);
+
+        StackPane icone = new StackPane(imagemPokemon);
         icone.setPrefSize(52, 52);
+        icone.setMinSize(52, 52);
+        icone.setMaxSize(52, 52);
+
         icone.setStyle(
             "-fx-background-color: #273847;" +
             "-fx-background-radius: 13;"
         );
+
+
 
         Region espaco = new Region();
         HBox.setHgrow(espaco, Priority.ALWAYS);
@@ -175,7 +195,7 @@ public class MenuUpgrade {
 
         Button botaoVender = criarBotao(
             "VENDER TORRE",
-            "Valor: 65",
+            "Valor: " + torreS.getvalor(),
             "#344C63",
             2
         );
@@ -334,6 +354,45 @@ public class MenuUpgrade {
         }
 
         return -1;
+    }
+
+    private String getImagemPokemon(Torre torre) {
+        int nivel = torre.getNivel();
+
+        if (torre instanceof TorreCharmander) {
+            return switch (nivel) {
+                case 1 -> "/assets/textures/charmander.png";
+                case 2 -> "/assets/textures/charmeleon.png";
+                case 3 -> "/assets/textures/charizard.png";
+                default -> null;
+            };
+        }
+        else if (torre instanceof TorreSquirtle) {
+            return switch (nivel) {
+                case 1 -> "/assets/textures/squirtle.png";
+                case 2 -> "/assets/textures/wartortle.png";
+                case 3 -> "/assets/textures/blastoise.png";
+                default -> null;
+            };
+        }
+        else if (torre instanceof TorrePikachu) {
+            return switch (nivel) {
+                case 1 -> "/assets/textures/pikachu.png";
+                case 2 -> "/assets/textures/raichu.png";
+                case 3 -> "/assets/textures/raichu.png";
+                default -> null;
+            };
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            return switch (nivel) {
+                case 1 -> "/assets/textures/bulbasaur.png";
+                case 2 -> "/assets/textures/ivysaur.png";
+                case 3 -> "/assets/textures/venusaur.png";
+                default -> null;
+            };
+        }
+
+        return null;
     }
 
 

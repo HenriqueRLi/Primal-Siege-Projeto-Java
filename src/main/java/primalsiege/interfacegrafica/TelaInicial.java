@@ -4,26 +4,25 @@ package primalsiege.interfacegrafica;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
-
 public class TelaInicial extends Group {
-    private Rectangle botaoJogar;
-    private Rectangle botaoOpcoes;
-    private Rectangle botaoComoJogar;
-    private Rectangle botaoSair;
+    private final Rectangle botaoJogar;
+    private final Rectangle botaoOpcoes;
+    private final Rectangle botaoComoJogar;
+    private final Rectangle botaoSair;
 
     public TelaInicial() {
 

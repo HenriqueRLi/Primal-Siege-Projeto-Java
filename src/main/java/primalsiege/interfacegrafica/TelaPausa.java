@@ -11,17 +11,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
-import primalsiege.interfacegrafica.TelaSecundaria;
-
 import primalsiege.TesteFXGL;
 
 public class TelaPausa extends FXGLMenu {
 
-    private Rectangle botaoContinuar;
-    private Rectangle botaoReiniciar;
-    private Rectangle botaoOpcoes;
-    private Rectangle botaoMenuPrincipal;
+    private final Rectangle botaoContinuar;
+    private final Rectangle botaoReiniciar;
+    private final Rectangle botaoOpcoes;
+    private final Rectangle botaoMenuPrincipal;
 
     public TelaPausa(TesteFXGL jogo) {
 

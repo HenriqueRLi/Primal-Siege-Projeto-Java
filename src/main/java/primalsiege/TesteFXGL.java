@@ -224,49 +224,85 @@ public class TesteFXGL extends GameApplication {
 
     @Override
     protected void initInput() {
+    
     FXGL.getInput().addAction(new UserAction("Colocar Torre") {
-        @Override
-        protected void onActionBegin() {
-            
-          if (jogoIniciado && hudVitoria == null && base.getVida() != 0 && Mrad.getStatus() == false && telaupar.getStatus() == false) {
+    @Override
+    protected void onActionBegin() {
 
-                          double mouseX = FXGL.getInput().getMouseXWorld();
-                          double mouseY = FXGL.getInput().getMouseYWorld();
+        double mouseX = FXGL.getInput().getMouseXWorld();
+        double mouseY = FXGL.getInput().getMouseYWorld();
 
-                          if (cliqueEmHUD(mouseX, mouseY)) {
-                              return;
-                          }
+        // Se o menu de Pokémon estiver aberto
+        if (Mrad.getStatus()) {
 
-                          int coluna = (int) (mouseX / 40);
-                          int linha = (int) (mouseY / 40);
+            // Clicou fora do painel: fecha o menu
+            if (!Mrad.cliqueDentroPainel(mouseX, mouseY)) {
+                Mrad.fecharMenu();
+                Mrad.resetselect();
+            }
 
-                          if(linha >= 18 || linha < 0 || coluna >= 32 || coluna < 0){
-                              return;
-                          }
-                          if(mapa.getMatriz(linha, coluna) == 2){
-                              for (Torre torre : torres) {
-                                  if (torre.getX() == coluna * 40 + 20 && torre.getY() == linha * 40 + 20) {
-                                      torreSelecionada = torre;
-                                      telaupar.abrirtorre(torreSelecionada, coluna, linha);       
-                                      System.out.println("Torre selecionada! Nivel: " + torreSelecionada.getNivel());
-                                      return;
-                                  }
-                              }
-                              return;
-                          }
-                          if (mapa.getMatriz(linha, coluna) != 0) {
-                              return;
-                          }
+            return;
+        }
 
-                          torreSelecionada = null;
-                          Mrad.AbrirMenu(linha, coluna);
+        if (jogoIniciado &&
+            hudVitoria == null &&
+            base.getVida() != 0 &&
+            telaupar.getStatus() == false) {
 
-                      linhaSelecionada = linha;
-                      colunaSelecionada = coluna;
+            if (cliqueEmHUD(mouseX, mouseY)) {
+                return;
+            }
 
-                      }
-                  }
-              }, MouseButton.PRIMARY);
+            int coluna = (int) (mouseX / 40);
+            int linha = (int) (mouseY / 40);
+
+            if (linha >= 18 || linha < 0 ||
+                coluna >= 32 || coluna < 0) {
+                return;
+            }
+
+            // Se clicar em uma torre existente
+            if (mapa.getMatriz(linha, coluna) == 2) {
+
+                for (Torre torre : torres) {
+
+                    if (torre.getX() == coluna * 40 + 20 &&
+                        torre.getY() == linha * 40 + 20) {
+
+                        torreSelecionada = torre;
+
+                        telaupar.abrirtorre(
+                            torreSelecionada, coluna, linha
+                        );
+
+                        System.out.println(
+                            "Torre selecionada! Nivel: " +
+                            torreSelecionada.getNivel()
+                        );
+
+                        return;
+                    }
+                }
+
+                return;
+            }
+
+            // Verifica se o slot está livre
+            if (mapa.getMatriz(linha, coluna) != 0) {
+                return;
+            }
+
+            torreSelecionada = null;
+
+            // Abre o menu lateral
+            Mrad.AbrirMenu(linha, coluna);
+
+            linhaSelecionada = linha;
+            colunaSelecionada = coluna;
+        }
+    }
+    }, MouseButton.PRIMARY);
+
       
     FXGL.getInput().addAction(new UserAction("Evoluir Torre") {
       @Override
@@ -498,6 +534,21 @@ public class TesteFXGL extends GameApplication {
             tpf
         );
 
+        for (Torre torre : torres) {
+            for (Inimigo alvo : inimigosAtivos) {
+
+                if (torre.estaNoAlcance(alvo)) {
+
+                    torre.atualizarRotacao(alvo.getX(), alvo.getY());
+
+                    renderizadorTorres.atualizarRotacao(torre, torres);
+
+                    break;
+                }
+            }
+        }
+
+
         gerenciadorCombate.atualizarProjeteis(inimigosAtivos, tpf);
 
         Torre torre = gerenciadorTorres.criarTorre(Mrad.getTselect());
@@ -535,6 +586,8 @@ public class TesteFXGL extends GameApplication {
             Mrad.resetselect();
             Mrad.fecharMenu();
         }
+
+        
     }
 
     public static void main(String[] args) {
