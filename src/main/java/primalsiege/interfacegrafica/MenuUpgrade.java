@@ -180,11 +180,6 @@ public class MenuUpgrade {
             2
         );
 
-        Label rodape = texto(
-            "Prévia visual. Valores ilustrativos.",
-            12, "#91A2B5"
-        );
-        rodape.setWrapText(true);
 
         MenuR.getChildren().addAll(
             categoria,
@@ -194,8 +189,7 @@ public class MenuUpgrade {
             atributos2,
             quadroEvolucao,
             botaoEvoluir,
-            botaoVender,
-            rodape
+            botaoVender
         );
 
         camadaMenu = new Group();
