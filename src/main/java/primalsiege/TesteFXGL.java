@@ -41,7 +41,8 @@ import primalsiege.torres.TorreBulbassauro;
 import primalsiege.torres.TorreCharmander;
 import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
-
+import primalsiege.interfacegrafica.HUDChefe;
+import primalsiege.modelo.Onda;
 
 
 public class TesteFXGL extends GameApplication {
@@ -74,6 +75,9 @@ public class TesteFXGL extends GameApplication {
     private boolean jogoIniciado = false;
     private Label avisoLimite;
     private PauseTransition temporizadorAviso;
+    private HUDChefe hudChefe;
+    private Inimigo chefeDaOnda;
+    private boolean chefeGerado = false;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -102,6 +106,9 @@ public class TesteFXGL extends GameApplication {
         hudBase = new HUDBase(base);
 
         hudOnda = new HUDOnda();
+
+        hudChefe = new HUDChefe();
+        FXGL.getGameScene().addUINode(hudChefe);
 
         hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
 
@@ -150,7 +157,7 @@ public class TesteFXGL extends GameApplication {
     }
     
     public boolean hudOndasVisivel() {
-        return hudOnda.estaExpandida();
+        return hudOnda.isVisible();
     }
 
     public boolean alternarVisibilidadeHUD() {
@@ -204,7 +211,11 @@ public class TesteFXGL extends GameApplication {
     }
     
     private void ReiniciarJogo() {
-        gerenciadorTorres.limparTorres(torres, triangulosTorres, mapa);
+        hudChefe.ocultar();
+
+        chefeDaOnda = null;
+        chefeGerado = false;gerenciadorTorres.limparTorres(torres, triangulosTorres, mapa);
+        
         torreSelecionada = null;
         renderizadorTorres.limparImagens();
         
@@ -241,10 +252,8 @@ public class TesteFXGL extends GameApplication {
         double mouseX = FXGL.getInput().getMouseXWorld();
         double mouseY = FXGL.getInput().getMouseYWorld();
 
-        // Se o menu de Pokémon estiver aberto
         if (Mrad.getStatus()) {
 
-            // Clicou fora do painel: fecha o menu
             if (!Mrad.cliqueDentroPainel(mouseX, mouseY)) {
                 Mrad.fecharMenu();
                 Mrad.resetselect();
@@ -267,7 +276,6 @@ public class TesteFXGL extends GameApplication {
                 return;
             }
 
-            // Se clicar em uma torre existente
             if (mapa.getMatriz(linha, coluna) == 2) {
 
                 for (Torre torre : torres) {
@@ -277,14 +285,7 @@ public class TesteFXGL extends GameApplication {
 
                         torreSelecionada = torre;
 
-                        telaupar.abrirtorre(
-                            torreSelecionada, coluna, linha
-                        );
-
-                        System.out.println(
-                            "Torre selecionada! Nivel: " +
-                            torreSelecionada.getNivel()
-                        );
+                        telaupar.abrirtorre(torreSelecionada, coluna, linha);
 
                         return;
                     }
@@ -293,14 +294,12 @@ public class TesteFXGL extends GameApplication {
                 return;
             }
 
-            // Verifica se o slot está livre
             if (mapa.getMatriz(linha, coluna) != 0) {
                 return;
             }
 
             torreSelecionada = null;
 
-            // Abre o menu lateral
             Mrad.AbrirMenu(linha, coluna);
 
             linhaSelecionada = linha;
@@ -329,23 +328,18 @@ public class TesteFXGL extends GameApplication {
                     int custo = gerenciadorTorres.getCustoEvolucao(torreSelecionada);
 
                     if (custo == -1) {
-                        System.out.println("Torre no nivel maximo ou invalida!");
                         return;
                     }
 
                     if (gerenciadorEconomia.getOuro() < custo) {
-                        System.out.println("Ouro insuficiente para evoluir!");
+                        mostrarAvisoLimite("Ouro insuficiente para evoluir!");
                         return;
                     }
                     if (torreSelecionada.evoluir()) {
                         gerenciadorEconomia.descontarOuro(custo);
                         torreSelecionada.somaValor(custo);
                         hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
-                        System.out.println(
-                        "Evoluiu! Nivel: " + torreSelecionada.getNivel() +
-                        " | Dano: " + torreSelecionada.getDano() +
-                        " | Disparos/s: " + torreSelecionada.getVelocidadeAtaque()
-                        );
+
                         if (torreSelecionada instanceof TorreCharmander) {
 
                             if (torreSelecionada.getNivel() == 2) {
@@ -383,9 +377,6 @@ public class TesteFXGL extends GameApplication {
                             }
                         }
                     }
-                    else {
-                        System.out.println("Nivel maximo atingido!");
-                    }
               }
           }
   
@@ -395,6 +386,7 @@ public class TesteFXGL extends GameApplication {
         }
 
         gerenciadorInimigos.organizarOndaPorVelocidade(gerenciadorOndas, mapa);
+        prepararChefe();
         
         inimigo = gerenciadorInimigos.instanciarInimigoDaOnda(gerenciadorOndas, mapa, 0);
 
@@ -408,7 +400,7 @@ public class TesteFXGL extends GameApplication {
             return true;
         }
 
-        if (hudOnda != null) {
+        if (hudOnda != null && hudOnda.isVisible()) {
 
             if (hudOnda.estaExpandida()) {
 
@@ -436,6 +428,7 @@ public class TesteFXGL extends GameApplication {
 
     private void criarHUDDerrota() {
     Mrad.fecharMenu();
+    hudChefe.ocultar();
 
     TelaDerrota tela = new TelaDerrota();
 
@@ -449,6 +442,7 @@ public class TesteFXGL extends GameApplication {
 
     private void criarHUDVitoria() {
         Mrad.fecharMenu();
+        hudChefe.ocultar();
 
         TelaVitoria tela = new TelaVitoria();
 
@@ -460,6 +454,29 @@ public class TesteFXGL extends GameApplication {
         FXGL.getGameScene().addUINode(hudVitoria);
     }
     
+    private void prepararChefe() {
+
+        chefeDaOnda = null;
+        chefeGerado = false;
+        hudChefe.ocultar();
+
+        Onda onda = gerenciadorOndas.getOndaAtual();
+
+        for (int i = 0; i < onda.getQuantidade(); i++) {
+
+            if (onda.ehChefe(i)) {
+
+                chefeDaOnda = gerenciadorInimigos
+                    .instanciarInimigoDaOnda(
+                        gerenciadorOndas, mapa, i
+                    );
+
+                hudChefe.mostrar(chefeDaOnda);
+                break;
+            }
+        }
+    }
+
     @Override 
     protected void onUpdate (double tpf) {
         if(telaupar.getevento() == 1){
@@ -470,7 +487,7 @@ public class TesteFXGL extends GameApplication {
         else if (telaupar.getevento() == 2) {
             telaupar.resetEvento();
 
-            if (gerenciadorTorres.venderTorre(torreSelecionada, torres, mapa, renderizadorTorres)) {
+            if (gerenciadorTorres.venderTorre(torreSelecionada, torres, triangulosTorres, mapa, renderizadorTorres)) {
                 int val = (int) Math.round(torreSelecionada.getvalor() * 0.60);
                 gerenciadorEconomia.adicionarOuro(val);
                 hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
@@ -489,13 +506,19 @@ public class TesteFXGL extends GameApplication {
 
         if (gerenciadorOndas.verificarSpawn(tpf)) {
 
-            gerenciadorInimigos.criarInimigo(
-                gerenciadorInimigos.instanciarInimigoDaOnda(
-                    gerenciadorOndas,
-                    mapa,
-                    gerenciadorOndas.getInimigosGerados()
-                )
-            );
+            int indice = gerenciadorOndas.getInimigosGerados();
+
+            if (chefeDaOnda != null && gerenciadorOndas.getOndaAtual().ehChefe(indice)) {
+                gerenciadorInimigos.criarInimigo(chefeDaOnda);
+                chefeGerado = true;
+            }
+            else {
+                gerenciadorInimigos.criarInimigo(
+                    gerenciadorInimigos.instanciarInimigoDaOnda(
+                        gerenciadorOndas, mapa, indice
+                    )
+                );
+            }
 
             gerenciadorOndas.registrarInimigoGerado();
         }
@@ -539,27 +562,25 @@ public class TesteFXGL extends GameApplication {
             }
         }
 
-
         gerenciadorCombate.atualizarProjeteis(inimigosAtivos, tpf);
+
+        if (chefeDaOnda != null && chefeGerado) {
+
+            if (!chefeDaOnda.statusVida() ||
+                !inimigosAtivos.contains(chefeDaOnda)) {
+
+                hudChefe.ocultar();
+                chefeDaOnda = null;
+                chefeGerado = false;
+            }
+            else {
+                hudChefe.atualizarVida(chefeDaOnda.getVida());
+            }
+        }
 
         Torre torre = gerenciadorTorres.criarTorre(Mrad.getTselect());
 
         if (torre != null) {
-
-            if (!gerenciadorTorres.podeConstruirTorre(torres, torre)) {
-
-                if (torres.size() >= 32) {
-                    mostrarAvisoLimite("Limite total de 32 torres atingido!");
-                }
-                else {
-                    mostrarAvisoLimite("Limite de 8 torres desse tipo atingido!");
-                }
-
-                Mrad.resetselect();
-                Mrad.fecharMenu();
-                return;
-            }
-
             int custo = gerenciadorTorres.getCustoConstrucao(torre);
 
             if (custo >= 0 && gerenciadorEconomia.getOuro() >= custo) {
@@ -583,9 +604,7 @@ public class TesteFXGL extends GameApplication {
                 }
             }
             else {
-                System.out.println(
-                    "Ouro insuficiente para construir a torre!"
-                );
+                mostrarAvisoLimite("Ouro insuficiente para construir!");
             }
 
             Mrad.resetselect();

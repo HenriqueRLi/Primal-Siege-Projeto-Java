@@ -52,7 +52,7 @@ public class TelaSecundaria extends Group {
 
             atualizarHUD(hudVisivel);
 
-            Text dica = new Text("Durante a partida, pressione H para alternar.");
+            Text dica = new Text("Pressione H para recolher ou expandir a HUD.");
             dica.setFont(Font.font("Arial", 15));
             dica.setFill(Color.web("#91A9BA"));
             dica.setX(640 - dica.getLayoutBounds().getWidth() / 2);
@@ -64,16 +64,16 @@ public class TelaSecundaria extends Group {
 
         } else {
 
-            String[] instrucoes = {
-                "1. Clique em INICIAR ONDA para enviar os inimigos.",
-                "2. Clique na grama livre para construir uma torre.",
-                "3. Escolha entre as quatro torres disponíveis.",
-                "4. Clique em uma torre e pressione E para evoluir.",
-                "5. Elimine inimigos para conseguir mais ouro.",
-                "6. Não deixe a vida da base chegar a zero.",
-                "7. Sobreviva às 10 ondas para vencer!",
-                "8. Pressione H para ocultar ou mostrar a HUD."
-            };
+        String[] instrucoes = {
+            "1. Clique em INICIAR ONDA para enviar os inimigos.",
+            "2. Clique na grama livre para construir uma torre.",
+            "3. Escolha entre as quatro torres disponíveis.",
+            "4. Clique em uma torre para evoluir ou vender.",
+            "5. Elimine inimigos para conseguir mais ouro.",
+            "6. Não deixe a vida da base chegar a zero.",
+            "7. Sobreviva às 60 ondas para vencer!",
+            "8. Pressione H para recolher ou expandir a HUD."
+        };
 
             for (int i = 0; i < instrucoes.length; i++) {
 

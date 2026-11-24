@@ -34,6 +34,10 @@ public abstract class Inimigo {
         chefe = false;
     }
     
+    public float getVida() {
+        return vida;
+    }
+
     public double getVelocidadeMovimentacao() {
         return velocidadeMovimentacao;
     }

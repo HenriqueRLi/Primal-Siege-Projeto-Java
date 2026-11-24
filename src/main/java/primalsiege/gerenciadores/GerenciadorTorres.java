@@ -123,41 +123,25 @@ public class GerenciadorTorres {
         return -1;
     }
 
-    public boolean podeConstruirTorre(ArrayList<Torre> torres, Torre novaTorre) {
+    public boolean venderTorre(Torre torre, ArrayList<Torre> torres, ArrayList<Polygon> triangulosTorres, Mapa mapa, RenderizadorTorres renderizadorTorres) {
 
-        if (torres.size() >= 32) {
+        int indice = torres.indexOf(torre);
+
+        if (indice == -1) {
             return false;
         }
 
-        int quantidadeTipo = 0;
+        int linha = (int) (torre.getY() / 40);
+        int coluna = (int) (torre.getX() / 40);
 
-        for (Torre torre : torres) {
-            if (torre.getClass() == novaTorre.getClass()) {
-                quantidadeTipo++;
-            }
-        }
+        FXGL.getGameScene().removeUINode(triangulosTorres.get(indice));
+        triangulosTorres.remove(indice);
 
-        if (quantidadeTipo >= 8) {
-            return false;
-        }
+        renderizadorTorres.removerSprite(indice);
+        torres.remove(indice);
+
+        mapa.setMatriz(linha, coluna, 0);
 
         return true;
     }
-
-    public boolean venderTorre(Torre torre, ArrayList<Torre> torres,Mapa mapa, RenderizadorTorres renderizadorTorres) {
-    int indice = torres.indexOf(torre);
-    if (indice == -1) {
-        return false;
-    }
-
-    int linha = (int) (torre.getY() / 40);
-    int coluna = (int) (torre.getX() / 40);
-
-    renderizadorTorres.removerSprite(indice);
-    torres.remove(indice);
-    mapa.setMatriz(linha, coluna, 0);
-    return true;
-}
-
-
 }

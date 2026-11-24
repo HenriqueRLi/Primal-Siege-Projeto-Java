@@ -194,7 +194,6 @@ public class Projetil {
     }
 
     private void aplicarDescarga(ArrayList<Inimigo> inimigosAtivos) {
-        System.out.println("DESCARGA ATIVADA! Dano: " + danoDescarga);
         pontosDescarga.clear();
         alvosDescarga.clear();
 
@@ -222,8 +221,6 @@ public class Projetil {
                 );
 
                 if (distancia <= raioDescarga) {
-
-                    System.out.println("Inimigo secundario atingido! Distancia: " + distancia);
                     inimigo.danoRecebido(danoDescarga);
 
                     pontosDescarga.add(

@@ -1,3 +1,4 @@
+
 # Maven
 target/
 
@@ -12,5 +13,6 @@ bin/
 .DS_Store
 Thumbs.db
 
-# Logs gerados pela FXGL
+# Arquivos gerados pela FXGL
 logs/
+system/
