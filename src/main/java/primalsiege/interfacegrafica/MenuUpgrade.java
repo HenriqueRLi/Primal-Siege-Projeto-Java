@@ -27,10 +27,6 @@ import primalsiege.torres.TorreCharmander;
 import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
-
 public class MenuUpgrade {
 
     private Torre Tselect;
@@ -374,15 +370,6 @@ public class MenuUpgrade {
         }
 
         return -1;
-    }
-
-    private String formatarNumero(double valor) {
-        DecimalFormat formato = new DecimalFormat(
-            "0.##",
-            DecimalFormatSymbols.getInstance(Locale.forLanguageTag("pt-BR"))
-        );
-
-        return formato.format(valor);
     }
 
     private String getDescricaoEvolucao(Torre torre) {

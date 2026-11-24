@@ -254,10 +254,7 @@ public class TesteFXGL extends GameApplication {
             return;
         }
 
-        if (jogoIniciado &&
-            hudVitoria == null &&
-            base.getVida() != 0 &&
-            telaupar.getStatus() == false) {
+        if (jogoIniciado && hudVitoria == null && base.getVida() != 0 && telaupar.getStatus() == false) {
 
             if (cliqueEmHUD(mouseX, mouseY)) {
                 return;
@@ -313,24 +310,12 @@ public class TesteFXGL extends GameApplication {
     }
     }, MouseButton.PRIMARY);
 
-      
-    FXGL.getInput().addAction(new UserAction("Evoluir Torre") {
-      @Override
-      protected void onActionBegin() {
-          evoluirTorre(torreSelecionada);
-      }
-
-}, KeyCode.E);
-
     FXGL.getInput().addAction(new UserAction("Alternar HUD") {
 
         @Override
         protected void onActionBegin() {
 
-            if (jogoIniciado &&
-                base.getVida() > 0 &&
-                hudVitoria == null &&
-                hudDerrota == null) {
+            if (jogoIniciado && base.getVida() > 0 && hudVitoria == null && hudDerrota == null) {
 
                 hudOnda.alternarRecolhimento();
             }
@@ -420,8 +405,7 @@ public class TesteFXGL extends GameApplication {
     }
 
     private boolean cliqueEmHUD(double mouseX, double mouseY) {
-        if (mouseX >= 1000 && mouseX <= 1250 &&
-            mouseY >= 15 && mouseY <= 95) {
+        if (mouseX >= 1000 && mouseX <= 1250 && mouseY >= 15 && mouseY <= 95) {
             return true;
         }
 
