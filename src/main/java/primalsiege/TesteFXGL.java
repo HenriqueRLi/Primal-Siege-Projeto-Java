@@ -212,6 +212,12 @@ public class TesteFXGL extends GameApplication {
     
     private void ReiniciarJogo() {
         hudChefe.ocultar();
+        
+        Mrad.fecharMenu();
+        Mrad.resetselect();
+
+        telaupar.fecharMenu();
+        telaupar.resetEvento();
 
         chefeDaOnda = null;
         chefeGerado = false;gerenciadorTorres.limparTorres(torres, triangulosTorres, mapa);

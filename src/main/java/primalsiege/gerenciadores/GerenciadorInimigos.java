@@ -154,7 +154,7 @@ public class GerenciadorInimigos {
                     break;
 
                 case 60:
-                    inimigo.tornarChefe(24000, 85, 68);
+                    inimigo.tornarChefe(24000, 250, 68);
                     break;
             }
         }
