@@ -27,6 +27,9 @@ import primalsiege.torres.TorreCharmander;
 import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 
 public class MenuUpgrade {
 
@@ -55,10 +58,7 @@ public class MenuUpgrade {
         this.Tselect = torreS;
         this.evento = 0;
 
-        String nome = torreS.getClass()
-                .getSimpleName()
-                .replace("Torre", "")
-                .toUpperCase();
+        String nome = getNomePokemon(torreS).toUpperCase();
 
         MenuR = new VBox(12);
         MenuR.setPadding(new Insets(14));
@@ -381,6 +381,67 @@ public class MenuUpgrade {
         return -1;
     }
 
+    private String formatarNumero(double valor) {
+        DecimalFormat formato = new DecimalFormat(
+            "0.##",
+            DecimalFormatSymbols.getInstance(Locale.forLanguageTag("pt-BR"))
+        );
+
+        return formato.format(valor);
+    }
+
+    private String getNomePokemon(Torre torre) {
+
+        int nivel = torre.getNivel();
+
+        if (torre instanceof TorreCharmander) {
+            if (nivel == 1) {
+                return "Charmander";
+            }
+            else if (nivel == 2) {
+                return "Charmeleon";
+            }
+            else {
+                return "Charizard";
+            }
+        }
+        else if (torre instanceof TorreSquirtle) {
+            if (nivel == 1) {
+                return "Squirtle";
+            }
+            else if (nivel == 2) {
+                return "Wartortle";
+            }
+            else {
+                return "Blastoise";
+            }
+        }
+        else if (torre instanceof TorrePikachu) {
+            if (nivel == 1) {
+                return "Pichu";
+            }
+            else if (nivel == 2) {
+                return "Pikachu";
+            }
+            else {
+                return "Raichu";
+            }
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            if (nivel == 1) {
+                return "Bulbassauro";
+            }
+            else if (nivel == 2) {
+                return "Ivysaur";
+            }
+            else {
+                return "Venusaur";
+            }
+        }
+
+        return "Desconhecido";
+    }
+
     private String getImagemPokemon(Torre torre) {
         int nivel = torre.getNivel();
 
@@ -402,8 +463,8 @@ public class MenuUpgrade {
         }
         else if (torre instanceof TorrePikachu) {
             return switch (nivel) {
-                case 1 -> "/assets/textures/pikachu.png";
-                case 2 -> "/assets/textures/raichu.png";
+                case 1 -> "/assets/textures/pichu.png";
+                case 2 -> "/assets/textures/pikachu.png";
                 case 3 -> "/assets/textures/raichu.png";
                 default -> null;
             };
@@ -420,36 +481,25 @@ public class MenuUpgrade {
         return null;
     }
 
-        private String NomePoder(Torre torre) {
+    private String NomePoder(Torre torre) {
 
-            if (torre instanceof TorreCharmander) {
-
-                return "Burn";
-            }
-            if (torre instanceof TorreSquirtle) {
-                return "HydroBomb";
-            }
-            if (torre instanceof TorreBulbassauro) {
-                return "Poison";
-            }
-            if (torre instanceof TorrePikachu) {
-                return "Thunder";
-            }
-
-            return "Desconhecida";
+        if (torre.getNivel() == 1) {
+            return "Nenhuma";
         }
 
+        if (torre instanceof TorreCharmander) {
+            return "Queimadura";
+        }
+        else if (torre instanceof TorreSquirtle) {
+            return "Hidro Bomba";
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            return "Lentidão";
+        }
+        else if (torre instanceof TorrePikachu) {
+            return "Descarga Elétrica";
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
+        return "Desconhecida";
+    }
 }

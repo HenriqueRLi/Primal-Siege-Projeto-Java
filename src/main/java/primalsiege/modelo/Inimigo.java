@@ -65,11 +65,11 @@ public abstract class Inimigo {
         return danoBase;
     }
 
-    public void tornarChefe(double multiplicadorVida) {
-        vida = (float) (vida * multiplicadorVida);
-        danoBase = danoBase * 2;
-        recompensa = (int) Math.round(2 * Math.pow(vida, 0.35));
-        chefe = true;
+    public void tornarChefe(float vida, int danoBase, int recompensa) {
+        this.vida = vida;
+        this.danoBase = danoBase;
+        this.recompensa = recompensa;
+        this.chefe = true;
     }
     
     public boolean ehChefe() {

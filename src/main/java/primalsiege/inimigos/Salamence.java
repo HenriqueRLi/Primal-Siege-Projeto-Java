@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Salamence extends Inimigo {
 
     public Salamence(Mapa mapa) {
-        super(800, 130, 3, "Salamence", mapa);
-        definirRecompensa(21);
+        super(800, 130, 15, "Salamence", mapa);
+        definirRecompensa(28);
     }
 }

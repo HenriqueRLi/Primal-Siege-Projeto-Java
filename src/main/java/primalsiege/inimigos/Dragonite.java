@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Dragonite extends Inimigo {
     public Dragonite(Mapa mapa){
-        super(850, 120, 3, "Dragonite", mapa);
-        definirRecompensa(21);
+        super(850, 120, 20, "Dragonite", mapa);
+        definirRecompensa(28);
     }
 }

@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Kadabra extends Inimigo {
     public Kadabra(Mapa mapa){
-        super(120,190,1,"Kadabra",mapa);
+        super(120,190,5,"Kadabra",mapa);
         definirRecompensa(11);
     }
 }

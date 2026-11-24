@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Snorlax extends Inimigo {
 
     public Snorlax(Mapa mapa) {
-        super(1200, 80, 3, "Snorlax", mapa);
-        definirRecompensa(24);
+        super(1200, 80, 22, "Snorlax", mapa);
+        definirRecompensa(32);
     }
 }

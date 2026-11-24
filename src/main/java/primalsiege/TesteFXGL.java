@@ -98,6 +98,7 @@ public class TesteFXGL extends GameApplication {
 
         renderizador.desenharCaminho(mapa.getMatriz());
         renderizador.criarGrid();
+        //renderizador.numerarCelulas();
 
         hudBase = new HUDBase(base);
 

@@ -102,27 +102,61 @@ public class GerenciadorInimigos {
     public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa, int indice) {
 
         Inimigo inimigo = instanciarInimigoNormal(gerenciadorOndas, mapa, indice);
-
-        if (inimigo == null) {
-            return null;
-        }
-
         Onda onda = gerenciadorOndas.getOndaAtual();
 
         if (onda.ehChefe(indice)) {
 
             int numeroOnda = gerenciadorOndas.getNumeroOnda();
 
-            double multiplicadorVida = 2.5;
+            switch (numeroOnda) {
+                case 5:
+                    inimigo.tornarChefe(120, 4, 11);
+                    break;
 
-            if (numeroOnda == 5) {
-                multiplicadorVida = 2.0;
-            }
-            else if (numeroOnda == 15 || numeroOnda == 20 || numeroOnda == 25) {
-                multiplicadorVida = 3.5;
-            }
+                case 10:
+                    inimigo.tornarChefe(700, 10, 20);
+                    break;
 
-            inimigo.tornarChefe(multiplicadorVida);
+                case 15:
+                    inimigo.tornarChefe(950, 14, 22);
+                    break;
+
+                case 20:
+                    inimigo.tornarChefe(1450, 18, 26);
+                    break;
+
+                case 25:
+                    inimigo.tornarChefe(2000, 24, 29);
+                    break;
+
+                case 30:
+                    inimigo.tornarChefe(2900, 30, 33);
+                    break;
+
+                case 35:
+                    inimigo.tornarChefe(3800, 36, 36);
+                    break;
+
+                case 40:
+                    inimigo.tornarChefe(5000, 42, 39);
+                    break;
+
+                case 45:
+                    inimigo.tornarChefe(6000, 48, 42);
+                    break;
+
+                case 50:
+                    inimigo.tornarChefe(8000, 55, 46);
+                    break;
+
+                case 55:
+                    inimigo.tornarChefe(11000, 65, 52);
+                    break;
+
+                case 60:
+                    inimigo.tornarChefe(24000, 85, 68);
+                    break;
+            }
         }
 
         return inimigo;

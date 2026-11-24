@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Gengar extends Inimigo {
     public Gengar(Mapa mapa){
-        super(330,170,2,"Gengar",mapa);
+        super(330,170,10,"Gengar",mapa);
         definirRecompensa(15);
     }
 }

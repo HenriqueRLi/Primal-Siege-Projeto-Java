@@ -41,7 +41,7 @@ public class MenuTorre {
     private final String[] nomes = {
         "CHARMANDER",
         "SQUIRTLE",
-        "PIKACHU",
+        "PICHU",
         "BULBASSAURO"
     };
 
@@ -53,10 +53,17 @@ public class MenuTorre {
     };
 
     private final String[] efeitos = {
-        "Fogo - Queimadura",
-        "Agua - Lentidao",
-        "Eletrico - Choque",
-        "Planta - Veneno"
+        "N2: Queimadura",
+        "N2: Hidro Bomba",
+        "N2: Descarga Elétrica",
+        "N2: Lentidão"
+    };
+
+    private final String[] atributos = {
+        "Dano: 20 | 2 ataques/s",
+        "Dano: 40 | 1,1 ataques/s",
+        "Dano: 20 | 2 ataques/s",
+        "Dano: 25 | 1,5 ataques/s"
     };
 
     private final int[] custos = {85, 110, 100, 85};
@@ -227,15 +234,13 @@ public class MenuTorre {
             nome.getStyle() + "-fx-font-weight: bold;"
         );
 
-        Label efeito = criarTexto(
-            efeitos[indice], "#A7B6C6", 11
-        );
+        Label efeito = criarTexto(efeitos[indice], "#A7B6C6", 11);
 
-        VBox informacoes = new VBox(4, nome, efeito);
+        Label stats = criarTexto(atributos[indice], "#D6DDE5", 11);
 
-        Label preco = criarTexto(
-            "R$ " + custos[indice], "#E1BE78", 12
-        );
+        VBox informacoes = new VBox(4, nome, stats, efeito);
+
+        Label preco = criarTexto(custos[indice] + " G", "#E1BE78", 12);
 
         Region espaco = new Region();
         HBox.setHgrow(espaco, Priority.ALWAYS);

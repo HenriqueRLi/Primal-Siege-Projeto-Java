@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Shinx extends Inimigo {
 
     public Shinx(Mapa mapa) {
-        super(80, 200, 1, "Shinx", mapa);
+        super(80, 200, 3, "Shinx", mapa);
         definirRecompensa(9);
     }
 }

@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Tyranitar extends Inimigo {
 
     public Tyranitar(Mapa mapa) {
-        super(1300, 85, 3, "Tyranitar", mapa);
-        definirRecompensa(25);
+        super(1300, 85, 25, "Tyranitar", mapa);
+        definirRecompensa(33);
     }
 }
