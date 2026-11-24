@@ -152,14 +152,9 @@ public class MenuUpgrade {
         Region espaco2 = new Region();
         HBox.setHgrow(espaco2, Priority.ALWAYS);
 
-        HBox linhaEvolucao = new HBox(
-            evolucao, espaco2, proximoNivel
-        );
+        HBox linhaEvolucao = new HBox(evolucao, espaco2, proximoNivel);
 
-        Label descricao = texto(
-            "Mais dano, maior alcance e melhoria da habilidade.",
-            14, "#C6D0DA"
-        );
+        Label descricao = texto(getDescricaoEvolucao(torreS), 13, "#C6D0DA");
         descricao.setWrapText(true);
 
         VBox quadroEvolucao = new VBox(
@@ -388,6 +383,70 @@ public class MenuUpgrade {
         );
 
         return formato.format(valor);
+    }
+
+    private String getDescricaoEvolucao(Torre torre) {
+
+        int nivel = torre.getNivel();
+
+        if (nivel >= 3) {
+            return "Esta torre atingiu sua evolução máxima.";
+        }
+
+        if (torre instanceof TorreCharmander) {
+            if (nivel == 1) {
+                return "Charmeleon\n" +
+                    "Dano: 20 → 28 | DPS: 40 → 56\n" +
+                    "Libera queimadura de 4 HP/s.";
+            }
+            else {
+                return "Charizard\n" +
+                    "DPS: 56 → 98\n" +
+                    "Lança-chamas: 14 ataques/s.\n" +
+                    "Queimadura: 4 → 5 HP/s.";
+            }
+        }
+        else if (torre instanceof TorreSquirtle) {
+            if (nivel == 1) {
+                return "Wartortle\n" +
+                    "Dano: 40 → 45 | DPS: 44 → 56,25\n" +
+                    "Hidro Bomba: +48 de dano a cada 8s.";
+            }
+            else {
+                return "Blastoise\n" +
+                    "DPS: 56,25 → 99\n" +
+                    "Jato de água: 66 ataques/s.\n" +
+                    "Hidro Bomba: 48 → 110 de dano extra.";
+            }
+        }
+        else if (torre instanceof TorrePikachu) {
+            if (nivel == 1) {
+                return "Pikachu\n" +
+                    "Dano: 20 → 22 | DPS: 40 → 55\n" +
+                    "Descarga: +15 de dano, até 3 alvos.\n" +
+                    "Recarga: 6s | Raio: 90 px.";
+            }
+            else {
+                return "Raichu\n" +
+                    "Dano: 22 → 30 | DPS: 55 → 90\n" +
+                    "Descarga: 15 → 20 de dano extra.\n" +
+                    "Raio da descarga: 90 → 160 px.";
+            }
+        }
+        else if (torre instanceof TorreBulbassauro) {
+            if (nivel == 1) {
+                return "Ivysaur\n" +
+                    "Dano: 25 → 36 | DPS: 37,5 → 54\n" +
+                    "Libera lentidão de 25% por 2s.";
+            }
+            else {
+                return "Venusaur\n" +
+                    "Dano: 36 → 50 | DPS: 54 → 80\n" +
+                    "Lentidão: 25% → 30%.";
+            }
+        }
+
+        return "Evolução desconhecida.";
     }
 
     private String getNomePokemon(Torre torre) {

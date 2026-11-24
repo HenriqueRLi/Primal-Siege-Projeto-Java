@@ -423,8 +423,7 @@ public class GerenciadorCombate {
             Projetil tiro = projeteis.get(i);
             Shape visual = visuaisProjeteis.get(i);
 
-            boolean alvoValido = inimigosAtivos.contains(tiro.getAlvo())
-                            && tiro.getAlvo().statusVida();
+            boolean alvoValido = inimigosAtivos.contains(tiro.getAlvo()) && tiro.getAlvo().statusVida();
 
             boolean acertou = alvoValido && tiro.moverTiro(tpf, inimigosAtivos);
 

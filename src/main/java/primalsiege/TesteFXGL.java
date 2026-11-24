@@ -339,7 +339,7 @@ public class TesteFXGL extends GameApplication {
     }, KeyCode.H); 
 }
 
- private void evoluirTorre(Torre torre) {
+    private void evoluirTorre(Torre torre) {
         if (jogoIniciado && torreSelecionada != null && hudVitoria == null && base.getVida() > 0) { 
 
                     int custo = gerenciadorTorres.getCustoEvolucao(torreSelecionada);
