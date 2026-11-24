@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Sandshrew extends Inimigo {
 
     public Sandshrew(Mapa mapa) {
-        super(38, 200, 3, "Sandshrew", mapa);
-        definirRecompensa(8);
+        super(260, 130, 2, "Sandshrew", mapa);
+        definirRecompensa(14);
     }
 }

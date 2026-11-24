@@ -10,7 +10,7 @@ public class TorrePikachu extends Torre {
     private double recargaDescarga;
 
     public TorrePikachu(double x, double y) {
-        super(8, 150, x, y, 2, 50, Color.YELLOW, 800, 20,115);
+        super(20, 150, x, y, 2, 50, Color.YELLOW, 800, 20, 100);
         recargaDescarga = 0;
     }
 
@@ -19,11 +19,11 @@ public class TorrePikachu extends Torre {
         if (super.evoluir()) {
 
             if (getNivel() == 2) {
-                definirAtributosAtaque(12, 2.5f);
+                definirAtributosAtaque(22, 2.5f);
                 definirAtributosProjetil(Color.GOLD, 850, 22);
             }
             else if (getNivel() == 3) {
-                definirAtributosAtaque(18, 3);
+                definirAtributosAtaque(30, 3);
                 definirAtributosProjetil(Color.YELLOW, 900, 25);
             }
 

@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Steelix extends Inimigo {
 
     public Steelix(Mapa mapa) {
-        super(38, 200, 3, "Steelix", mapa);
-        definirRecompensa(8);
+        super(1400, 75, 3, "Steelix", mapa);
+        definirRecompensa(25);
     }
 }

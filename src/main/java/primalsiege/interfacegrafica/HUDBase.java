@@ -40,7 +40,7 @@ private FadeTransition alertaVida;
         tituloHUD.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         tituloHUD.setFill(Color.WHITE);
 
-        textoVidaBase = new Text(base.getVida() + " / 20");
+        textoVidaBase = new Text(base.getVida() + " / 250");
         textoVidaBase.setX(1170);
         textoVidaBase.setY(45);
         textoVidaBase.setFill(Color.WHITE);
@@ -97,12 +97,12 @@ private FadeTransition alertaVida;
 
     public void atualizarVida(int vida, boolean recebeuDano) {
 
-        int vidaAtual = Math.max(0, Math.min(20, vida));
+        int vidaAtual = Math.max(0, Math.min(250, vida));
 
-        textoVidaBase.setText(vidaAtual + " / 20");
-        barraVerde.setWidth(210.0 * vidaAtual / 20.0);
+        textoVidaBase.setText(vidaAtual + " / 250");
+        barraVerde.setWidth(210.0 * vidaAtual / 250.0);
 
-        if (vidaAtual <= 5) {
+        if (vidaAtual <= 63) {
 
             barraVerde.setFill(Color.web("#EF4444"));
             textoVidaBase.setFill(Color.web("#FF7B7B"));
@@ -113,7 +113,7 @@ private FadeTransition alertaVida;
                 alertaVida.play();
             }
         }
-        else if (vidaAtual <= 10) {
+        else if (vidaAtual <= 125) {
 
             barraVerde.setFill(Color.web("#FACC15"));
             textoVidaBase.setFill(Color.web("#FACC15"));
@@ -124,7 +124,7 @@ private FadeTransition alertaVida;
             textoVidaBase.setFill(Color.WHITE);
         }
 
-        if (vidaAtual > 5 || vidaAtual == 0) {
+        if (vidaAtual > 63 || vidaAtual == 0) {
             alertaVida.stop();
             barraVerde.setOpacity(1.0);
         }

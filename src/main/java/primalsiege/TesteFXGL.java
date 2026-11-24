@@ -1,6 +1,11 @@
 package primalsiege;
 import java.util.ArrayList;
 
+import javafx.animation.PauseTransition;
+import javafx.scene.control.Label;
+import javafx.geometry.Pos;
+import javafx.util.Duration;
+
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
@@ -39,6 +44,7 @@ import primalsiege.torres.TorrePikachu;
 import primalsiege.torres.TorreSquirtle;
 
 
+
 public class TesteFXGL extends GameApplication {
     private static final int TAMANHO_CELULA = 40;
     private static final int LARGURA = 1280;
@@ -67,6 +73,8 @@ public class TesteFXGL extends GameApplication {
     private MenuUpgrade telaupar = new MenuUpgrade();
     private TelaInicial telaInicial;
     private boolean jogoIniciado = false;
+    private Label avisoLimite;
+    private PauseTransition temporizadorAviso;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -89,6 +97,7 @@ public class TesteFXGL extends GameApplication {
         RenderizadorMapa renderizador = new RenderizadorMapa(LARGURA, ALTURA, TAMANHO_CELULA);
 
         renderizador.desenharCaminho(mapa.getMatriz());
+        renderizador.criarGrid();
 
         hudBase = new HUDBase(base);
 
@@ -478,8 +487,7 @@ public class TesteFXGL extends GameApplication {
             telaupar.resetEvento();
 
             if (gerenciadorTorres.venderTorre(torreSelecionada, torres, mapa, renderizadorTorres)) {
-                // Credite aqui o valor da venda e atualize o ouro no HUD.
-                int val = torreSelecionada.getvalor();
+                int val = (int) Math.round(torreSelecionada.getvalor() * 0.60);
                 gerenciadorEconomia.adicionarOuro(val);
                 hudOnda.atualizarOuro(gerenciadorEconomia.getOuro());
             }
@@ -555,6 +563,20 @@ public class TesteFXGL extends GameApplication {
 
         if (torre != null) {
 
+            if (!gerenciadorTorres.podeConstruirTorre(torres, torre)) {
+
+                if (torres.size() >= 32) {
+                    mostrarAvisoLimite("Limite total de 32 torres atingido!");
+                }
+                else {
+                    mostrarAvisoLimite("Limite de 8 torres desse tipo atingido!");
+                }
+
+                Mrad.resetselect();
+                Mrad.fecharMenu();
+                return;
+            }
+
             int custo = gerenciadorTorres.getCustoConstrucao(torre);
 
             if (custo >= 0 && gerenciadorEconomia.getOuro() >= custo) {
@@ -585,9 +607,49 @@ public class TesteFXGL extends GameApplication {
 
             Mrad.resetselect();
             Mrad.fecharMenu();
+        } 
+    }
+
+    private void mostrarAvisoLimite(String mensagem) {
+
+        if (avisoLimite == null) {
+
+            avisoLimite = new Label();
+
+            avisoLimite.setPrefWidth(400);
+            avisoLimite.setAlignment(Pos.CENTER);
+
+            avisoLimite.setLayoutX((LARGURA - 400) / 2);
+            avisoLimite.setLayoutY(100);
+
+            avisoLimite.setMouseTransparent(true);
+
+            avisoLimite.setStyle(
+                "-fx-background-color: #9B2335;" +
+                "-fx-background-radius: 10;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 16px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 12px;"
+            );
+
+            FXGL.getGameScene().addUINode(avisoLimite);
         }
 
-        
+        avisoLimite.setText(mensagem);
+
+        if (temporizadorAviso != null) {
+            temporizadorAviso.stop();
+        }
+
+        temporizadorAviso = new PauseTransition(Duration.seconds(5));
+
+        temporizadorAviso.setOnFinished(event -> {
+            FXGL.getGameScene().removeUINode(avisoLimite);
+            avisoLimite = null;
+        });
+
+        temporizadorAviso.play();
     }
 
     public static void main(String[] args) {

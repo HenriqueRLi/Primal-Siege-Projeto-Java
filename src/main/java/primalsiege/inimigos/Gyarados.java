@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Gyarados extends Inimigo {
     public Gyarados(Mapa mapa){
-        super(150, 130, 3, "Gyarados", mapa);
-        definirRecompensa(18);
+        super(700, 110, 3, "Gyarados", mapa);
+        definirRecompensa(20);
     }
 }

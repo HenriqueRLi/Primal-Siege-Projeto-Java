@@ -10,7 +10,7 @@ public class TorreSquirtle extends Torre {
     private double recargaHidroBomba;
 
     public TorreSquirtle(double x, double y) {
-        super(15, 150, x, y, 1.3f, 50, Color.BLUE, 500, 4,125);
+        super(40, 150, x, y, 1.1f, 50, Color.BLUE, 500, 4, 110);
         recargaHidroBomba = 0;
     }
 
@@ -19,11 +19,12 @@ public class TorreSquirtle extends Torre {
         if (super.evoluir()) {
 
             if (getNivel() == 2) {
-                definirAtributosAtaque(23, 1.5f);
+                definirAtributosAtaque(45, 1.25f);
                 definirAtributosProjetil(Color.DODGERBLUE, 650, 6);
             }
+
             else if (getNivel() == 3) {
-                definirAtributosAtaque(1, 66);
+                definirAtributosAtaque(1.5f, 66);
                 definirAtributosProjetil(Color.DEEPSKYBLUE, 850, 5);
             }
 

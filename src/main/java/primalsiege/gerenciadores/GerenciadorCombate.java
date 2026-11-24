@@ -530,6 +530,45 @@ public class GerenciadorCombate {
             triangulo.setRotate(torre.getRotacao() + 90);
 
             Projetil tiro = torre.atirar(alvoSelecionado);
+            int disparosNoFrame = 0;
+
+            while (tiro != null && disparosNoFrame < 4) {
+
+                if (torre.usaRaioInstantaneo() && torre.getNivel() == 3) {
+                    System.out.println("Raichu disparou. Descarga: " + tiro.ehDescarga());
+                }
+
+                if (torre.usaRaioInstantaneo()) {
+                    mostrarRaioEletrico(
+                        torre.getX(),
+                        torre.getY(),
+                        alvoSelecionado,
+                        torre.getNivel()
+                    );
+
+                    tiro.atingirInstantaneamente(inimigosAtivos);
+
+                    if (tiro.ehDescarga()) {
+                        mostrarRaioDescarga(tiro.getAlvosDescarga());
+                    }
+                }
+                else {
+                    desenharProjetil(
+                        tiro,
+                        torre.getcorProj(),
+                        torre.getProjrad(alvoSelecionado)
+                    );
+                }
+
+                disparosNoFrame++;
+
+                if (torre.usaVisualAgua() && torre.getNivel() == 3) {
+                    tiro = torre.atirar(alvoSelecionado);
+                }
+                else {
+                    tiro = null;
+                }
+            }
 
             if (tiro != null) {
 
@@ -551,11 +590,13 @@ public class GerenciadorCombate {
                     }
 
                 }
+                
                 else {
-                    desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(inimigo));
-                if (tiro != null) {
-                    desenharProjetil(tiro, torre.getcorProj(), torre.getProjrad(alvoSelecionado));
-                }
+                    desenharProjetil(
+                        tiro,
+                        torre.getcorProj(),
+                        torre.getProjrad(alvoSelecionado)
+                    );
                 }
             }
         }

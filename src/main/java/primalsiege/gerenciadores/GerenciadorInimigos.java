@@ -100,6 +100,35 @@ public class GerenciadorInimigos {
     }
 
     public Inimigo instanciarInimigoDaOnda(GerenciadorOndas gerenciadorOndas, Mapa mapa, int indice) {
+
+        Inimigo inimigo = instanciarInimigoNormal(gerenciadorOndas, mapa, indice);
+
+        if (inimigo == null) {
+            return null;
+        }
+
+        Onda onda = gerenciadorOndas.getOndaAtual();
+
+        if (onda.ehChefe(indice)) {
+
+            int numeroOnda = gerenciadorOndas.getNumeroOnda();
+
+            double multiplicadorVida = 2.5;
+
+            if (numeroOnda == 5) {
+                multiplicadorVida = 2.0;
+            }
+            else if (numeroOnda == 15 || numeroOnda == 20 || numeroOnda == 25) {
+                multiplicadorVida = 3.5;
+            }
+
+            inimigo.tornarChefe(multiplicadorVida);
+        }
+
+        return inimigo;
+    }
+
+    private Inimigo instanciarInimigoNormal(GerenciadorOndas gerenciadorOndas, Mapa mapa, int indice) {
         String especie = gerenciadorOndas.getOndaAtual().getEspecie(indice);
 
         switch (especie) {
@@ -264,8 +293,15 @@ public class GerenciadorInimigos {
         ImageView sprite = new ImageView();
         atualizarSprite(sprite, inimigo.getTipoInimigo(), 1, 0);
 
-        sprite.setFitWidth(40);
-        sprite.setFitHeight(40);
+        if (inimigo.ehChefe()) {
+            sprite.setFitWidth(56);
+            sprite.setFitHeight(56);
+        }
+        
+        else {
+            sprite.setFitWidth(40);
+            sprite.setFitHeight(40);
+        }
         sprite.setSmooth(false);
 
         sprite.setLayoutX(inimigo.getX() - sprite.getFitWidth() / 2.0);
@@ -302,15 +338,9 @@ public class GerenciadorInimigos {
             String especie = onda.getEspecie(i);
 
             if (!velocidades.containsKey(especie)) {
+                Inimigo inimigo = instanciarInimigoNormal(gerenciadorOndas, mapa, i);
 
-                Inimigo inimigo = instanciarInimigoDaOnda(
-                    gerenciadorOndas, mapa, i
-                );
-
-                velocidades.put(
-                    especie,
-                    inimigo.getVelocidadeMovimentacao()
-                );
+                velocidades.put(especie, inimigo.getVelocidadeMovimentacao());
             }
         }
 

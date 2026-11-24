@@ -7,7 +7,7 @@ import primalsiege.modelo.Torre;
 public class TorreBulbassauro extends Torre {
 
     public TorreBulbassauro(double x, double y) {
-        super(12, 150, x, y, 1.25f, 50, Color.GREEN, 1000, 2,100);
+        super(25, 150, x, y, 1.5f, 50, Color.GREEN, 1000, 2, 85);
     }
 
     @Override
@@ -15,11 +15,11 @@ public class TorreBulbassauro extends Torre {
         if (super.evoluir()) {
 
             if (getNivel() == 2) {
-                definirAtributosAtaque(15, 1.5f);
+                definirAtributosAtaque(36, 1.5f);
                 definirAtributosProjetil(Color.LIMEGREEN, 1050, 4);
             }
             else if (getNivel() == 3) {
-                definirAtributosAtaque(23, 1.6f);
+                definirAtributosAtaque(50, 1.6f);
                 definirAtributosProjetil(Color.LAWNGREEN, 1100, 7);
             }
 

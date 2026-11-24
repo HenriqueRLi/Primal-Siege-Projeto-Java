@@ -25,14 +25,16 @@ public class RenderizadorMapa {
     public void criarGrid() {
         for (int x = 0; x <= largura; x += tamanhoCelula) {
             Line linha = new Line(x, 0, x, altura);
-            linha.setStroke(Color.GRAY);
+            linha.setStroke(Color.rgb(255, 255, 255, 0.30));
+            linha.setMouseTransparent(true);
 
             FXGL.getGameScene().addUINode(linha);
         }
 
         for (int y = 0; y <= altura; y += tamanhoCelula) {
             Line linha = new Line(0, y, largura, y);
-            linha.setStroke(Color.GRAY);
+            linha.setStroke(Color.rgb(255, 255, 255, 0.30));
+            linha.setMouseTransparent(true);
 
             FXGL.getGameScene().addUINode(linha);
         }

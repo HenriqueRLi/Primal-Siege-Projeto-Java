@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Growlithe extends Inimigo {
 
     public Growlithe(Mapa mapa) {
-        super(38, 200, 3, "Growlithe", mapa);
-        definirRecompensa(8);
+        super(200, 180, 2, "Growlithe", mapa);
+        definirRecompensa(13);
     }
 }

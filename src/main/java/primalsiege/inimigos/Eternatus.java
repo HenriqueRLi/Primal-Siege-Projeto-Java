@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Eternatus extends Inimigo {
     public Eternatus(Mapa mapa){
-        super(5000, 65, 20, "Eternatus", mapa);
-        definirRecompensa(0);
+        super(2300, 80, 4, "Eternatus", mapa);
+        definirRecompensa(30);
     }
 }

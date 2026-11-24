@@ -65,16 +65,16 @@ public class GerenciadorTorres {
     public int getCustoConstrucao(Torre torre) {
 
         if (torre instanceof TorreCharmander) {
-            return 100;
+            return 85;
         }
         else if (torre instanceof TorreSquirtle) {
-            return 125;
+            return 110;
         }
         else if (torre instanceof TorrePikachu) {
-            return 115;
+            return 100;
         }
         else if (torre instanceof TorreBulbassauro) {
-            return 100;
+            return 85;
         }
 
         return -1;
@@ -89,37 +89,59 @@ public class GerenciadorTorres {
 
         if (torre instanceof TorreCharmander) {
             if (nivel == 1) {
-                return 120;
+                return 375;
             }
             else {
-                return 160;
+                return 480;
             }
         }
         else if (torre instanceof TorreSquirtle) {
             if (nivel == 1) {
-                return 140;
+                return 440;
             }
             else {
-                return 210;
+                return 630;
             }
         }
         else if (torre instanceof TorrePikachu) {
             if (nivel == 1) {
-                return 140;
+                return 440;
             }
             else {
-                return 190;
+                return 570;
             }
         }
         else if (torre instanceof TorreBulbassauro) {
             if (nivel == 1) {
-                return 115;
+                return 360;
             }
             else {
-                return 165;
+                return 495;
             }
         }
+
         return -1;
+    }
+
+    public boolean podeConstruirTorre(ArrayList<Torre> torres, Torre novaTorre) {
+
+        if (torres.size() >= 32) {
+            return false;
+        }
+
+        int quantidadeTipo = 0;
+
+        for (Torre torre : torres) {
+            if (torre.getClass() == novaTorre.getClass()) {
+                quantidadeTipo++;
+            }
+        }
+
+        if (quantidadeTipo >= 8) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean venderTorre(Torre torre, ArrayList<Torre> torres,Mapa mapa, RenderizadorTorres renderizadorTorres) {

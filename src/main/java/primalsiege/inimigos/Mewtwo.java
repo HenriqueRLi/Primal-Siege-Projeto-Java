@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Mewtwo extends Inimigo {
     public Mewtwo(Mapa mapa){
-        super(450, 100, 5, "Mewtwo", mapa);
-        definirRecompensa(45);
+        super(2000, 100, 4, "Mewtwo", mapa);
+        definirRecompensa(29);
     }
 }

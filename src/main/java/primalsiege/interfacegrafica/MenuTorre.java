@@ -52,7 +52,6 @@ public class MenuTorre {
         "bulbasaur.png"
     };
 
-    // Textos ilustrativos: ajustar conforme as habilidades reais.
     private final String[] efeitos = {
         "Fogo - Queimadura",
         "Agua - Lentidao",
@@ -60,8 +59,7 @@ public class MenuTorre {
         "Planta - Veneno"
     };
 
-    // Valores iniciais de exemplo.
-    private final int[] custos = {100, 125, 115, 100};
+    private final int[] custos = {85, 110, 100, 85};
 
     public void AbrirMenu(int linha, int coluna) {
 

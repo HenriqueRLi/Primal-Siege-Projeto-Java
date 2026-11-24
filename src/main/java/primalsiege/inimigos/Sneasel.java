@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Sneasel extends Inimigo {
 
     public Sneasel(Mapa mapa) {
-        super(38, 200, 3, "Sneasel", mapa);
-        definirRecompensa(8);
+        super(180, 200, 2, "Sneasel", mapa);
+        definirRecompensa(12);
     }
 }

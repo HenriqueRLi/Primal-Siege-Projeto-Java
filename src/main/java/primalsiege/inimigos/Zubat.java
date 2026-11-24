@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Zubat extends Inimigo {
 
     public Zubat(Mapa mapa) {
-        super(38, 200, 3, "Zubat", mapa);
+        super(50, 220, 1, "Zubat", mapa);
         definirRecompensa(8);
     }
 }

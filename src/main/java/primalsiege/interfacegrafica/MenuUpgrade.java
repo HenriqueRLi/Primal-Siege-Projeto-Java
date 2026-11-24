@@ -43,8 +43,6 @@ public class MenuUpgrade {
 
     public void abrirtorre(Torre torreS, int X, int Y) {
 
-        // Se clicar na mesma torre, fecha o painel.
-        // Se clicar em outra, atualiza as informações.
         if (status) {
             boolean mesmaTorre = (Tselect == torreS);
             fecharMenu();
@@ -195,7 +193,7 @@ public class MenuUpgrade {
 
         Button botaoVender = criarBotao(
             "VENDER TORRE",
-            "Valor: " + torreS.getvalor(),
+            "Valor: " + (int) Math.round(torreS.getvalor() * 0.60),
             "#344C63",
             2
         );
@@ -341,16 +339,43 @@ public class MenuUpgrade {
         }
 
         if (torre instanceof TorreCharmander) {
-            return nivel == 1 ? 120 : 160;
+            if (nivel == 1) {
+                return 375;
+            }
+
+            else {
+                return 480;
+            }
         }
+
         else if (torre instanceof TorreSquirtle) {
-            return nivel == 1 ? 140 : 210;
+            if (nivel == 1) {
+                return 440;
+            }
+
+            else {
+                return 630;
+            }
         }
+
         else if (torre instanceof TorrePikachu) {
-            return nivel == 1 ? 140 : 190;
+            if (nivel == 1) {
+                return 440;
+            }
+
+            else {
+                return 570;
+            }
         }
+
         else if (torre instanceof TorreBulbassauro) {
-            return nivel == 1 ? 115 : 165;
+            if (nivel == 1) {
+                return 360;
+            }
+
+            else {
+                return 495;
+            }
         }
 
         return -1;

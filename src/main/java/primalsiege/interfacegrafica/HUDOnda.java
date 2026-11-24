@@ -43,7 +43,7 @@ public class HUDOnda extends Group {
         textoOnda.setStyle("-fx-font-family: Arial; -fx-font-size: 13px; -fx-font-weight: bold;");
         textoOnda.setFill(Color.WHITE);
 
-        textoNumeroOnda = new Text("1/10");
+        textoNumeroOnda = new Text("1/60");
         textoNumeroOnda.setX(280);
         textoNumeroOnda.setY(687);
         textoNumeroOnda.setStyle("-fx-font-family: Arial; -fx-font-size: 25px; -fx-font-weight: bold;");
@@ -164,7 +164,7 @@ public class HUDOnda extends Group {
     }
 
     public void atualizarNumeroOnda(int numero) {
-        textoNumeroOnda.setText(numero + "/10");
+        textoNumeroOnda.setText(numero + "/60");
     }
     
     public void atualizarOuro(int quantidade) {

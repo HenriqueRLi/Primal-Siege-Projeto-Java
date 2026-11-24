@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Caterpie extends Inimigo {
 
     public Caterpie(Mapa mapa) {
-        super(38, 200, 3, "Caterpie", mapa);
-        definirRecompensa(8);
+        super(40, 210, 1, "Caterpie", mapa);
+        definirRecompensa(7);
     }
 }

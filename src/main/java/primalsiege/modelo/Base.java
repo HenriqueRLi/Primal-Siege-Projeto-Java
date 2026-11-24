@@ -4,7 +4,7 @@ public class Base {
     private int vida;
 
     public Base () {
-        this.vida = 20;
+        this.vida = 250;
     }
 
     public boolean diminuirVida (int dano) {

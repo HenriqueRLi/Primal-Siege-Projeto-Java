@@ -14,6 +14,7 @@ public abstract class Inimigo {
     private double acumuladorQueimadura;
     private double percentualLentidao;
     private double tempoLentidao;
+    private boolean chefe;
 
     public Inimigo (float vida, double velocidadeMovimentacao, int danoBase, String tipoInimigo, Mapa mapa) {
         this.vida = vida;
@@ -30,6 +31,7 @@ public abstract class Inimigo {
         acumuladorQueimadura = 0;
         percentualLentidao = 0;
         tempoLentidao = 0;
+        chefe = false;
     }
     
     public double getVelocidadeMovimentacao() {
@@ -61,6 +63,17 @@ public abstract class Inimigo {
 
     public int danoAtaque() {
         return danoBase;
+    }
+
+    public void tornarChefe(double multiplicadorVida) {
+        vida = (float) (vida * multiplicadorVida);
+        danoBase = danoBase * 2;
+        recompensa = (int) Math.round(2 * Math.pow(vida, 0.35));
+        chefe = true;
+    }
+    
+    public boolean ehChefe() {
+        return chefe;
     }
 
     public boolean mover(double tpf) {

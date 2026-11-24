@@ -3,7 +3,7 @@ public class GerenciadorEconomia {
     private int ouro;
 
     public GerenciadorEconomia () {
-        this.ouro = 300;
+        this.ouro = 400;
     }
 
     public void adicionarOuro (int ouro) {

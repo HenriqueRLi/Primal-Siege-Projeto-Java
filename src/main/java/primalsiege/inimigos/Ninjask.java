@@ -7,7 +7,7 @@ import primalsiege.modelo.Mapa;
 public class Ninjask extends Inimigo {
 
     public Ninjask(Mapa mapa) {
-        super(38, 200, 3, "Ninjask", mapa);
-        definirRecompensa(8);
+        super(130, 240, 2, "Ninjask", mapa);
+        definirRecompensa(11);
     }
 }

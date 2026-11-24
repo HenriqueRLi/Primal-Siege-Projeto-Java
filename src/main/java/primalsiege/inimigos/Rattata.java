@@ -5,7 +5,7 @@ import primalsiege.modelo.Mapa;
 
 public class Rattata extends Inimigo{
     public Rattata(Mapa mapa){
-        super(38,300,3,"Rattata",mapa);
+        super(45,200,1,"Rattata",mapa);
         definirRecompensa(8);
     }
 }
