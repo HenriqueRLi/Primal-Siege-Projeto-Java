@@ -1,23 +1,22 @@
 package primalsiege;
 import java.util.ArrayList;
 
-import javafx.animation.PauseTransition;
-import javafx.scene.control.Label;
-import javafx.geometry.Pos;
-import javafx.util.Duration;
-
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.util.Duration;
 import primalsiege.gerenciadores.GerenciadorCombate;
 import primalsiege.gerenciadores.GerenciadorEconomia;
 import primalsiege.gerenciadores.GerenciadorInimigos;
@@ -324,7 +323,7 @@ public class TesteFXGL extends GameApplication {
     }, KeyCode.H); 
 }
 
-    private void evoluirTorre(Torre torre) {
+    private void evoluirTorre() {
         if (jogoIniciado && torreSelecionada != null && hudVitoria == null && base.getVida() > 0) { 
 
                     int custo = gerenciadorTorres.getCustoEvolucao(torreSelecionada);
@@ -465,7 +464,7 @@ public class TesteFXGL extends GameApplication {
     protected void onUpdate (double tpf) {
         if(telaupar.getevento() == 1){
             telaupar.resetEvento();
-            evoluirTorre(torreSelecionada);
+            evoluirTorre();
             telaupar.fecharMenu();
         }
         else if (telaupar.getevento() == 2) {
@@ -523,7 +522,6 @@ public class TesteFXGL extends GameApplication {
             triangulosTorres,
             inimigosAtivos,
             mapa,
-            inimigo,
             tpf
         );
 

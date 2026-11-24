@@ -164,7 +164,6 @@ public class MenuUpgrade {
         );
 
         // BOTÕES
-        // BOTÕES
         int custo = getCustoEvolucao(torreS);
 
         Button botaoEvoluir = criarBotao(

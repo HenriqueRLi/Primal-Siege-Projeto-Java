@@ -87,7 +87,7 @@ public class TelaDerrota extends Group {
         botaoReiniciar.setStroke(Color.web("#41566A"));
         botaoReiniciar.setStrokeWidth(2);
 
-        Text textoReiniciar = new Text("Tentar Novamente");
+        Text textoReiniciar = new Text("TENTAR NOVAMENTE");
         textoReiniciar.setX(438);
         textoReiniciar.setY(463);
         textoReiniciar.setFill(Color.WHITE);
@@ -115,7 +115,7 @@ public class TelaDerrota extends Group {
         botaoSair.setStroke(Color.web("#AAB8C7"));
         botaoSair.setStrokeWidth(2);
 
-        Text textoSair = new Text("Sair do Jogo");
+        Text textoSair = new Text("SAIR DO JOGO");
         textoSair.setX(720);
         textoSair.setY(463);
         textoSair.setFill(Color.WHITE);

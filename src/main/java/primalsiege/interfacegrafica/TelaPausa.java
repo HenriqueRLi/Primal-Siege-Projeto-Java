@@ -77,7 +77,7 @@ public class TelaPausa extends FXGLMenu {
             jogo.voltarAoMenuPrincipal();
             fireResume();
         });
-        }
+    }
 
     private Rectangle criarBotao(String nome, double y,
                                  boolean principal) {

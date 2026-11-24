@@ -1,21 +1,20 @@
 package primalsiege.modelo;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.net.URL;
+import java.util.ArrayList;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 
 public class Mapa {
     private double baseX;
     private double baseY;
-    private ArrayList<SlotTorre> slots;
     private ArrayList<Integer> caminho;
     private int[][] matriz;
 
     public Mapa (double baseX, double baseY) {
         this.baseX = baseX;
         this.baseY = baseY;
-        this.slots = new ArrayList<>();
         this.caminho = new ArrayList<>();
         this.matriz = new int[18][32];
         criarCaminho();
@@ -35,10 +34,6 @@ public class Mapa {
 
     public ArrayList<Integer> getCaminho() {
         return caminho;
-    }
-
-    public ArrayList<SlotTorre> getSlots() {
-        return slots;
     }
 
     public boolean colocarTorre(Torre torre,int x, int y) {

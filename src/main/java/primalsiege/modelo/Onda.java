@@ -9,19 +9,6 @@ public class Onda {
      private double intervaloSpawn;
      private ArrayList<Boolean> chefes;
 
-     public Onda(String especie, int quantidade, double intervaloSpawn) {
-          this.especies = new ArrayList<>();
-          this.chefes = new ArrayList<>();
-
-          for (int i = 0; i < quantidade; i++) {
-               especies.add(especie);
-               chefes.add(false);
-          }
-          
-
-          this.intervaloSpawn = intervaloSpawn;
-     }
-
      public Onda(ArrayList<String> especies, double intervaloSpawn) {
           this.especies = new ArrayList<>(especies);
           this.chefes = new ArrayList<>();
@@ -30,10 +17,6 @@ public class Onda {
                chefes.add(false);
           }
           this.intervaloSpawn = intervaloSpawn;
-     }
-
-     public String getEspecie() {
-          return especies.get(0);
      }
 
      public String getEspecie(int indice) {

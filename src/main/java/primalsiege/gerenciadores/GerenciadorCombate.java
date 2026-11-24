@@ -476,7 +476,7 @@ public class GerenciadorCombate {
         visuaisProjeteis.clear();
     }
 
-    public void atualizarTorres(ArrayList<Torre> torres, ArrayList<Polygon> triangulosTorres,ArrayList<Inimigo> inimigosAtivos, Mapa mapa, Inimigo inimigo, double tpf) {
+    public void atualizarTorres(ArrayList<Torre> torres, ArrayList<Polygon> triangulosTorres,ArrayList<Inimigo> inimigosAtivos, Mapa mapa, double tpf) {
 
         for (int i = 0; i < torres.size(); i++) {
             Torre torre = torres.get(i);
@@ -533,73 +533,41 @@ public class GerenciadorCombate {
 
             while (tiro != null && disparosNoFrame < 4) {
 
-                if (torre.usaRaioInstantaneo() && torre.getNivel() == 3) {
-                    System.out.println("Raichu disparou. Descarga: " + tiro.ehDescarga());
-                }
+            if (torre.usaRaioInstantaneo()) {
+                mostrarRaioEletrico(
+                    torre.getX(),
+                    torre.getY(),
+                    alvoSelecionado,
+                    torre.getNivel()
+                );
 
-                if (torre.usaRaioInstantaneo()) {
-                    mostrarRaioEletrico(
-                        torre.getX(),
-                        torre.getY(),
-                        alvoSelecionado,
-                        torre.getNivel()
-                    );
+                tiro.atingirInstantaneamente(inimigosAtivos);
 
-                    tiro.atingirInstantaneamente(inimigosAtivos);
-
-                    if (tiro.ehDescarga()) {
-                        mostrarRaioDescarga(tiro.getAlvosDescarga());
-                    }
-                }
-                else {
-                    desenharProjetil(
-                        tiro,
-                        torre.getcorProj(),
-                        torre.getProjrad(alvoSelecionado)
-                    );
-                }
-
-                disparosNoFrame++;
-
-                if (torre.usaVisualAgua() && torre.getNivel() == 3) {
-                    tiro = torre.atirar(alvoSelecionado);
-                }
-                else {
-                    tiro = null;
+                if (tiro.ehDescarga()) {
+                    mostrarRaioDescarga(tiro.getAlvosDescarga());
                 }
             }
+            else {
+                desenharProjetil(
+                    tiro,
+                    torre.getcorProj(),
+                    torre.getProjrad(alvoSelecionado)
+                );
+            }
 
-            if (tiro != null) {
+            disparosNoFrame++;
 
-                if (torre.usaRaioInstantaneo() && torre.getNivel() == 3) {
-                    System.out.println("Raichu disparou. Descarga: " + tiro.ehDescarga());
-                }
-                if (torre.usaRaioInstantaneo()) {
-                    mostrarRaioEletrico(
-                        torre.getX(),
-                        torre.getY(),
-                        alvoSelecionado,
-                        torre.getNivel()
-                    );
+            if (torre.usaVisualAgua() && torre.getNivel() == 3
+                    && disparosNoFrame < 4) {
 
-                    tiro.atingirInstantaneamente(inimigosAtivos);
-
-                    if (tiro.ehDescarga()) {
-                        mostrarRaioDescarga(tiro.getAlvosDescarga());
-                    }
-
-                }
-                
-                else {
-                    desenharProjetil(
-                        tiro,
-                        torre.getcorProj(),
-                        torre.getProjrad(alvoSelecionado)
-                    );
-                }
+                tiro = torre.atirar(alvoSelecionado);
+            }
+            else {
+                tiro = null;
             }
         }
-        }
+    }
+}
     }
 
     private void mostrarRaioDescarga(ArrayList<Inimigo> alvos) {

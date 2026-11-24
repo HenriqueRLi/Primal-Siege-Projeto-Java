@@ -56,10 +56,6 @@ public class Torre {
         return velocidadeAtaque;
     }
 
-    public int getCustoEvolucao () {
-        return custoEvolucao;
-    }
-
     public double getRaioDescarga() {
         return 90;
     }
@@ -204,9 +200,9 @@ public class Torre {
 
     public double getEscala() {
         if (nivel == 3) {
-            return 2; // 30% maior
+            return 2;
         }
-        return 1.0; // Tamanho normal
+        return 1.0;
     }
 
 }
